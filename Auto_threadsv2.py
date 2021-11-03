@@ -572,7 +572,7 @@ def Analysis(sra_id,input,target_ref,anoutdir):
     # after run all state, save ID in "Anackeck.log" and remove ./analysis
     with open(check, "a+") as f:
         f.write("Run {} is ok.\n".format(inId))
-
+    return 0
 
 def SRA_Analysis(sra_id):
     SRA_start=time.time()
@@ -599,14 +599,14 @@ def SRA_Analysis(sra_id):
 
         # if sra_layout==2 continue
         Download(sra_id)
-        Assembled(sra_id)
+        #Assembled(sra_id)
         #####
-        genome = os.path.join(ass_dir, "{}_contig.fa".format(sra_id))
-        targetPath=QualityCheck(sra_id,genome)
-        print("targetPAth = {}\n######\n".format(targetPath.encode("utf-8").decode()))
-        target_ = targetPath.replace(current_path, ".")
-        Analysis(sra_id,genome,target_,new_outdir)
-        print("Run {} is ok\n".format(sra_id))
+        #genome = os.path.join(ass_dir, "{}_contig.fa".format(sra_id))
+        #targetPath=QualityCheck(sra_id,genome)
+        #print("targetPAth = {}\n######\n".format(targetPath.encode("utf-8").decode()))
+        #target_ = targetPath.replace(current_path, ".")
+        #Analysis(sra_id,genome,target_,new_outdir)
+        #print("Run {} is ok\n".format(sra_id))
     except Exception as e:
         error_class = e.__class__.__name__  # 取得錯誤類型
         detail = e.args[0]  # 取得詳細內容
@@ -784,12 +784,15 @@ if __name__ == '__main__':
                         progress_list.append(multiprocessing.Process(target=SRA_Analysis, args=(k,)))
                         prog_num += 1
                         finish_num += 1
+
                     pool.close()
+                    print("pool.close()\n")
                     pool.join()
-                    with open("./Automate_check.log", "a+") as f:
-                        f.write("{}:{}:{}\n".format(date, time.time() - ds, time.time() - start))
+                    print("pool.join()\n")
+                    #with open("./Automate_check.log", "a+") as f:
+                    #    f.write("{}:{}:{}\n".format(date, time.time() - ds, time.time() - start))
                     print("Download all {} ".format(date), 'Done,total cost', time.time() - ds, 'secs')
-                    time.sleep(3)
+                    #time.sleep(3)
                 except KeyboardInterrupt:
                     print("Catch keyboardinterdinterupterror\n")
                     print("srart : {}\n".format(start))
