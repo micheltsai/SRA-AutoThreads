@@ -718,6 +718,9 @@ if __name__ == '__main__':
                     eD = ed_D
             ########
             for d in range(sD,eD+1):
+                if d ==eD+1:
+                    print("d={} eD+1={} end\n".format(d,eD+1))
+                    break;
                 pool = multiprocessing.Pool(processes=cpu_process)
                 pattern = "salmonella enterica[ORGN] AND illumina[PLAT] AND wgs[STRA] AND genomic[SRC] AND paired[LAY]"
                 ds = time.time()
