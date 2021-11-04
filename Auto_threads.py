@@ -92,7 +92,7 @@ def Assembled(x,new_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir):
         else:
             utils_.prefetch_sra(x, sra_dir)
             print("not found {}.sra, Download now\n".format(x))
-
+        check_log = os.path.join(new_outdir, "Analysischeck.log")
         utils_.run_for_114(x, sra_dir, fastq_dir, assemble_dir, new_outdir, thread, gsize, start, check_log)
         ### unnecessary ERR file
         #ERR_path = os.path.join(os.path.abspath(os.getcwd()), x)
