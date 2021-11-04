@@ -50,7 +50,7 @@ def progress_bar(Category):
         time.sleep(0.02)
     print ("\n")
 
-def Download(x):
+def Download(x,new_outdir):
     one_ = time.time()
     #print(
     #   "---------------------\n---------------------[ {} / {} ]---------------------\n".format(num + 1,
@@ -77,7 +77,7 @@ def Download(x):
 
 
 
-def Assembled(x):
+def Assembled(x,new_outdir):
     final_dir = os.path.join(ass_dir, "{}_contig.fa".format(x))
     if os.path.isfile(final_dir):
         print("was ran assembly ,contig.fa is exist\n------------------------------\n\n")
@@ -573,8 +573,8 @@ def Analysis(sra_id,input,target_ref,anoutdir):
 def SRA_Analysis(sra_id):
     SRA_start=time.time()
     try:
-        Download(sra_id)
-        Assembled(sra_id)
+        Download(sra_id,new_outdir)
+        Assembled(sra_id,new_outdir)
         #####
         genome = os.path.join(ass_dir, "{}_contig.fa".format(sra_id))
         targetPath=QualityCheck(sra_id,genome)
