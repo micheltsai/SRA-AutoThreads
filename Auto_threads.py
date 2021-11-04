@@ -659,7 +659,7 @@ if __name__ == '__main__':
     thread=4
 
     #####################
-    pool = multiprocessing.Pool(processes=cpu_process)
+
     for yy in range(sd_Y,ed_Y+1):
         Month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
         ########
@@ -671,16 +671,19 @@ if __name__ == '__main__':
                 Month = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
         ########
-        if sd_Y == yy:
-            sM = sd_M
-            eM = 12
-            sD = sd_D
-        elif yy != ed_Y:
-            sM = 1
-            eM = 12
-            sD = 1
+        if sd_Y != ed_Y:
+            if sd_Y == yy:
+                sM = sd_M
+                eM = 12
+                sD = sd_D
+                print("a")
+            elif yy == ed_Y:
+                sM = 1
+                eM = ed_M
+                sD = 1
+                print("b")
         else:
-            sM = 1
+            sM = sd_M
             eM = ed_M
             sD = 1
         ########
@@ -694,7 +697,8 @@ if __name__ == '__main__':
                 else:
                     eD = ed_D
             ########
-            for d in range(sD,2):
+            pool = multiprocessing.Pool(processes=cpu_process)
+            for d in range(sD,eD+1):
                 pattern = "salmonella enterica[ORGN] AND illumina[PLAT] AND wgs[STRA] AND genomic[SRC] AND paired[LAY]"
                 ds = time.time()
                 date = datetime.date(yy, mon, d).strftime("%Y/%m/%d")
@@ -781,17 +785,20 @@ if __name__ == '__main__':
                     print(errMsg)
                     with open("./SRA_run_error.txt", "a+") as f:
                         f.write("{} :\n{}\n".format(date,errMsg))            #for i in range(prog_num):
-
+                print('Done,total cost', time.time() - start, 'secs')
+            pool.close()
+            print("pool.close()\n")
+            pool.join()
             print("pool.join()\n")
+
             with open("./Automate_check.log", "a+") as f:
                 f.write("{}:{}:{}\n".format(date, time.time() - ds, time.time() - start))
             print("Download all {} ".format(date), 'Done,total cost', time.time() - ds, 'secs')
             time.sleep(3)
+            if yy==ed_Y+1 and mon==eM+1 and d==eD+1:
+                break
             #    progress_list[i].join()
-    print('Done,total cost', time.time() - start, 'secs')
-    pool.close()
-    print("pool.close()\n")
-    pool.join()
+
     ##########
 else:
     print("quit normally\n")
