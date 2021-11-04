@@ -575,13 +575,17 @@ def SRA_Analysis(sra_id,new_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir):
     SRA_start=time.time()
     try:
         Download(sra_id,new_outdir,sra_dir)
+        print("Download end\n")
         Assembled(sra_id,new_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir)
+        print("Assembled end\n")
         #####
         genome = os.path.join(ass_dir, "{}_contig.fa".format(sra_id))
         targetPath=QualityCheck(sra_id,genome)
+        print("QualityCheck end\n")
         print("targetPAth = {}\n######\n".format(targetPath.encode("utf-8").decode()))
         target_ = targetPath.replace(current_path, ".")
         Analysis(sra_id,genome,target_,new_outdir)
+        print("Analysis end\n")
         print("Run {} is ok\n".format(sra_id))
     except Exception as e:
         error_class = e.__class__.__name__  # 取得錯誤類型
