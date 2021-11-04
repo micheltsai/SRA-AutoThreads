@@ -604,6 +604,10 @@ def SRA_Analysis(sra_id,new_outdir):
     with open(check_log,"a+") as f:
         f.write("\nRun {} is ok.\n".format(sra_id))
     return 0
+
+def test():
+    print("test\n")
+
 if __name__ == '__main__':
     start=time.time()
     Month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
@@ -757,7 +761,8 @@ if __name__ == '__main__':
                         print("########### hello %d ############\n" % prog_num)
                         print("########## {}/{} ###########".format(finish_num, count))
                         pool.apply_async(SRA_Analysis, (k,))
-                        progress_list.append(multiprocessing.Process(target=SRA_Analysis, args=(k,new_outdir)))
+                        #progress_list.append(multiprocessing.Process(target=SRA_Analysis, args=(k,new_outdir)))
+                        progress_list.append(multiprocessing.Process(target=test))
                         prog_num += 1
                         finish_num += 1
                 except KeyboardInterrupt:

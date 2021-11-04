@@ -711,10 +711,11 @@ if __name__ == '__main__':
             ###########
             if yy != ed_Y:
                 eD = Month[mon - 1]
-            elif mon != eM:
-                eD = Month[mon - 1]
             else:
-                eD = ed_D
+                if mon != eM:
+                    eD = Month[mon - 1]
+                else:
+                    eD = ed_D
             ########
             for d in range(sD,eD+1):
                 pool = multiprocessing.Pool(processes=cpu_process)
