@@ -685,7 +685,7 @@ if __name__ == '__main__':
     thread=4
 
     #####################
-    for yy in range(sd_Y,ed_Y):
+    for yy in range(sd_Y,ed_Y+1):
         Month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
         ########
         if (yy % 4) == 0:
@@ -712,7 +712,7 @@ if __name__ == '__main__':
             eM = ed_M
             sD = 1
         ########
-        for mon in range(sM, eM):
+        for mon in range(sM, eM+1):
             ###########
             if yy != ed_Y:
                 eD = Month[mon - 1]
@@ -808,8 +808,8 @@ if __name__ == '__main__':
                     # with open("./Automate_check.log", "a+") as f:
                     #    f.write("keyboardinterupter")
                     #    f.write("{}:{}:{}\n".format(date, time.time() - ds, time.time() - start))
-                    sys.exit("Catch keyboardinterdinterupterror")
-                    # os.popen("taskkill.exe /f /pid:%d"%pid)
+                    #sys.exit("Catch keyboardinterdinterupterror")
+                    os.popen("taskkill.exe /f /pid:%d"%pid)
                 except Exception as e:
                     error_class = e.__class__.__name__  # 取得錯誤類型
                     detail = e.args[0]  # 取得詳細內容
