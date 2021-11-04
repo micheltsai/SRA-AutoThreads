@@ -683,6 +683,7 @@ if __name__ == '__main__':
     thread=4
 
     #####################
+    pool = multiprocessing.Pool(processes=cpu_process)
     for yy in range(sd_Y,ed_Y+1):
         Month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
         ########
@@ -778,7 +779,7 @@ if __name__ == '__main__':
                 finish_num = 0
                 finish_num = len(finish_run)
                 try:
-                    pool = multiprocessing.Pool(processes=cpu_process)
+
                     for k in need_run:
                         print("########### hello %d ############\n" % prog_num)
                         print("########## {}/{} ###########".format(finish_num, count))
@@ -786,11 +787,6 @@ if __name__ == '__main__':
                         progress_list.append(multiprocessing.Process(target=SRA_Analysis, args=(k,)))
                         prog_num += 1
                         finish_num += 1
-
-                    pool.close()
-                    print("pool.close()\n")
-                    pool.join()
-                    print("pool.join()\n")
                     #with open("./Automate_check.log", "a+") as f:
                     #    f.write("{}:{}:{}\n".format(date, time.time() - ds, time.time() - start))
                     print("Download all {} ".format(date), 'Done,total cost', time.time() - ds, 'secs')
@@ -823,6 +819,10 @@ if __name__ == '__main__':
                         f.write("{} :\n{}\n".format(date, errMsg))
                 # for i in range(prog_num):
                 #    progress_list[i].join()
+    pool.close()
+    print("pool.close()\n")
+    pool.join()
+    print("pool.join()\n")
     print('Done,total cost', time.time() - start, 'secs')
     ##########
 

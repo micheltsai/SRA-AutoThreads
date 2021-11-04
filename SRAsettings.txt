@@ -1,6 +1,6 @@
 # (date) to (date)
 start_date=2020/08/01
-expiry_date=2020/08/03
+expiry_date=2020/08/02
 
 #Number of package threads to use. default: 8
 cpu_thread=4
