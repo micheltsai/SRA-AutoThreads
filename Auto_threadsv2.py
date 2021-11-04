@@ -605,8 +605,8 @@ def SRA_Analysis(sra_id):
         print("targetPAth = {}\n######\n".format(targetPath.encode("utf-8").decode()))
         target_ = targetPath.replace(current_path, ".")
         print("target_= {}".format(target_))
-        #Analysis(sra_id,genome,target_,new_outdir)
-        #print("Run {} is Done\n".format(sra_id))
+        Analysis(sra_id,genome,target_,new_outdir)
+        print("Run {} is Done\n".format(sra_id))
     except Exception as e:
         error_class = e.__class__.__name__  # 取得錯誤類型
         detail = e.args[0]  # 取得詳細內容
