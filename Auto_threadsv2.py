@@ -787,10 +787,7 @@ if __name__ == '__main__':
                         progress_list.append(multiprocessing.Process(target=SRA_Analysis, args=(k,)))
                         prog_num += 1
                         finish_num += 1
-                    #with open("./Automate_check.log", "a+") as f:
-                    #    f.write("{}:{}:{}\n".format(date, time.time() - ds, time.time() - start))
-                    print("Download all {} ".format(date), 'Done,total cost', time.time() - ds, 'secs')
-                    #time.sleep(3)
+
                 except KeyboardInterrupt:
                     print("Catch keyboardinterdinterupterror\n")
                     print("srart : {}\n".format(start))
@@ -821,6 +818,10 @@ if __name__ == '__main__':
                 print("pool.close()\n")
                 pool.join()
                 print("pool.join()\n")
+                with open("./Automate_check.log", "a+") as f:
+                    f.write("{}:{}:{}\n".format(date, time.time() - ds, time.time() - start))
+                print("Download all {} ".format(date), 'Done,total cost', time.time() - ds, 'secs')
+                time.sleep(3)
                 # for i in range(prog_num):
                 #    progress_list[i].join()
     print('Done,total cost', time.time() - start, 'secs')
