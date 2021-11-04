@@ -570,7 +570,7 @@ def Analysis(sra_id,input,target_ref,anoutdir):
         f.write("Run {} is ok.\n".format(sra_id))
 
 
-def SRA_Analysis(sra_id):
+def SRA_Analysis(sra_id,new_outdir):
     SRA_start=time.time()
     try:
         Download(sra_id,new_outdir)
@@ -756,7 +756,7 @@ if __name__ == '__main__':
                         print("########### hello %d ############\n" % prog_num)
                         print("########## {}/{} ###########".format(finish_num, count))
                         pool.apply_async(SRA_Analysis, (k,))
-                        progress_list.append(multiprocessing.Process(target=SRA_Analysis, args=(k,)))
+                        progress_list.append(multiprocessing.Process(target=SRA_Analysis, args=(k,new_outdir)))
                         prog_num += 1
                         finish_num += 1
                     with open("./Automate_check.log", "a+") as f:
