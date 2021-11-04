@@ -717,6 +717,7 @@ if __name__ == '__main__':
                 eD = ed_D
             ########
             for d in range(sD,eD+1):
+                pool = multiprocessing.Pool(processes=cpu_process)
                 pattern = "salmonella enterica[ORGN] AND illumina[PLAT] AND wgs[STRA] AND genomic[SRC] AND paired[LAY]"
                 ds = time.time()
 
@@ -778,7 +779,7 @@ if __name__ == '__main__':
                 finish_num = 0
                 finish_num = len(finish_run)
                 try:
-                    pool = multiprocessing.Pool(processes=cpu_process)
+
                     for k in need_run:
                         print("########### hello %d ############\n" % prog_num)
                         print("########## {}/{} ###########".format(finish_num, count))
@@ -786,11 +787,6 @@ if __name__ == '__main__':
                         progress_list.append(multiprocessing.Process(target=SRA_Analysis, args=(k,)))
                         prog_num += 1
                         finish_num += 1
-
-                    pool.close()
-                    print("pool.close()\n")
-                    pool.join()
-                    print("pool.join()\n")
                     #with open("./Automate_check.log", "a+") as f:
                     #    f.write("{}:{}:{}\n".format(date, time.time() - ds, time.time() - start))
                     print("Download all {} ".format(date), 'Done,total cost', time.time() - ds, 'secs')
@@ -821,6 +817,10 @@ if __name__ == '__main__':
                     print(errMsg)
                     with open("./SRA_run_error.txt", "a+") as f:
                         f.write("{} :\n{}\n".format(date, errMsg))
+                pool.close()
+                print("pool.close()\n")
+                pool.join()
+                print("pool.join()\n")
                 # for i in range(prog_num):
                 #    progress_list[i].join()
     print('Done,total cost', time.time() - start, 'secs')
