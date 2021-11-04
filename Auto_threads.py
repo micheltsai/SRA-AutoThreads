@@ -50,7 +50,7 @@ def progress_bar(Category):
         time.sleep(0.02)
     print ("\n")
 
-def Download(x,dir):
+def Download(x,dir,sra_dir):
     one_ = time.time()
     #print(
     #   "---------------------\n---------------------[ {} / {} ]---------------------\n".format(num + 1,
@@ -77,7 +77,7 @@ def Download(x,dir):
 
 
 
-def Assembled(x):
+def Assembled(x,new_outdir,sra_dir,ass_dir,fastq_dir):
     final_dir = os.path.join(ass_dir, "{}_contig.fa".format(x))
     if os.path.isfile(final_dir):
         print("was ran assembly ,contig.fa is exist\n------------------------------\n\n")
@@ -570,11 +570,11 @@ def Analysis(sra_id,input,target_ref,anoutdir):
         f.write("Run {} is ok.\n".format(sra_id))
 
 
-def SRA_Analysis(sra_id,new_outdir):
+def SRA_Analysis(sra_id,new_outdir,sra_dir,ass_dir,fastq_dir):
     SRA_start=time.time()
     try:
-        Download(sra_id,new_outdir)
-        Assembled(sra_id)
+        Download(sra_id,new_outdir,sra_dir)
+        Assembled(sra_id,new_outdir,sra_dir,ass_dir,fastq_dir)
         #####
         genome = os.path.join(ass_dir, "{}_contig.fa".format(sra_id))
         targetPath=QualityCheck(sra_id,genome)
@@ -760,7 +760,7 @@ if __name__ == '__main__':
                     for k in need_run:
                         print("########### hello %d ############\n" % prog_num)
                         print("########## {}/{} ###########".format(finish_num, count))
-                        pool.apply_async(SRA_Analysis, (k,new_outdir))
+                        pool.apply_async(SRA_Analysis, (k,new_outdir,sra_dir,ass_dir,fastq_dir))
                         #progress_list.append(multiprocessing.Process(target=SRA_Analysis, args=(k,new_outdir)))
                         #progress_list.append(multiprocessing.Process(target=test))
                         prog_num += 1
