@@ -683,7 +683,7 @@ if __name__ == '__main__':
     thread=4
 
     #####################
-    for yy in range(sd_Y,ed_Y+1):
+    for yy in range(sd_Y,ed_Y):
         Month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
         ########
         if (yy % 4) == 0:
@@ -707,7 +707,7 @@ if __name__ == '__main__':
             eM = ed_M
             sD = 1
         ########
-        for mon in range(sM, eM+1):
+        for mon in range(sM, eM):
             ###########
             if yy != ed_Y:
                 eD = Month[mon - 1]

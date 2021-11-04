@@ -760,9 +760,9 @@ if __name__ == '__main__':
                     for k in need_run:
                         print("########### hello %d ############\n" % prog_num)
                         print("########## {}/{} ###########".format(finish_num, count))
-                        pool.apply_async(SRA_Analysis, (k,))
+                        pool.apply_async(SRA_Analysis, (k,new_outdir))
                         #progress_list.append(multiprocessing.Process(target=SRA_Analysis, args=(k,new_outdir)))
-                        progress_list.append(multiprocessing.Process(target=test))
+                        #progress_list.append(multiprocessing.Process(target=test))
                         prog_num += 1
                         finish_num += 1
                 except KeyboardInterrupt:
