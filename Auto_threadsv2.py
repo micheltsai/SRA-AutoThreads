@@ -571,7 +571,7 @@ def Analysis(sra_id,input,target_ref,anoutdir):
     # after run all state, save ID in "Anackeck.log" and remove ./analysis
     with open(check, "a+") as f:
         f.write("Run {} is ok.\n".format(inId))
-    return 0
+
 
 def SRA_Analysis(sra_id):
     SRA_start=time.time()
@@ -580,19 +580,19 @@ def SRA_Analysis(sra_id):
         print("SequenceReadArchive\n")
         sra = utils_.SequenceReadArchivev2(sra_id)
         _base_ = sra.base_percentage()*100
-        print("base percentage: ",_base_)
+        print("base percentage: ",_base_,"\n")
         #######Q30 base>=80%
         if  _base_< 80 :
             # shutil.rmtree(outdir)
             with open(QC_error,"a+")as f:
                 f.write("{}: Reads quality is too low\n".format(sra_id))
-            sys.exit('Reads quality is too low.')
+            sys.exit('Reads quality is too low.\n')
         ###### layout = 2
 
         if sra.layout != '2':
             with open(QC_error,"a+")as f:
                 f.write("{}: File layout is not pair-end\n".format(sra_id))
-            sys.exit(f'File layout is not pair-end')
+            sys.exit(f'File layout is not pair-end\n')
 
         print("layout=2\n")
 
@@ -604,9 +604,9 @@ def SRA_Analysis(sra_id):
         targetPath=QualityCheck(sra_id,genome)
         print("targetPAth = {}\n######\n".format(targetPath.encode("utf-8").decode()))
         target_ = targetPath.replace(current_path, ".")
-        print("target_= {}".format(target_))
-        #Analysis(sra_id,genome,target_,new_outdir)
-        #print("Run {} is Done\n".format(sra_id))
+        print("target_= {}\n".format(target_))
+        Analysis(sra_id,genome,target_,new_outdir)
+        print("Run {} is Done\n".format(sra_id))
     except Exception as e:
         error_class = e.__class__.__name__  # 取得錯誤類型
         detail = e.args[0]  # 取得詳細內容
@@ -628,7 +628,9 @@ def SRA_Analysis(sra_id):
     #######
     with open(check_log,"a+") as f:
         f.write("Run {} is ok.\n".format(sra_id))
-    return 0
+
+
+
 if __name__ == '__main__':
     start=time.time()
     #Month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
@@ -801,6 +803,9 @@ if __name__ == '__main__':
                     pid = os.getgid()
                     with open("./SRA_run_error.txt", "a+") as f:
                         f.write("Catch keyboardinterdinterupterror : {}/{}/{}\n".format())
+                    # with open("./Automate_check.log", "a+") as f:
+                    #    f.write("keyboardinterupter")
+                    #    f.write("{}:{}:{}\n".format(date, time.time() - ds, time.time() - start))
                     sys.exit("Catch keyboardinterdinterupterror")
                     # os.popen("taskkill.exe /f /pid:%d"%pid)
                 except Exception as e:
