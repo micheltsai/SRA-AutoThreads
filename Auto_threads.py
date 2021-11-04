@@ -659,6 +659,7 @@ if __name__ == '__main__':
     thread=4
 
     #####################
+    pool = multiprocessing.Pool(processes=cpu_process)
     for yy in range(sd_Y,ed_Y+1):
         Month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
         ########
@@ -693,11 +694,9 @@ if __name__ == '__main__':
                 else:
                     eD = ed_D
             ########
-            pool = multiprocessing.Pool(processes=cpu_process)
-            for d in range(sD,eD+1):
+            for d in range(sD,2):
                 pattern = "salmonella enterica[ORGN] AND illumina[PLAT] AND wgs[STRA] AND genomic[SRC] AND paired[LAY]"
                 ds = time.time()
-
                 date = datetime.date(yy, mon, d).strftime("%Y/%m/%d")
                 # temp="{}/{}/{}".format(str(2020),str(mon+1),str(d))
                 ######
@@ -705,24 +704,18 @@ if __name__ == '__main__':
                 new_outdir = os.path.join(outdir, pdat)
                 utils_.mkdir_join(new_outdir)
                 print("output: {}\n".format(new_outdir))
-
                 # commit
                 check_log = os.path.join(new_outdir, "Analysischeck.log")
-
                 myfile2 = Path(check_log)
                 myfile2.touch(exist_ok=True)
                 with open(check_log, "a+") as f:
                     f.write(str(datetime.datetime.now()).split(".")[0])
                     f.write("\n")
-
                 pattern, count = utils_.count_egquery(pattern, date, date)
                 print("pattern: {}\ncount: {}\n".format(pattern, count))
-
                 i_e_ = time.time()
                 idlist = utils_.IdList_esearch(pattern, 'sra', count)
-
                 print(idlist)
-
                 runinfo = utils_.Get_RunInfo(idlist)
                 run_list = list(runinfo['Run'])  # get SRAfile nameList stored in run_list
                 print("runinfo: {}\n run_list: {}\n".format(runinfo, run_list))
@@ -788,9 +781,7 @@ if __name__ == '__main__':
                     print(errMsg)
                     with open("./SRA_run_error.txt", "a+") as f:
                         f.write("{} :\n{}\n".format(date,errMsg))            #for i in range(prog_num):
-            pool.close()
-            print("pool.close()\n")
-            pool.join()
+
             print("pool.join()\n")
             with open("./Automate_check.log", "a+") as f:
                 f.write("{}:{}:{}\n".format(date, time.time() - ds, time.time() - start))
@@ -798,6 +789,9 @@ if __name__ == '__main__':
             time.sleep(3)
             #    progress_list[i].join()
     print('Done,total cost', time.time() - start, 'secs')
+    pool.close()
+    print("pool.close()\n")
+    pool.join()
     ##########
 else:
     print("quit normally\n")
