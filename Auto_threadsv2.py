@@ -59,7 +59,7 @@ def Download(x,new_outdir,sra_dir):
     print("x = {}".format(x))
     # outdir__ = os.path.join(output, "out")
     outdir__ = os.path.join(new_outdir, "Assembled")
-
+    check_log = os.path.join(new_outdir, "Analysischeck.log")
     final_dir = os.path.join(outdir__, "{}_contig.fa".format(x))
     sra_file=os.path.join(sra_dir,"{}.sra".format(x))
     if os.path.isfile(final_dir):
@@ -79,6 +79,7 @@ def Download(x,new_outdir,sra_dir):
 
 def Assembled(x,new_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir):
     final_dir = os.path.join(ass_dir, "{}_contig.fa".format(x))
+    check_log = os.path.join(new_outdir, "Analysischeck.log")
     if os.path.isfile(final_dir):
         print("was ran assembly ,contig.fa is exist\n------------------------------\n\n")
     else:
@@ -626,6 +627,7 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir):
         writer.writeheader()
         writer.writerow({"func": "{}".format(sra_id), "time": str(time.time() - SRA_start)})
     #######
+    check_log = os.path.join(new_outdir, "Analysischeck.log")
     with open(check_log,"a+") as f:
         f.write("Run {} is ok.\n".format(sra_id))
 

@@ -566,6 +566,7 @@ def Analysis(sra_id,input,target_ref,anoutdir):
 
     finaldf.to_csv(finalfile, mode='a+', header=False)
     # after run all state, save ID in "Anackeck.log" and remove ./analysis
+    check_log = os.path.join(new_outdir, "Analysischeck.log")
     with open(check, "a+") as f:
         f.write("Run {} is ok.\n".format(sra_id))
 
