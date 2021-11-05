@@ -132,7 +132,7 @@ def Assembled(x,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir, thread, gsize, s
         run_cmd(rmsra_cmd)
 
 
-def QualityCheck(sra_id,_outdir,genome_Path, thread, gsize, start):
+def QualityCheck(sra_id,_outdir,genome_Path, thread, gsize, start,ref_dir):
     print("#####################  QualityCheck  #####################\n")
     refPath = utils_.getRefListPath(ref_dir,_outdir)
     # refPath=args.ref
@@ -598,7 +598,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir, thread, gsize, start):
         f.write("Run {} is ok.\n".format(sra_id))
 
 
-def SRA_Analysis(sra_id,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir, thread, gsize, start):
+def SRA_Analysis(sra_id,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir, thread, gsize, start,ref_dir):
     SRA_start=time.time()
     try:
         Download(sra_id,_outdir,sra_dir)
@@ -607,7 +607,7 @@ def SRA_Analysis(sra_id,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir, thread, 
         print("Assembled end\n")
         #####
         genome = os.path.join(ass_dir, "{}_contig.fa".format(sra_id))
-        targetPath=QualityCheck(sra_id,_outdir,genome, thread, gsize, start)
+        targetPath=QualityCheck(sra_id,_outdir,genome, thread, gsize, start,ref_dir)
         print("QualityCheck end\n")
         print("targetPAth = {}\n######\n".format(targetPath.encode("utf-8").decode()))
         target_ = targetPath.replace(current_path, ".")
@@ -791,7 +791,7 @@ if __name__ == '__main__':
                     for k in need_run:
                         print("########### hello %d ############\n" % prog_num)
                         print("########## {}/{} ###########".format(finish_num, count))
-                        pool.apply_async(SRA_Analysis, (k,new_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir, thread, gsize, start))
+                        pool.apply_async(SRA_Analysis, (k,new_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir, thread, gsize, start,ref_dir,))
                         #progress_list.append(multiprocessing.Process(target=SRA_Analysis, args=(k,new_outdir)))
                         #progress_list.append(multiprocessing.Process(target=test))
                         prog_num += 1
