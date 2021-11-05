@@ -740,14 +740,10 @@ if __name__ == '__main__':
                 sD = 1
                 print("b")
         else:
-            if sM!=eM:
-                sM = sd_M
-                eM = ed_M
-                sD = 1
-            else:
-                sM = sd_M
-                eM = ed_M
-                sD = sd_D
+            sM = sd_M
+            eM = ed_M
+            sD = 1
+
         ########
         for mon in range(sM, eM+1):
             ###########
