@@ -626,14 +626,14 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir):
 
         # if sra_layout==2 continue
         Download(sra_id,_outdir,sra_dir)
-        Assembled(sra_id,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir)
+        #Assembled(sra_id,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir)
         #####
-        genome = os.path.join(ass_dir, "{}_contig.fa".format(sra_id))
-        targetPath=QualityCheck(sra_id,_outdir,genome)
-        print("targetPAth = {}\n######\n".format(targetPath.encode("utf-8").decode()))
-        target_ = targetPath.replace(current_path, ".")
-        print("target_= {}\n".format(target_))
-        Analysis(sra_id,genome,target_,_outdir,_outdir)
+        #genome = os.path.join(ass_dir, "{}_contig.fa".format(sra_id))
+        #targetPath=QualityCheck(sra_id,_outdir,genome)
+        #print("targetPAth = {}\n######\n".format(targetPath.encode("utf-8").decode()))
+        #target_ = targetPath.replace(current_path, ".")
+        #print("target_= {}\n".format(target_))
+        #Analysis(sra_id,genome,target_,_outdir,_outdir)
         print("Run {} is Done\n".format(sra_id))
     except Exception as e:
         error_class = e.__class__.__name__  # 取得錯誤類型
