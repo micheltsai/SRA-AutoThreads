@@ -737,7 +737,7 @@ if __name__ == '__main__':
                 assemble_dir = os.path.join(new_outdir, "assembly_result")
 
                 read_log_ = time.time()
-                f = open(check_log, 'r+')
+                f = open(check_log, 'r')
                 line = f.readlines()
                 print("check log :{}\n".format(line))
                 f.close()

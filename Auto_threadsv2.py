@@ -793,10 +793,13 @@ if __name__ == '__main__':
                 ass_dir = os.path.join(new_outdir, "Assembled")
                 utils_.mkdir_join(ass_dir)
                 fastq_dir = os.path.join(new_outdir, 'fastq')
+                utils_.mkdir_join(fastq_dir)
                 assemble_dir = os.path.join(new_outdir, "assembly_result")
-
+                utils_.mkdir_join(assemble_dir)
+                print("sra_dir:{}\nass_dir={}\nfastq_dir={}\nassemble_dir={}\n")
                 read_log_ = time.time()
-                f = open(check_log, 'r+')
+
+                f = open(check_log, 'r')
                 line = f.readlines()
                 print("check log :{}\n".format(line))
                 f.close()
