@@ -104,7 +104,7 @@ def Download(x,dir,sra_dir):
 
 
 
-def Assembled(x,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir):
+def Assembled(x,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir, thread, gsize, start):
     final_dir = os.path.join(ass_dir, "{}_contig.fa".format(x))
     if os.path.isfile(final_dir):
         print("was ran assembly ,contig.fa is exist\n------------------------------\n\n")
@@ -132,7 +132,7 @@ def Assembled(x,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir):
         run_cmd(rmsra_cmd)
 
 
-def QualityCheck(sra_id,_outdir,genome_Path):
+def QualityCheck(sra_id,_outdir,genome_Path, thread, gsize, start):
     print("#####################  QualityCheck  #####################\n")
     refPath = utils_.getRefListPath(ref_dir,_outdir)
     # refPath=args.ref
@@ -308,7 +308,7 @@ def QualityCheck(sra_id,_outdir,genome_Path):
     print('Done,total cost', time.time() - start, 'secs\n')
     return targetPath
 
-def Analysis(sra_id,input,target_ref,anoutdir,_outdir):
+def Analysis(sra_id,input,target_ref,anoutdir,_outdir, thread, gsize, start):
     print("#####################  Analysis  #####################\n")
     mlst_organism = mlstS
     amr_organism = amrS
@@ -598,20 +598,20 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir):
         f.write("Run {} is ok.\n".format(sra_id))
 
 
-def SRA_Analysis(sra_id,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir):
+def SRA_Analysis(sra_id,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir, thread, gsize, start):
     SRA_start=time.time()
     try:
         Download(sra_id,_outdir,sra_dir)
         print("Download end\n")
-        Assembled(sra_id,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir)
+        Assembled(sra_id,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir, thread, gsize, start)
         print("Assembled end\n")
         #####
         genome = os.path.join(ass_dir, "{}_contig.fa".format(sra_id))
-        targetPath=QualityCheck(sra_id,_outdir,genome)
+        targetPath=QualityCheck(sra_id,_outdir,genome, thread, gsize, start)
         print("QualityCheck end\n")
         print("targetPAth = {}\n######\n".format(targetPath.encode("utf-8").decode()))
         target_ = targetPath.replace(current_path, ".")
-        Analysis(sra_id,genome,target_,_outdir,_outdir)
+        Analysis(sra_id,genome,target_,_outdir,_outdir, thread, gsize, start)
         print("Analysis end\n")
         print("Run {} is ok\n".format(sra_id))
     except Exception as e:
@@ -641,6 +641,7 @@ def test():
     print("test\n")
 
 if __name__ == '__main__':
+    pool = multiprocessing.Pool(processes=cpu_process)
     start=time.time()
     Month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
     current_path = os.path.abspath(os.getcwd())
@@ -729,7 +730,7 @@ if __name__ == '__main__':
                 else:
                     eD = ed_D
             ########
-            pool = multiprocessing.Pool(processes=cpu_process)
+
             for d in range(sD,eD+1):
                 pattern = "salmonella enterica[ORGN] AND illumina[PLAT] AND wgs[STRA] AND genomic[SRC] AND paired[LAY]"
                 ds = time.time()
@@ -790,7 +791,7 @@ if __name__ == '__main__':
                     for k in need_run:
                         print("########### hello %d ############\n" % prog_num)
                         print("########## {}/{} ###########".format(finish_num, count))
-                        pool.apply_async(SRA_Analysis, (k,new_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir))
+                        pool.apply_async(SRA_Analysis, (k,new_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir, thread, gsize, start))
                         #progress_list.append(multiprocessing.Process(target=SRA_Analysis, args=(k,new_outdir)))
                         #progress_list.append(multiprocessing.Process(target=test))
                         prog_num += 1
@@ -823,13 +824,13 @@ if __name__ == '__main__':
                     f.write("{}:{}:{}\n".format(date, time.time() - ds, time.time() - start))
                 print("Download all {} ".format(date), 'Done,total cost', time.time() - ds, 'secs')
                 time.sleep(3)
-                pool.close()
-                print("pool.close()\n")
-                pool.join()
-                print("pool.join()\n")
-            #    progress_list[i].join()
-    signal.signal(signal.SIGCHLD, wait_child)
 
+            #    progress_list[i].join()
+    #signal.signal(signal.SIGCHLD, wait_child)
+    pool.close()
+    print("pool.close()\n")
+    pool.join()
+    print("pool.join()\n")
     print("Program Done\n")
     print('Done,total cost', time.time() - start, 'secs')
     ##########

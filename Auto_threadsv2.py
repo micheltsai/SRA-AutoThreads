@@ -106,7 +106,7 @@ def Download(x,_outdir,sra_dir):
 
 def Assembled(x,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir,thread,gsize,start):
     final_dir = os.path.join(ass_dir, "{}_contig.fa".format(x))
-    check_log = os.path.join(_outdir, "Analysischeck.log")
+    check_log = os.path.join(_outdir, "Asembledcheck.log")
     if os.path.isfile(final_dir):
         print("was ran assembly ,contig.fa is exist\n------------------------------\n\n")
     else:
@@ -120,7 +120,7 @@ def Assembled(x,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir,thread,gsize,star
         else:
             utils_.prefetch_sra(x, sra_dir)
             print("not found {}.sra, Download now\n".format(x))
-
+        
         utils_.run_for_114v2(x, sra_dir, fastq_dir, assemble_dir, _outdir, thread, gsize, start, check_log)
         ### unnecessary ERR file
         #ERR_path = os.path.join(os.path.abspath(os.getcwd()), x)
