@@ -75,7 +75,7 @@ def progress_bar(Category):
         time.sleep(0.02)
     print ("\n")
 
-def Download(x,new_outdir,sra_dir):
+def Download(x,_outdir,sra_dir):
     one_ = time.time()
     #print(
     #   "---------------------\n---------------------[ {} / {} ]---------------------\n".format(num + 1,
@@ -83,8 +83,8 @@ def Download(x,new_outdir,sra_dir):
     #num += 1
     print("x = {}".format(x))
     # outdir__ = os.path.join(output, "out")
-    outdir__ = os.path.join(new_outdir, "Assembled")
-    check_log = os.path.join(new_outdir, "Analysischeck.log")
+    outdir__ = os.path.join(_outdir, "Assembled")
+    check_log = os.path.join(_outdir, "Analysischeck.log")
     final_dir = os.path.join(outdir__, "{}_contig.fa".format(x))
     sra_file=os.path.join(sra_dir,"{}.sra".format(x))
     if os.path.isfile(final_dir):
@@ -102,9 +102,9 @@ def Download(x,new_outdir,sra_dir):
 
 
 
-def Assembled(x,new_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir):
+def Assembled(x,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir):
     final_dir = os.path.join(ass_dir, "{}_contig.fa".format(x))
-    check_log = os.path.join(new_outdir, "Analysischeck.log")
+    check_log = os.path.join(_outdir, "Analysischeck.log")
     if os.path.isfile(final_dir):
         print("was ran assembly ,contig.fa is exist\n------------------------------\n\n")
     else:
@@ -119,7 +119,7 @@ def Assembled(x,new_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir):
             utils_.prefetch_sra(x, sra_dir)
             print("not found {}.sra, Download now\n".format(x))
 
-        utils_.run_for_114v2(x, sra_dir, fastq_dir, assemble_dir, new_outdir, thread, gsize, start, check_log)
+        utils_.run_for_114v2(x, sra_dir, fastq_dir, assemble_dir, _outdir, thread, gsize, start, check_log)
         ### unnecessary ERR file
         #ERR_path = os.path.join(os.path.abspath(os.getcwd()), x)
         #print("suERR_path: ", ERR_path, "\n")
@@ -131,18 +131,18 @@ def Assembled(x,new_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir):
         run_cmd(rmsra_cmd)
 
 
-def QualityCheck(sra_id,new_outdir,genome_Path):
+def QualityCheck(sra_id,_outdir,genome_Path):
     print("#####################  QualityCheck  #####################\n")
-    refPath = utils_.getRefListPath(ref_dir, new_outdir)
+    refPath = utils_.getRefListPath(ref_dir, _outdir)
     # refPath=args.ref
-    Assem_path = os.path.join(new_outdir, "Assembled/")
-    BUSCOresult = os.path.join(new_outdir, "BUSCOresult.txt")
-    check = os.path.join(new_outdir, "QCcheck.log")
-    outdir = os.path.join(new_outdir, "QualityCheck")
+    Assem_path = os.path.join(_outdir, "Assembled/")
+    BUSCOresult = os.path.join(_outdir, "BUSCOresult.txt")
+    check = os.path.join(_outdir, "QCcheck.log")
+    outdir = os.path.join(_outdir, "QualityCheck")
     utils_.mkdir_join(outdir)
 
     # outdir = utils_.mkdir_join(outdir, str(current_time))
-    print("outdir: \n", new_outdir)
+    print("outdir: \n", _outdir)
     print("check: \n", check)
     print("BUSCOresult= {}".format(BUSCOresult))
 
@@ -221,7 +221,7 @@ def QualityCheck(sra_id,new_outdir,genome_Path):
         else:
             not_num += 1
     # num =0
-    QC_error=os.path.join(new_outdir,"nofillQC.txt")
+    QC_error=os.path.join(_outdir,"nofillQC.txt")
     if num==0:
         with open(QC_error, "a+") as f:
             f.write("{}: all ANI value < 95\n".format(sra_id))
@@ -294,7 +294,7 @@ def QualityCheck(sra_id,new_outdir,genome_Path):
         return 0
 
     # continue
-    targettxt = os.path.join(new_outdir, "target.txt")
+    targettxt = os.path.join(_outdir, "target.txt")
     print("target.txt path: {}".format(targettxt))
     # continue need target path
     with open(targettxt, "a+") as f:
@@ -312,7 +312,7 @@ def QualityCheck(sra_id,new_outdir,genome_Path):
     print('Done,total cost', time.time() - start, 'secs\n')
     return targetPath
 
-def Analysis(sra_id,input,target_ref,anoutdir):
+def Analysis(sra_id,input,target_ref,anoutdir,_outdir):
     print("#####################  Analysis  #####################\n")
     mlst_organism = mlstS
     amr_organism = amrS
@@ -332,13 +332,13 @@ def Analysis(sra_id,input,target_ref,anoutdir):
     relative_input = input.replace(current_path, ".")
     print("relative input: {}\n".format(relative_input))
 
-    origin_outdir = new_outdir
+    origin_outdir = _outdir
     allinfopath = os.path.join(origin_outdir, "info.txt")
     check = os.path.join(origin_outdir, "Anacheck.log")
 
     # add outpath "analysis"
-    utils_.mkdir_join(new_outdir)
-    anoutdir_ = os.path.join(new_outdir, "analysis")
+    utils_.mkdir_join(_outdir)
+    anoutdir_ = os.path.join(_outdir, "analysis")
     utils_.mkdir_join(anoutdir_)
     print("analysis outdir: {}\n".format(anoutdir_))
 
@@ -599,9 +599,9 @@ def Analysis(sra_id,input,target_ref,anoutdir):
         f.write("Run {} is ok.\n".format(inId))
 
 
-def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir):
+def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir):
     SRA_start=time.time()
-    QC_error=os.path.join(new_outdir,"nofillQC.txt")
+    QC_error=os.path.join(_outdir,"nofillQC.txt")
     try:
         print("SequenceReadArchive\n")
         sra = utils_.SequenceReadArchivev2(sra_id)
@@ -623,15 +623,15 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir):
         print("layout=2\n")
 
         # if sra_layout==2 continue
-        Download(sra_id,new_outdir,sra_dir)
-        Assembled(sra_id,new_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir)
+        Download(sra_id,_outdir,sra_dir)
+        Assembled(sra_id,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir)
         #####
         genome = os.path.join(ass_dir, "{}_contig.fa".format(sra_id))
-        targetPath=QualityCheck(sra_id,new_outdir,genome)
+        targetPath=QualityCheck(sra_id,_outdir,genome)
         print("targetPAth = {}\n######\n".format(targetPath.encode("utf-8").decode()))
         target_ = targetPath.replace(current_path, ".")
         print("target_= {}\n".format(target_))
-        Analysis(sra_id,genome,target_,new_outdir)
+        Analysis(sra_id,genome,target_,_outdir,_outdir)
         print("Run {} is Done\n".format(sra_id))
     except Exception as e:
         error_class = e.__class__.__name__  # 取得錯誤類型
@@ -652,14 +652,14 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir):
         writer.writeheader()
         writer.writerow({"func": "{}".format(sra_id), "time": str(time.time() - SRA_start)})
     #######
-    check_log = os.path.join(new_outdir, "Analysischeck.log")
+    check_log = os.path.join(_outdir, "Analysischeck.log")
     with open(check_log,"a+") as f:
         f.write("Run {} is ok.\n".format(sra_id))
     return 0
 
-def test(sra_id,new_outdir):
+def test(sra_id,_outdir):
     print("test\n")
-    check_log = os.path.join(new_outdir, "Analysischeck.log")
+    check_log = os.path.join(_outdir, "Analysischeck.log")
     with open(check_log, "a+") as f:
         f.write("Run {} is ok.\n".format(sra_id))
     return 0
@@ -827,7 +827,7 @@ if __name__ == '__main__':
                     for k in need_run:
                         print("########### hello %d ############\n" % prog_num)
                         print("########## {}/{} ###########".format(finish_num, count))
-                        pool.apply_async(SRA_Analysis, (k,sra_dir,ass_dir,fastq_dir,assemble_dir,))
+                        pool.apply_async(SRA_Analysis, (k,sra_dir,ass_dir,fastq_dir,assemble_dir,new_outdir))
                         #pool.apply_async(test, (k,new_outdir,))
                         #progress_list.append(multiprocessing.Process(target=SRA_Analysis, args=(k,)))
                         prog_num += 1
