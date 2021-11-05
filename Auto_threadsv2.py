@@ -133,7 +133,7 @@ def Assembled(x,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir,thread,gsize,star
         run_cmd(rmsra_cmd)
 
 
-def QualityCheck(sra_id,_outdir,genome_Path,thread,gsize,start,ref_dir):
+def QualityCheck(sra_id,_outdir,genome_Path,thread,gsize,start):
     print("#####################  QualityCheck  #####################\n")
     refPath = utils_.getRefListPath(ref_dir, _outdir)
     # refPath=args.ref
@@ -601,7 +601,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         f.write("Run {} is ok.\n".format(inId))
 
 
-def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gsize,start,ref_dir):
+def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gsize,start):
     SRA_start=time.time()
     QC_error=os.path.join(_outdir,"nofillQC.txt")
     try:
@@ -629,7 +629,7 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
         Assembled(sra_id,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir,thread,gsize,start)
         #####
         genome = os.path.join(ass_dir, "{}_contig.fa".format(sra_id))
-        targetPath=QualityCheck(sra_id,_outdir,genome,thread,gsize,start,ref_dir)
+        targetPath=QualityCheck(sra_id,_outdir,genome,thread,gsize,start)
         print("targetPAth = {}\n######\n".format(targetPath.encode("utf-8").decode()))
         target_ = targetPath.replace(current_path, ".")
         print("target_= {}\n".format(target_))
@@ -665,58 +665,59 @@ def test(sra_id,_outdir):
     with open(check_log, "a+") as f:
         f.write("Run {} is ok.\n".format(sra_id))
     return 0
+##############################
+current_path = os.path.abspath(os.getcwd())
+print("current_path: ", current_path, "\n")
+## read SRAsetting.txt
+utils_.progress_bar("read SRAsetting.txt")
+setting_path = os.path.join(current_path, "SRAsettings.txt")
+with open(setting_path, "r") as f:
+    setList = f.readlines()
 
+print(setList)
+i = 0
+settings_dict = {}
+for line in setList:
+    line = line.strip("\n")
+    line_ = line.split("=")
+    if line != "" and len(line_) == 2:
+        print(line_)
+        print("line{}. {}:{}\n".format(i, line_[0], line_[1]))
+        settings_dict.update({line_[0]: line_[1]})
+    i += 1
+print(settings_dict)
+# setting_df=pd.DataFrame(settings_dict)
+setting_df = pd.DataFrame.from_dict(settings_dict, orient='index').T
+print(setting_df.columns)
+
+start_date = str(setting_df['start_date'][0])
+expiry_date = str(setting_df['expiry_date'][0])
+thread = int(setting_df['cpu_thread'][0])
+cpu_process = int(setting_df['process'][0])
+gsize = str(setting_df['gsize'][0])
+outdir = str(setting_df['output_dir'][0])
+ref_dir = str(setting_df['Busco_ReferenceSequenceFileDir_Path'][0])
+buscoDB = str(setting_df['Busco_database'][0])
+buscoMode = str(setting_df['Busco_mode'][0])
+mlstS = str(setting_df['MLST_organism'][0])
+amrS = str(setting_df['AMR_organism'][0])
+# get (Date) to (Date)
+sd_Y = int(start_date.split("/")[0])
+sd_M = int(start_date.split("/")[1])
+sd_D = int(start_date.split("/")[2])
+ed_Y = int(expiry_date.split("/")[0])
+ed_M = int(expiry_date.split("/")[1])
+ed_D = int(expiry_date.split("/")[2])
+print(sd_Y, sd_M, sd_D)
+print(ed_Y, ed_M, ed_D)
+utils_.mkdir_join(outdir)
+thread = 4
+##############
 if __name__ == '__main__':
     pool = multiprocessing.Pool(processes=4)
     start=time.time()
     #Month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-    current_path = os.path.abspath(os.getcwd())
-    print("current_path: ", current_path, "\n")
-    ########################
-    ## read SRAsetting.txt
-    utils_.progress_bar("read SRAsetting.txt")
-    setting_path = os.path.join(current_path, "SRAsettings.txt")
-    with open(setting_path, "r") as f:
-        setList = f.readlines()
 
-    print(setList)
-    i = 0
-    settings_dict={}
-    for line in setList:
-        line = line.strip("\n")
-        line_ = line.split("=")
-        if line != "" and len(line_) == 2:
-            print(line_)
-            print("line{}. {}:{}\n".format(i, line_[0], line_[1]))
-            settings_dict.update({line_[0]:line_[1]})
-        i += 1
-    print(settings_dict)
-    #setting_df=pd.DataFrame(settings_dict)
-    setting_df=pd.DataFrame.from_dict(settings_dict,orient='index').T
-    print(setting_df.columns)
-
-    start_date=str(setting_df['start_date'][0])
-    expiry_date=str(setting_df['expiry_date'][0])
-    thread=int(setting_df['cpu_thread'][0])
-    cpu_process = int(setting_df['process'][0])
-    gsize=str(setting_df['gsize'][0])
-    outdir=str(setting_df['output_dir'][0])
-    ref_dir=str(setting_df['Busco_ReferenceSequenceFileDir_Path'][0])
-    buscoDB=str(setting_df['Busco_database'][0])
-    buscoMode=str(setting_df['Busco_mode'][0])
-    mlstS=str(setting_df['MLST_organism'][0])
-    amrS=str(setting_df['AMR_organism'][0])
-    #get (Date) to (Date)
-    sd_Y = int(start_date.split("/")[0])
-    sd_M = int(start_date.split("/")[1])
-    sd_D = int(start_date.split("/")[2])
-    ed_Y = int(expiry_date.split("/")[0])
-    ed_M = int(expiry_date.split("/")[1])
-    ed_D = int(expiry_date.split("/")[2])
-    print(sd_Y,sd_M,sd_D)
-    print(ed_Y,ed_M,ed_D)
-    utils_.mkdir_join(outdir)
-    thread=4
 
     #####################
 
@@ -831,7 +832,7 @@ if __name__ == '__main__':
                     for k in need_run:
                         print("########### hello %d ############\n" % prog_num)
                         print("########## {}/{} ###########".format(finish_num, count))
-                        pool.apply_async(SRA_Analysis, (k,sra_dir,ass_dir,fastq_dir,assemble_dir,new_outdir,thread,gsize,start,ref_dir,))
+                        pool.apply_async(SRA_Analysis, (k,sra_dir,ass_dir,fastq_dir,assemble_dir,new_outdir,thread,gsize,start,))
                         #pool.apply_async(test, (k,new_outdir,))
                         #progress_list.append(multiprocessing.Process(target=SRA_Analysis, args=(k,)))
                         prog_num += 1

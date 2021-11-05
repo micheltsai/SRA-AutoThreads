@@ -640,8 +640,9 @@ def SRA_Analysis(sra_id,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir, thread, 
 def test():
     print("test\n")
 
+
 if __name__ == '__main__':
-    pool = multiprocessing.Pool(processes=cpu_process)
+    pool = multiprocessing.Pool(processes=4)
     start=time.time()
     Month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
     current_path = os.path.abspath(os.getcwd())
