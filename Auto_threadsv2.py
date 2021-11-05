@@ -2,12 +2,15 @@ from __future__ import print_function
 
 import csv
 import datetime
+import errno
 import glob
+import logging
 import multiprocessing
 import os
 import re
 import shlex
 import shutil
+import signal
 import subprocess
 import sys
 import time
@@ -17,6 +20,28 @@ import pandas as pd
 
 import utils_
 
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)-15s - %(levelname)s - %(message)s'
+)
+def wait_child(signum, frame):
+    logging.info('receive SIGCHLD')
+    try:
+        while True:
+            # -1 表示任意子进程
+            # os.WNOHANG 表示如果没有可用的需要 wait 退出状态的子进程，立即返回不阻塞
+            cpid, status = os.waitpid(-1, os.WNOHANG)
+            if cpid == 0:
+                logging.info('no child process was immediately available')
+                break
+            exitcode = status >> 8
+            logging.info('child process %s exit with exitcode %s', cpid, exitcode)
+    except OSError as e:
+        if e.errno == errno.ECHILD:
+            logging.warning('current process has no existing unwaited-for child processes.')
+        else:
+            raise
+    logging.info('handle SIGCHLD end')
 
 def run_cmd(cmd):
     cmd=shlex.split(cmd)
@@ -685,6 +710,7 @@ if __name__ == '__main__':
     thread=4
 
     #####################
+    signal.signal(signal.SIGCHLD, wait_child)
     for yy in range(sd_Y,ed_Y+1):
         Month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
         ########
@@ -823,10 +849,7 @@ if __name__ == '__main__':
                     print(errMsg)
                     with open("./SRA_run_error.txt", "a+") as f:
                         f.write("{} :\n{}\n".format(date, errMsg))
-                pool.close()
-                print("pool.close()\n")
-                pool.join()
-                print("pool.join()\n")
+
                 with open("./Automate_check.log", "a+") as f:
                     f.write("{}:{}:{}\n".format(date, time.time() - ds, time.time() - start))
                 print("Download all {} ".format(date), 'Done,total cost', time.time() - ds, 'secs')
@@ -834,6 +857,10 @@ if __name__ == '__main__':
                 # for i in range(prog_num):
                 #    progress_list[i].join()
     print('Done,total cost', time.time() - start, 'secs')
+    pool.close()
+    print("pool.close()\n")
+    pool.join()
+    print("pool.join()\n")
     ##########
 
 
