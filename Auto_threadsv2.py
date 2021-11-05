@@ -120,7 +120,7 @@ def Assembled(x,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir,thread,gsize,star
         else:
             utils_.prefetch_sra(x, sra_dir)
             print("not found {}.sra, Download now\n".format(x))
-        
+
         utils_.run_for_114v2(x, sra_dir, fastq_dir, assemble_dir, _outdir, thread, gsize, start, check_log)
         ### unnecessary ERR file
         #ERR_path = os.path.join(os.path.abspath(os.getcwd()), x)
@@ -628,12 +628,12 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
         Download(sra_id,_outdir,sra_dir)
         Assembled(sra_id,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir,thread,gsize,start)
         #####
-        #genome = os.path.join(ass_dir, "{}_contig.fa".format(sra_id))
-        #targetPath=QualityCheck(sra_id,_outdir,genome,thread,gsize,start)
-        #print("targetPAth = {}\n######\n".format(targetPath.encode("utf-8").decode()))
-        #target_ = targetPath.replace(current_path, ".")
-        #print("target_= {}\n".format(target_))
-        #Analysis(sra_id,genome,target_,_outdir,_outdir,thread,gsize,start)
+        genome = os.path.join(ass_dir, "{}_contig.fa".format(sra_id))
+        targetPath=QualityCheck(sra_id,_outdir,genome,thread,gsize,start)
+        print("targetPAth = {}\n######\n".format(targetPath.encode("utf-8").decode()))
+        target_ = targetPath.replace(current_path, ".")
+        print("target_= {}\n".format(target_))
+        Analysis(sra_id,genome,target_,_outdir,_outdir,thread,gsize,start)
         print("Run {} is Done\n".format(sra_id))
     except Exception as e:
         error_class = e.__class__.__name__  # 取得錯誤類型
