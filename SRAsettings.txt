@@ -5,7 +5,7 @@ expiry_date=2020/08/02
 #Number of package threads to use. default: 8
 cpu_thread=4
 #Number of threads to use.
-process=2
+process=4
 #Estimated genome size(MB) eg. 3.2M. default: ''
 gsize=
 
