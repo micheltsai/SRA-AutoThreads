@@ -105,7 +105,7 @@ def Assembled(x,new_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir):
         run_cmd(rmsra_cmd)
 
 
-def QualityCheck(sra_id,genome_Path):
+def QualityCheck(sra_id,new_outdir,genome_Path):
     print("#####################  QualityCheck  #####################\n")
     refPath = utils_.getRefListPath(ref_dir, new_outdir)
     # refPath=args.ref
@@ -281,7 +281,7 @@ def QualityCheck(sra_id,genome_Path):
     print('Done,total cost', time.time() - start, 'secs\n')
     return targetPath
 
-def Analysis(sra_id,input,target_ref,anoutdir):
+def Analysis(sra_id,input,target_ref,anoutdir,new_outdir):
     print("#####################  Analysis  #####################\n")
     mlst_organism = mlstS
     amr_organism = amrS
@@ -584,7 +584,7 @@ def SRA_Analysis(sra_id,new_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir):
         print("QualityCheck end\n")
         print("targetPAth = {}\n######\n".format(targetPath.encode("utf-8").decode()))
         target_ = targetPath.replace(current_path, ".")
-        Analysis(sra_id,genome,target_,new_outdir)
+        Analysis(sra_id,genome,target_,new_outdir,new_outdir)
         print("Analysis end\n")
         print("Run {} is ok\n".format(sra_id))
     except Exception as e:
