@@ -867,16 +867,15 @@ if __name__ == '__main__':
                 with open("./Automate_check.log", "a+") as f:
                     f.write("{}:{}:{}\n".format(date, time.time() - ds, time.time() - start))
                 print("Download all {} ".format(date), 'Done,total cost', time.time() - ds, 'secs')
-                time.sleep(3)
+                #time.sleep(3)
                 # for i in range(prog_num):
                 #    progress_list[i].join()
 
     #signal.signal(signal.SIGCHLD, wait_child)
     pool.close()
     print("pool.close()\n")
-    time.sleep(3)
+    #time.sleep(3)
     pool.join()
-
     print("pool.join()\n")
     print("Program Done\n")
     print('Done,total cost', time.time() - start, 'secs')
