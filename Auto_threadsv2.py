@@ -667,6 +667,7 @@ def test(sra_id,_outdir):
     return 0
 
 if __name__ == '__main__':
+    pool = multiprocessing.Pool(processes=cpu_process)
     start=time.time()
     #Month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
     current_path = os.path.abspath(os.getcwd())
@@ -761,7 +762,7 @@ if __name__ == '__main__':
                     sD = sd_D
             ########
             for d in range(sD,eD+1):
-                pool = multiprocessing.Pool(processes=cpu_process)
+
                 pattern = "salmonella enterica[ORGN] AND illumina[PLAT] AND wgs[STRA] AND genomic[SRC] AND paired[LAY]"
                 ds = time.time()
 
@@ -873,7 +874,9 @@ if __name__ == '__main__':
     signal.signal(signal.SIGCHLD, wait_child)
     pool.close()
     print("pool.close()\n")
+    time.sleep(3)
     pool.join()
+
     print("pool.join()\n")
     print("Program Done\n")
     print('Done,total cost', time.time() - start, 'secs')
