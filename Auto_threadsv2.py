@@ -104,7 +104,7 @@ def Download(x,_outdir,sra_dir):
 
 
 
-def Assembled(x,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir):
+def Assembled(x,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir,thread,gsize,start):
     final_dir = os.path.join(ass_dir, "{}_contig.fa".format(x))
     check_log = os.path.join(_outdir, "Analysischeck.log")
     if os.path.isfile(final_dir):
@@ -133,7 +133,7 @@ def Assembled(x,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir):
         run_cmd(rmsra_cmd)
 
 
-def QualityCheck(sra_id,_outdir,genome_Path):
+def QualityCheck(sra_id,_outdir,genome_Path,thread,gsize,start):
     print("#####################  QualityCheck  #####################\n")
     refPath = utils_.getRefListPath(ref_dir, _outdir)
     # refPath=args.ref
@@ -314,7 +314,7 @@ def QualityCheck(sra_id,_outdir,genome_Path):
     print('Done,total cost', time.time() - start, 'secs\n')
     return targetPath
 
-def Analysis(sra_id,input,target_ref,anoutdir,_outdir):
+def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
     print("#####################  Analysis  #####################\n")
     mlst_organism = mlstS
     amr_organism = amrS
@@ -601,7 +601,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir):
         f.write("Run {} is ok.\n".format(inId))
 
 
-def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir):
+def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gsize,start):
     SRA_start=time.time()
     QC_error=os.path.join(_outdir,"nofillQC.txt")
     try:
@@ -626,14 +626,14 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir):
 
         # if sra_layout==2 continue
         Download(sra_id,_outdir,sra_dir)
-        Assembled(sra_id,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir)
+        Assembled(sra_id,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir,thread,gsize,start)
         #####
         #genome = os.path.join(ass_dir, "{}_contig.fa".format(sra_id))
-        #targetPath=QualityCheck(sra_id,_outdir,genome)
+        #targetPath=QualityCheck(sra_id,_outdir,genome,thread,gsize,start)
         #print("targetPAth = {}\n######\n".format(targetPath.encode("utf-8").decode()))
         #target_ = targetPath.replace(current_path, ".")
         #print("target_= {}\n".format(target_))
-        #Analysis(sra_id,genome,target_,_outdir,_outdir)
+        #Analysis(sra_id,genome,target_,_outdir,_outdir,thread,gsize,start)
         print("Run {} is Done\n".format(sra_id))
     except Exception as e:
         error_class = e.__class__.__name__  # 取得錯誤類型
@@ -831,7 +831,7 @@ if __name__ == '__main__':
                     for k in need_run:
                         print("########### hello %d ############\n" % prog_num)
                         print("########## {}/{} ###########".format(finish_num, count))
-                        pool.apply_async(SRA_Analysis, (k,sra_dir,ass_dir,fastq_dir,assemble_dir,new_outdir))
+                        pool.apply_async(SRA_Analysis, (k,sra_dir,ass_dir,fastq_dir,assemble_dir,new_outdir,thread,gsize,start,))
                         #pool.apply_async(test, (k,new_outdir,))
                         #progress_list.append(multiprocessing.Process(target=SRA_Analysis, args=(k,)))
                         prog_num += 1
