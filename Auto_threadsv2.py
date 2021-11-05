@@ -864,14 +864,15 @@ if __name__ == '__main__':
                     f.write("{}:{}:{}\n".format(date, time.time() - ds, time.time() - start))
                 print("Download all {} ".format(date), 'Done,total cost', time.time() - ds, 'secs')
                 time.sleep(3)
+                pool.close()
+                print("pool.close()\n")
+                pool.join()
+                print("pool.join()\n")
                 # for i in range(prog_num):
                 #    progress_list[i].join()
 
     signal.signal(signal.SIGCHLD, wait_child)
-    pool.close()
-    print("pool.close()\n")
-    pool.join()
-    print("pool.join()\n")
+
     print("Program Done\n")
     print('Done,total cost', time.time() - start, 'secs')
     ##########
