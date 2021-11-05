@@ -657,8 +657,11 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir):
         f.write("Run {} is ok.\n".format(sra_id))
     return 0
 
-def test():
+def test(sra_id):
     print("test\n")
+    check_log = os.path.join(new_outdir, "Analysischeck.log")
+    with open(check_log, "a+") as f:
+        f.write("Run {} is ok.\n".format(sra_id))
     return 0
 
 if __name__ == '__main__':
@@ -825,7 +828,7 @@ if __name__ == '__main__':
                         print("########### hello %d ############\n" % prog_num)
                         print("########## {}/{} ###########".format(finish_num, count))
                         #pool.apply_async(SRA_Analysis, (k,sra_dir,ass_dir,fastq_dir,assemble_dir,))
-                        pool.apply_async(test, ())
+                        pool.apply_async(test, (k,))
                         #progress_list.append(multiprocessing.Process(target=SRA_Analysis, args=(k,)))
                         prog_num += 1
                         finish_num += 1
