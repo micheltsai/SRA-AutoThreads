@@ -825,8 +825,6 @@ if __name__ == '__main__':
                 print("pool.close()\n")
                 pool.join()
                 print("pool.join()\n")
-
-
             #    progress_list[i].join()
     signal.signal(signal.SIGCHLD, wait_child)
 
