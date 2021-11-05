@@ -131,7 +131,7 @@ def Assembled(x,new_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir):
         run_cmd(rmsra_cmd)
 
 
-def QualityCheck(sra_id,genome_Path):
+def QualityCheck(sra_id,new_outdir,genome_Path):
     print("#####################  QualityCheck  #####################\n")
     refPath = utils_.getRefListPath(ref_dir, new_outdir)
     # refPath=args.ref
@@ -627,7 +627,7 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir):
         Assembled(sra_id,new_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir)
         #####
         genome = os.path.join(ass_dir, "{}_contig.fa".format(sra_id))
-        targetPath=QualityCheck(sra_id,genome)
+        targetPath=QualityCheck(sra_id,new_outdir,genome)
         print("targetPAth = {}\n######\n".format(targetPath.encode("utf-8").decode()))
         target_ = targetPath.replace(current_path, ".")
         print("target_= {}\n".format(target_))
@@ -799,7 +799,7 @@ if __name__ == '__main__':
                 utils_.mkdir_join(fastq_dir)
                 assemble_dir = os.path.join(new_outdir, "assembly_result")
                 utils_.mkdir_join(assemble_dir)
-                print("sra_dir:{}\nass_dir={}\nfastq_dir={}\nassemble_dir={}\n")
+                print("sra_dir:{}\nass_dir={}\nfastq_dir={}\nassemble_dir={}\n".format(sra_dir,ass_dir,fastq_dir,assemble_dir))
                 read_log_ = time.time()
 
                 f = open(check_log, 'r')
