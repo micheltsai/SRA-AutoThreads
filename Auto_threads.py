@@ -86,7 +86,9 @@ def Download(x,dir,sra_dir):
     outdir__ = os.path.join(dir, "Assembled")
 
     final_dir = os.path.join(outdir__, "{}_contig.fa".format(x))
-    sra_file=os.path.join(sra_dir,"{}.sra".format(x))
+    sra_file=os.path.join(sra_dir,"{}/{}.sra".format(x,x))
+    print(final_dir)
+    print(sra_file)
     if os.path.isfile(final_dir):
         print("was ran assembly ,contig.fa is exist\n------------------------------\n\n")
     elif os.path.isfile(sra_file):
