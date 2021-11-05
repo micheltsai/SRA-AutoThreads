@@ -871,7 +871,7 @@ if __name__ == '__main__':
                 # for i in range(prog_num):
                 #    progress_list[i].join()
 
-    signal.signal(signal.SIGCHLD, wait_child)
+    #signal.signal(signal.SIGCHLD, wait_child)
     pool.close()
     print("pool.close()\n")
     time.sleep(3)
