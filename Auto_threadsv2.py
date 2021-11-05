@@ -713,7 +713,7 @@ if __name__ == '__main__':
     thread=4
 
     #####################
-    signal.signal(signal.SIGCHLD, wait_child)
+
     for yy in range(sd_Y,ed_Y+1):
         Month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
         ########
@@ -861,6 +861,7 @@ if __name__ == '__main__':
                 # for i in range(prog_num):
                 #    progress_list[i].join()
     print('Done,total cost', time.time() - start, 'secs')
+    signal.signal(signal.SIGCHLD, wait_child)
     pool.close()
     print("pool.close()\n")
     pool.join()
