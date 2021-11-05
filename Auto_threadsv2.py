@@ -740,19 +740,27 @@ if __name__ == '__main__':
                 sD = 1
                 print("b")
         else:
-            sM = sd_M
-            eM = ed_M
-            sD = 1
+            if sM!=eM:
+                sM = sd_M
+                eM = ed_M
+                sD = 1
+            else:
+                sM = sd_M
+                eM = ed_M
+                sD = sd_D
         ########
         for mon in range(sM, eM+1):
             ###########
             if yy != ed_Y:
                 eD = Month[mon - 1]
+                sD = 1
             else:
                 if mon != eM:
                     eD = Month[mon - 1]
+                    sD = 1
                 else:
                     eD = ed_D
+                    sD = sd_D
             ########
             for d in range(sD,eD+1):
                 pool = multiprocessing.Pool(processes=cpu_process)
