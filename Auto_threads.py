@@ -102,7 +102,7 @@ def Download(x,dir,sra_dir):
 
 
 
-def Assembled(x,new_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir):
+def Assembled(x,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir):
     final_dir = os.path.join(ass_dir, "{}_contig.fa".format(x))
     if os.path.isfile(final_dir):
         print("was ran assembly ,contig.fa is exist\n------------------------------\n\n")
@@ -117,8 +117,8 @@ def Assembled(x,new_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir):
         else:
             utils_.prefetch_sra(x, sra_dir)
             print("not found {}.sra, Download now\n".format(x))
-        check_log = os.path.join(new_outdir, "Analysischeck.log")
-        utils_.run_for_114(x, sra_dir, fastq_dir, assemble_dir, new_outdir, thread, gsize, start, check_log)
+        check_log = os.path.join(_outdir, "Analysischeck.log")
+        utils_.run_for_114(x, sra_dir, fastq_dir, assemble_dir, _outdir, thread, gsize, start, check_log)
         ### unnecessary ERR file
         #ERR_path = os.path.join(os.path.abspath(os.getcwd()), x)
         #print("suERR_path: ", ERR_path, "\n")
@@ -130,18 +130,18 @@ def Assembled(x,new_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir):
         run_cmd(rmsra_cmd)
 
 
-def QualityCheck(sra_id,new_outdir,genome_Path):
+def QualityCheck(sra_id,_outdir,genome_Path):
     print("#####################  QualityCheck  #####################\n")
-    refPath = utils_.getRefListPath(ref_dir, new_outdir)
+    refPath = utils_.getRefListPath(ref_dir,_outdir)
     # refPath=args.ref
-    Assem_path = os.path.join(new_outdir, "Assembled/")
-    BUSCOresult = os.path.join(new_outdir, "BUSCOresult.txt")
-    check = os.path.join(new_outdir, "QCcheck.log")
-    outdir = os.path.join(new_outdir, "QualityCheck")
+    Assem_path = os.path.join(_outdir, "Assembled/")
+    BUSCOresult = os.path.join(_outdir, "BUSCOresult.txt")
+    check = os.path.join(_outdir, "QCcheck.log")
+    outdir = os.path.join(_outdir, "QualityCheck")
     utils_.mkdir_join(outdir)
 
     # outdir = utils_.mkdir_join(outdir, str(current_time))
-    print("outdir: \n", new_outdir)
+    print("outdir: \n", _outdir)
     print("check: \n", check)
     print("BUSCOresult= {}".format(BUSCOresult))
 
@@ -288,7 +288,7 @@ def QualityCheck(sra_id,new_outdir,genome_Path):
         return 0
 
     # continue
-    targettxt = os.path.join(new_outdir, "target.txt")
+    targettxt = os.path.join(_outdir, "target.txt")
     print("target.txt path: {}".format(targettxt))
     # continue need target path
     with open(targettxt, "a+") as f:
@@ -306,7 +306,7 @@ def QualityCheck(sra_id,new_outdir,genome_Path):
     print('Done,total cost', time.time() - start, 'secs\n')
     return targetPath
 
-def Analysis(sra_id,input,target_ref,anoutdir,new_outdir):
+def Analysis(sra_id,input,target_ref,anoutdir,_outdir):
     print("#####################  Analysis  #####################\n")
     mlst_organism = mlstS
     amr_organism = amrS
@@ -326,13 +326,13 @@ def Analysis(sra_id,input,target_ref,anoutdir,new_outdir):
     relative_input = input.replace(current_path, ".")
     print("relative input: {}\n".format(relative_input))
 
-    origin_outdir = new_outdir
+    origin_outdir = _outdir
     allinfopath = os.path.join(origin_outdir, "info.txt")
     check = os.path.join(origin_outdir, "Anacheck.log")
 
     # add outpath "analysis"
-    utils_.mkdir_join(new_outdir)
-    anoutdir_ = os.path.join(new_outdir, "analysis")
+    utils_.mkdir_join(_outdir)
+    anoutdir_ = os.path.join(_outdir, "analysis")
     utils_.mkdir_join(anoutdir_)
     print("analysis outdir: {}\n".format(anoutdir_))
 
@@ -591,17 +591,17 @@ def Analysis(sra_id,input,target_ref,anoutdir,new_outdir):
 
     finaldf.to_csv(finalfile, mode='a+', header=False)
     # after run all state, save ID in "Anackeck.log" and remove ./analysis
-    check_log = os.path.join(new_outdir, "Analysischeck.log")
+    check_log = os.path.join(_outdir, "Analysischeck.log")
     with open(check, "a+") as f:
         f.write("Run {} is ok.\n".format(sra_id))
 
 
-def SRA_Analysis(sra_id,new_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir):
+def SRA_Analysis(sra_id,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir):
     SRA_start=time.time()
     try:
-        Download(sra_id,new_outdir,sra_dir)
+        Download(sra_id,_outdir,sra_dir)
         print("Download end\n")
-        Assembled(sra_id,new_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir)
+        Assembled(sra_id,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir)
         print("Assembled end\n")
         #####
         genome = os.path.join(ass_dir, "{}_contig.fa".format(sra_id))
@@ -609,7 +609,7 @@ def SRA_Analysis(sra_id,new_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir):
         print("QualityCheck end\n")
         print("targetPAth = {}\n######\n".format(targetPath.encode("utf-8").decode()))
         target_ = targetPath.replace(current_path, ".")
-        Analysis(sra_id,genome,target_,new_outdir,new_outdir)
+        Analysis(sra_id,genome,target_,_outdir,_outdir)
         print("Analysis end\n")
         print("Run {} is ok\n".format(sra_id))
     except Exception as e:
