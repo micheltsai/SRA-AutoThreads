@@ -723,7 +723,8 @@ if __name__ == '__main__':
     #Month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
     #####################
-
+    with open("./Automate_check.log", "a+") as f:
+        f.write("{}\n".format(str(datetime.datetime.now())[-3]))
     for yy in range(sd_Y,ed_Y+1):
         Month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
         ########
@@ -870,7 +871,7 @@ if __name__ == '__main__':
                         f.write("{} :\n{}\n".format(date, errMsg))
 
                 with open("./Automate_check.log", "a+") as f:
-                    f.write("{}:{}:{}\n".format(date, time.time() - ds, time.time() - start))
+                    f.write("{}\n".format(date))
                 print("Download all {} ".format(date), 'Done,total cost', time.time() - ds, 'secs')
                 #time.sleep(3)
                 # for i in range(prog_num):
@@ -879,22 +880,8 @@ if __name__ == '__main__':
     #signal.signal(signal.SIGCHLD, wait_child)
     pool.close()
     print("pool.close()\n")
-    try:
-        #time.sleep(3)
-        pool.join()
-    except KeyboardInterrupt:
-        pid = os.getgid()
-        with open("./SRA_run_error.txt", "a+") as f:
-            f.write("Catch keyboardinterdinterupterror : {}/{}/{}\n".format())
-        # with open("./Automate_check.log", "a+") as f:
-        #    f.write("keyboardinterupter")
-        #    f.write("{}:{}:{}\n".format(date, time.time() - ds, time.time() - start))
-        # sys.exit("Catch keyboardinterdinterupterror")
-        os.popen("taskkill.exe /f /pid:%d" % pid)
-        print("Catch keyboardinterdinterupterror\n")
-        print("srart : {}\n".format(start))
-        print("Download {} file".format(sra_num_), 'Done,total cost', time.time() - start, 'secs')
-
+    #time.sleep(3)
+    pool.join()
     print("pool.join()\n")
     print("Program Done\n")
     print('Done,total cost', time.time() - start, 'secs')
