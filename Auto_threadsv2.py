@@ -724,7 +724,7 @@ if __name__ == '__main__':
 
     #####################
     with open("./Automate_check.log", "a+") as f:
-        f.write("{}\n".format(str(datetime.datetime.now())[-3]))
+        f.write(str(datetime.datetime.now()).split(".")[0])
     for yy in range(sd_Y,ed_Y+1):
         Month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
         ########
