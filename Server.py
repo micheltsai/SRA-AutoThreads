@@ -138,14 +138,16 @@ def getSRAIdList(yy,mon,d):
     need_run_txt=os.path.join(new_outdir,"run_1.txt")
     need_run_txt2 = os.path.join(new_outdir, "run_2.txt")
     with open(need_run_txt,"a+") as f:
+        f.write(date)
         for n in need_run_[0]:
             f.write(n)
     with open(need_run_txt2,"a+") as f:
+        f.write(date)
         for n in need_run_[1]:
             f.write(n)
 
 if __name__ == "__main__":
-    HOST, PORT = '192.168.1.35', 8000
+    HOST, PORT = '140.112.165.124', 8088
     # Create the server, binding to localhost on port 9999
 
     getSRAIdList(2020,8,1)
