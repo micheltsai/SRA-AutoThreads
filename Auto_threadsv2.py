@@ -24,7 +24,8 @@ logging.basicConfig(
     level=logging.DEBUG,
     format='%(asctime)-15s - %(levelname)s - %(message)s'
 )
-
+global sra_num_
+sra_num_=0
 def wait_child(signum, frame):
     logging.info('receive SIGCHLD')
     try:
@@ -602,7 +603,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         f.write("Run {} is ok.\n".format(inId))
 
 
-def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gsize,start,sra_num_):
+def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gsize,start):
     SRA_start=time.time()
     QC_error=os.path.join(_outdir,"nofillQC.txt")
     try:
@@ -636,18 +637,6 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
         print("target_= {}\n".format(target_))
         Analysis(sra_id,genome,target_,_outdir,_outdir,thread,gsize,start)
         print("Run {} is Done\n".format(sra_id))
-    except KeyboardInterrupt:
-        pid = os.getgid()
-        with open("./SRA_run_error.txt", "a+") as f:
-            f.write("Catch keyboardinterdinterupterror : {}/{}/{}\n".format())
-        # with open("./Automate_check.log", "a+") as f:
-        #    f.write("keyboardinterupter")
-        #    f.write("{}:{}:{}\n".format(date, time.time() - ds, time.time() - start))
-        # sys.exit("Catch keyboardinterdinterupterror")
-        os.popen("taskkill.exe /f /pid:%d" % pid)
-        print("Catch keyboardinterdinterupterror\n")
-        print("srart : {}\n".format(start))
-        print("Download {} ".format(sra_num_), 'Done,total cost', time.time() - start, 'secs')
     except Exception as e:
         error_class = e.__class__.__name__  # 取得錯誤類型
         detail = e.args[0]  # 取得詳細內容
@@ -670,7 +659,7 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
     check_log = os.path.join(_outdir, "Analysischeck.log")
     with open(check_log,"a+") as f:
         f.write("Run {} is ok.\n".format(sra_id))
-    sra_num_ += 1
+    sra_num_ +=1
     return 0
 
 def test(sra_id,_outdir):
@@ -846,11 +835,12 @@ if __name__ == '__main__':
                     for k in need_run:
                         print("########### hello %d ############\n" % prog_num)
                         print("########## {}/{} ###########".format(finish_num, count))
-                        pool.apply_async(SRA_Analysis, (k,sra_dir,ass_dir,fastq_dir,assemble_dir,new_outdir,thread,gsize,start,sra_num_))
+                        pool.apply_async(SRA_Analysis, (k,sra_dir,ass_dir,fastq_dir,assemble_dir,new_outdir,thread,gsize,start,))
                         #pool.apply_async(test, (k,new_outdir,))
                         #progress_list.append(multiprocessing.Process(target=SRA_Analysis, args=(k,)))
                         prog_num += 1
                         finish_num += 1
+
 
                 except KeyboardInterrupt:
                     print("Catch keyboardinterdinterupterror\n")
@@ -889,8 +879,22 @@ if __name__ == '__main__':
     #signal.signal(signal.SIGCHLD, wait_child)
     pool.close()
     print("pool.close()\n")
-    #time.sleep(3)
-    pool.join()
+    try:
+        #time.sleep(3)
+        pool.join()
+    except KeyboardInterrupt:
+        pid = os.getgid()
+        with open("./SRA_run_error.txt", "a+") as f:
+            f.write("Catch keyboardinterdinterupterror : {}/{}/{}\n".format())
+        # with open("./Automate_check.log", "a+") as f:
+        #    f.write("keyboardinterupter")
+        #    f.write("{}:{}:{}\n".format(date, time.time() - ds, time.time() - start))
+        # sys.exit("Catch keyboardinterdinterupterror")
+        os.popen("taskkill.exe /f /pid:%d" % pid)
+        print("Catch keyboardinterdinterupterror\n")
+        print("srart : {}\n".format(start))
+        print("Download {} file".format(sra_num_), 'Done,total cost', time.time() - start, 'secs')
+
     print("pool.join()\n")
     print("Program Done\n")
     print('Done,total cost', time.time() - start, 'secs')
