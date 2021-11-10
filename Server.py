@@ -68,6 +68,7 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
         print("{} wrote:".format(self.client_address[0]))
         print(self.data)
         self.request.sendall(self.data.upper())
+        self.server.server_close()
 
 class SplitSRAIdList(socketserver.BaseRequestHandler):
     def handle(self):
@@ -75,6 +76,7 @@ class SplitSRAIdList(socketserver.BaseRequestHandler):
         print("{} wrote:".format(self.client_address[0]))
         print(self.data)
         self.request.sendall(self.data.upper())
+        self.server.server_close()
         return self.data
 
 def getSRAIdList(yy,mon,d):
@@ -147,12 +149,54 @@ def getSRAIdList(yy,mon,d):
             f.write(n)
 
 if __name__ == "__main__":
-    HOST, PORT = '140.112.165.124', 8088
+    HOST, PORT = '140.112.165.122', 8088
     # Create the server, binding to localhost on port 9999
+    Month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
-    getSRAIdList(2020,8,1)
-    server = socketserver.TCPServer((HOST, PORT), MyTCPHandler)
+    for yy in range(sd_Y, ed_Y + 1):
+        Month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+        ########
+        if (yy % 4) == 0:
+            if (yy % 100) == 0:
+                if (yy % 400) == 0:
+                    Month = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+            else:
+                Month = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+
+        ########
+        if sd_Y != ed_Y:
+            if sd_Y == yy:
+                sM = sd_M
+                eM = 12
+                sD = sd_D
+                print("a")
+            elif yy == ed_Y:
+                sM = 1
+                eM = ed_M
+                sD = 1
+                print("b")
+        else:
+            sM = sd_M
+            eM = ed_M
+            sD = 1
+        ########
+        for mon in range(sM, eM + 1):
+            ###########
+            if yy != ed_Y:
+                eD = Month[mon - 1]
+            else:
+                if mon != eM:
+                    eD = Month[mon - 1]
+                else:
+                    eD = ed_D
+            ########
+            for d in range(sD, eD + 1):
+                getSRAIdList(yy,mon,d)
+
+                #server = socketserver.TCPServer((HOST, PORT), SplitSRAIdList)
+
+                #server.serve_forever()
+
 
     # Activate the server; this will keep running until you
     # interrupt the program with Ctrl-C
-    server.serve_forever()
