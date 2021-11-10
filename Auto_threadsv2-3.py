@@ -889,7 +889,7 @@ if __name__ == '__main__':
         fieldnames = ["func", "time"]
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
-        writer.writerow({"func": "{}".format("ALL"), "time": str(time.time() - start)})
+        writer.writerow({"func": "{}-{}".format(start_date,expiry_date), "time": str(time.time() - start)})
     ##########
 
 
