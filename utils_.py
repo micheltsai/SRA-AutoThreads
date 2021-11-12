@@ -483,10 +483,10 @@ def run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,sta
     #f.close()
 
 
-    shutil.rmtree(fastq_dir_)
-    progress_bar("remove fastq dir")
-    shutil.rmtree(assemble_dir_)
-    progress_bar("remove assemble dir")
+    #shutil.rmtree(fastq_dir_)
+    #progress_bar("remove fastq dir")
+    #shutil.rmtree(assemble_dir_)
+    #progress_bar("remove assemble dir")
 
 
 #run_for_114(x,sra_dir,output,threads,gsize,start,check_log)
