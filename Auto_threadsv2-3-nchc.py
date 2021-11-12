@@ -638,7 +638,7 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
         Assembled(sra_id,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir,thread,gsize,start)
         #####
         genome = os.path.join(ass_dir, "{}_contig.fa".format(sra_id))
-        sys.exit()
+        #sys.exit()
         targetPath=QualityCheck(sra_id,_outdir,genome,thread,gsize,start)
         print("targetPAth = {}\n######\n".format(targetPath.encode("utf-8").decode()))
         target_ = targetPath.replace(current_path, ".")
