@@ -421,7 +421,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
             writer.writerow({"func": "{} mlst".format(inId), "time": str(time.time() - step1_time)})
     else:
         print("**********       mlst was running.      **********\n next step\n")
-
+    time.sleep(1)
     # run plasmidfinder
     if step < 2:
         step2_time = time.time()
@@ -451,7 +451,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
             writer.writerow({"func": "{} plasmidfinder".format(inId), "time": str(time.time() - step2_time)})
     else:
         print("********** plasmidfinder was running. **********\n next step\n")
-
+    time.sleep(1)
     # run amrfinder
     if step < 3:
         step3_time = time.time()
@@ -637,12 +637,15 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
         Download(sra_id,_outdir,sra_dir)
         Assembled(sra_id,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir,thread,gsize,start)
         #####
+
         genome = os.path.join(ass_dir, "{}_contig.fa".format(sra_id))
         #sys.exit()
         targetPath=QualityCheck(sra_id,_outdir,genome,thread,gsize,start)
+        time.sleep(1)
         print("targetPAth = {}\n######\n".format(targetPath.encode("utf-8").decode()))
         target_ = targetPath.replace(current_path, ".")
         print("target_= {}\n".format(target_))
+        time.sleep(1)
         Analysis(sra_id,genome,target_,_outdir,_outdir,thread,gsize,start)
         print("Run {} is Done\n".format(sra_id))
     except Exception as e:
