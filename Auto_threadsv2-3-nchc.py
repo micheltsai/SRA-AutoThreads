@@ -25,7 +25,9 @@ logging.basicConfig(
     format='%(asctime)-15s - %(levelname)s - %(message)s'
 )
 global sra_num_
+global finish_num_
 sra_num_=0
+finish_num_=0
 def wait_child(signum, frame):
     logging.info('receive SIGCHLD')
     try:
@@ -667,7 +669,9 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
     check_log = os.path.join(_outdir, "Analysischeck.log")
     with open(check_log,"a+") as f:
         f.write("Run {} is ok.\n".format(sra_id))
-    sra_num_ +=1
+    finish_num_+=1
+    if finish_num_ == sra_num_:
+        sys.exit("Run last\n")
     return 0
 
 def test(sra_id,_outdir):
@@ -840,7 +844,6 @@ if __name__ == '__main__':
                 finish_num = 0
                 finish_num = len(finish_run)
                 try:
-
                     for k in need_run:
                         print("########### hello %d ############\n" % prog_num)
                         print("########## {}/{} ###########".format(finish_num, count))
@@ -849,6 +852,7 @@ if __name__ == '__main__':
                         #progress_list.append(multiprocessing.Process(target=SRA_Analysis, args=(k,)))
                         prog_num += 1
                         finish_num += 1
+                        sra_num_+=1
 
 
                 except KeyboardInterrupt:
@@ -889,7 +893,7 @@ if __name__ == '__main__':
     pool.close()
     print("pool.close()\n")
     #time.sleep(3)
-    signal.signal(signal.SIGCHLD, wait_child)
+    #signal.signal(signal.SIGCHLD, wait_child)
     pool.join()
     print("pool.join()\n")
     print("Program Done\n")
