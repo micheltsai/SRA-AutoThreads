@@ -414,9 +414,10 @@ def run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,sta
             #run_cmd("rm {}/R1.fq {}/R2.fq".format(fastq_dir,fastq_dir))
             run_cmd("rm -r {}".format(fastq_dir_))
             #agian
-            run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start,check_log)
+            print("again")
+            return run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start,check_log)
             #forward_reads, reverse_reads = [os.path.join(fastq_dir, fa) for fa in os.listdir(fastq_dir)]
-            return 0
+            sys.exit("again and exit")
     with open("./ana_time.csv", "a+") as f:
         fieldnames = ["func", "time"]
         writer = csv.DictWriter(f, fieldnames=fieldnames)
@@ -487,7 +488,7 @@ def run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,sta
     #progress_bar("remove fastq dir")
     #shutil.rmtree(assemble_dir_)
     #progress_bar("remove assemble dir")
-
+    return 0
 
 #run_for_114(x,sra_dir,output,threads,gsize,start,check_log)
 def run_for_114(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start,check_log):

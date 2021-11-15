@@ -284,13 +284,13 @@ def QualityCheck(sra_id,_outdir,genome_Path,thread,gsize,start):
     print(buscopath)
     with open(buscopath, "r") as f:
         b = f.readlines()
-    print(b, "\n")
+    #print(b, "\n")
     b = b[8].strip("\t")
-    print(b)
-    print([float(s) for s in re.findall(r'-?\d+\.?\d*', b)])
+    #print(b)
+    #print([float(s) for s in re.findall(r'-?\d+\.?\d*', b)])
 
     bC, bS, bD, bF, bM, bn = [float(s) for s in re.findall(r'-?\d+\.?\d*', b)]
-    print("c:{}%, d:{}%\n".format(bC, bD))
+    #print("c:{}%, d:{}%\n".format(bC, bD))
 
     with open(BUSCOresult, "a+") as f:
         print("stored BUSCO result\n")
@@ -318,6 +318,7 @@ def QualityCheck(sra_id,_outdir,genome_Path,thread,gsize,start):
         writer.writeheader()
         writer.writerow({"func": "{} busco".format(gID), "time": str(time.time() - busco_time)})
     print('Done,total cost', time.time() - start, 'secs\n')
+
     return targetPath
 
 def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
@@ -671,6 +672,7 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
     with open(check_log,"a+") as f:
         f.write("Run {} is ok.\n".format(sra_id))
     finish_num_+=1
+    print('Done,current total cost', time.time() - start, 'secs\n')
     if finish_num_ == sra_num_:
         print("kill {}\n".format(os.getpid()))
     return 0
