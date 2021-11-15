@@ -104,7 +104,7 @@ def Download(x,_outdir,sra_dir):
     print('Done,total cost',dltime, 'secs')
     print("###########################################################")
 
-
+ 
 
 def Assembled(x,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir,thread,gsize,start):
     final_dir = os.path.join(ass_dir, "{}_contig.fa".format(x))
