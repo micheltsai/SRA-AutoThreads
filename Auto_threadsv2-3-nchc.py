@@ -843,11 +843,12 @@ if __name__ == '__main__':
                 prog_num = 0
                 finish_num = 0
                 finish_num = len(finish_run)
+                pool_list=[]
                 try:
                     for k in need_run:
                         print("########### hello %d ############\n" % prog_num)
                         print("########## {}/{} ###########".format(finish_num, count))
-                        pool.apply_async(SRA_Analysis, (k,sra_dir,ass_dir,fastq_dir,assemble_dir,new_outdir,thread,gsize,start,))
+                        pool_list.append(pool.apply_async(SRA_Analysis, (k,sra_dir,ass_dir,fastq_dir,assemble_dir,new_outdir,thread,gsize,start,)))
                         #pool.apply_async(test, (k,new_outdir,))
                         #progress_list.append(multiprocessing.Process(target=SRA_Analysis, args=(k,)))
                         prog_num += 1
@@ -889,11 +890,13 @@ if __name__ == '__main__':
                 # for i in range(prog_num):
                 #    progress_list[i].join()
 
-
     pool.close()
     print("pool.close()\n")
     #time.sleep(3)
     #signal.signal(signal.SIGCHLD, wait_child)
+    for pp in pool_list:
+        if pp.is_alive() == False:
+            pp.exit()
     pool.join()
     print("pool.join()\n")
     print("Program Done\n")
