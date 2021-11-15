@@ -400,7 +400,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         mlst_cmd = "singularity exec /home/linsslab01/mlst.sif python3 /home/linsslab01/mlst/mlst.py -i {} -o {} -s {}".format(relative_input,mlst_outdir,mlst_organism)
         print(mlst_cmd, "\n")
         mlst, err = utils_.run_cmd3(mlst_cmd)
-        sys.sleep(3)
+        time.sleep(3)
 
 
         with open(logpath, "a+") as f:
@@ -852,7 +852,7 @@ if __name__ == '__main__':
                         prog_num += 1
                         finish_num += 1
                         sra_num_+=1
-                        sys.sleep(1)
+                        time.sleep(1)
 
 
                 except KeyboardInterrupt:
