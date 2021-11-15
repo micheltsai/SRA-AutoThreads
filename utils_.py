@@ -45,7 +45,7 @@ def prefetch_sra(sralist,outdir):
     try:
         cmd = "prefetch "+sralist+" --output-directory "+outdir
         print (cmd,"\n")
-        run_cmd2(cmd)
+        run_cmd3(cmd)
         time.sleep(1)
     except Exception as e:
         print ("prefetch has problem:\n")
@@ -58,7 +58,8 @@ def prefetch_sra(sralist,outdir):
         funcName = lastCallStack[2]  # 取得發生的函數名稱
         errMsg = "File \"{}\", line {}, in {}: [{}] {}".format(fileName, lineNum, funcName, error_class, detail)
         print(errMsg)
-
+        with open("./SRA_run_error.txt", "a+") as f:
+            f.write("{} :\n{}\n".format(sralist, errMsg))
         #處理檔案已存在問題
         current_path = os.path.join(os.path.abspath(os.getcwd()), sralist)
         print(current_path, "\n")
