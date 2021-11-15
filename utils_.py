@@ -198,7 +198,9 @@ def trimmingv2(forward_reads, reverse_reads, outdir, threads):
 def dump_fastq_from_sra(srafile, outdir):
     #progress_bar("dump_fastq_from_sra")
     print("#################### dump_fastq_from_sra ####################\n")
-    run_cmd(f'fastq-dump --split-files --outdir {outdir} {srafile}')
+    cmd=f'fastq-dump --split-files --outdir {outdir} {srafile}'
+    print(cmd)
+    run_cmd(cmd)
     print("#################### dump_fastq_from_sra END ####################\n")
 
 
