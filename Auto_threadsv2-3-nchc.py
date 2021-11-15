@@ -669,7 +669,7 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
         f.write("Run {} is ok.\n".format(sra_id))
     finish_num_+=1
     if finish_num_ == sra_num_:
-        sys.exit("Run last\n")
+        print("kill {}\n".format(os.getpid()))
     return 0
 
 def test(sra_id,_outdir):
@@ -893,7 +893,7 @@ if __name__ == '__main__':
     #time.sleep(3)
     #signal.signal(signal.SIGCHLD, wait_child)
     #os.kill(os.getpid(),signal.SIGTERM)
-    print("kill {}\n".format(os.getpid()))
+
     pool.join()
     print("pool.join()\n")
     print("Program Done\n")
