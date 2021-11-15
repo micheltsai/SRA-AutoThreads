@@ -390,7 +390,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         step1_time = time.time()
         print("STEP{}\n".format(step + 1))
         print("********** Now MLST analysis running. **********\n")
-        MLST_DB = "/home/linsslab01/mlst_db"
+        #MLST_DB = "/home/linsslab01/mlst_db"
         mlst_outdir = os.path.join(relative_path2, "mlst")
         utils_.mkdir_join(mlst_outdir)
         mlst_datajson = os.path.join(mlst_outdir, "data.json")
@@ -425,7 +425,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         step2_time = time.time()
         print("STEP{}\n".format(step + 1))
         print("********** Now plasmidfinder analysis running. **********\n")
-        PLASMID_DB = "/home/linsslab01/plasmidfinder_db"
+        #PLASMID_DB = "/home/linsslab01/plasmidfinder_db"
         plas_outdir = os.path.join(relative_path2, "plasmidfinder")
         utils_.mkdir_join(plas_outdir)
         #plas_cmd = "docker run --rm -it \-v {}:/databases \-v {}:/workdir \plasmidfinder -i {} -o {}".format(PLASMID_DB, current_path, relative_input, plas_outdir)
