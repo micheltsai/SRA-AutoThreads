@@ -1,5 +1,6 @@
 from __future__ import print_function
 
+import concurrent
 import csv
 import datetime
 import errno
@@ -728,173 +729,177 @@ thread = 4
 sra_num_=0
 ##############
 if __name__ == '__main__':
-    pool = multiprocessing.Pool(processes=4)
+    #pool = multiprocessing.Pool(processes=4)
     start=time.time()
     #Month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
     #####################
     with open("./Automate_check.log", "a+") as f:
         f.write(str(datetime.datetime.now()).split(".")[0])
-    for yy in range(sd_Y,ed_Y+1):
-        Month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-        ########
-        if (yy % 4) == 0:
-            if (yy % 100) == 0:
-                if (yy % 400) == 0:
+    with concurrent.futures.ProcessPoolExecutor() as executor:
+        for yy in range(sd_Y, ed_Y + 1):
+            Month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+            ########
+            if (yy % 4) == 0:
+                if (yy % 100) == 0:
+                    if (yy % 400) == 0:
+                        Month = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+                else:
                     Month = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-            else:
-                Month = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
-        ########
-        if sd_Y != ed_Y:
-            if sd_Y == yy:
+            ########
+            if sd_Y != ed_Y:
+                if sd_Y == yy:
+                    sM = sd_M
+                    eM = 12
+                    sD = sd_D
+                    print("a")
+                elif yy == ed_Y:
+                    sM = 1
+                    eM = ed_M
+                    sD = 1
+                    print("b")
+            else:
                 sM = sd_M
-                eM = 12
-                sD = sd_D
-                print("a")
-            elif yy == ed_Y:
-                sM = 1
                 eM = ed_M
                 sD = 1
-                print("b")
-        else:
-            sM = sd_M
-            eM = ed_M
-            sD = 1
 
-        ########
-        for mon in range(sM, eM+1):
-            ###########
-            if yy != ed_Y:
-                eD = Month[mon - 1]
-                sD = 1
-            else:
-                if mon != eM:
+            ########
+            for mon in range(sM, eM + 1):
+                ###########
+                if yy != ed_Y:
                     eD = Month[mon - 1]
                     sD = 1
                 else:
-                    eD = ed_D
-                    sD = sd_D
-            ########
-            for d in range(sD,eD+1):
+                    if mon != eM:
+                        eD = Month[mon - 1]
+                        sD = 1
+                    else:
+                        eD = ed_D
+                        sD = sd_D
+                ########
+                for d in range(sD, eD + 1):
 
-                pattern = "salmonella enterica[ORGN] AND illumina[PLAT] AND wgs[STRA] AND genomic[SRC] AND paired[LAY]"
-                ds = time.time()
+                    pattern = "salmonella enterica[ORGN] AND illumina[PLAT] AND wgs[STRA] AND genomic[SRC] AND paired[LAY]"
+                    ds = time.time()
 
-                date = datetime.date(yy, mon, d).strftime("%Y/%m/%d")
-                # temp="{}/{}/{}".format(str(2020),str(mon+1),str(d))
-                ######
-                pdat = date.replace("/", "")
-                new_outdir = os.path.join(outdir, pdat)
-                utils_.mkdir_join(new_outdir)
-                print("output: {}\n".format(new_outdir))
+                    date = datetime.date(yy, mon, d).strftime("%Y/%m/%d")
+                    # temp="{}/{}/{}".format(str(2020),str(mon+1),str(d))
+                    ######
+                    pdat = date.replace("/", "")
+                    new_outdir = os.path.join(outdir, pdat)
+                    utils_.mkdir_join(new_outdir)
+                    print("output: {}\n".format(new_outdir))
 
-                # commit
-                check_log = os.path.join(new_outdir, "Analysischeck.log")
+                    # commit
+                    check_log = os.path.join(new_outdir, "Analysischeck.log")
 
-                myfile2 = Path(check_log)
-                myfile2.touch(exist_ok=True)
-                with open(check_log, "a+") as f:
-                    f.write(str(datetime.datetime.now()).split(".")[0])
-                    f.write("\n")
+                    myfile2 = Path(check_log)
+                    myfile2.touch(exist_ok=True)
+                    with open(check_log, "a+") as f:
+                        f.write(str(datetime.datetime.now()).split(".")[0])
+                        f.write("\n")
 
-                pattern, count = utils_.count_egquery(pattern, date, date)
-                print("pattern: {}\ncount: {}\n".format(pattern, count))
+                    pattern, count = utils_.count_egquery(pattern, date, date)
+                    print("pattern: {}\ncount: {}\n".format(pattern, count))
 
-                i_e_ = time.time()
-                idlist = utils_.IdList_esearch(pattern, 'sra', count)
+                    i_e_ = time.time()
+                    idlist = utils_.IdList_esearch(pattern, 'sra', count)
 
-                print(idlist)
+                    print(idlist)
 
-                runinfo = utils_.Get_RunInfo(idlist)
-                run_list = list(runinfo['Run'])  # get SRAfile nameList stored in run_list
-                print("runinfo: {}\n run_list: {}\n".format(runinfo, run_list))
+                    runinfo = utils_.Get_RunInfo(idlist)
+                    run_list = list(runinfo['Run'])  # get SRAfile nameList stored in run_list
+                    print("runinfo: {}\n run_list: {}\n".format(runinfo, run_list))
 
-                sra_dir = os.path.join(new_outdir, "sra")  # .sra file
-                utils_.mkdir_join(sra_dir)
-                ass_dir = os.path.join(new_outdir, "Assembled")
-                utils_.mkdir_join(ass_dir)
-                fastq_dir = os.path.join(new_outdir, 'fastq')
-                utils_.mkdir_join(fastq_dir)
-                assemble_dir = os.path.join(new_outdir, "assembly_result")
-                utils_.mkdir_join(assemble_dir)
-                print("sra_dir:{}\nass_dir={}\nfastq_dir={}\nassemble_dir={}\n".format(sra_dir,ass_dir,fastq_dir,assemble_dir))
-                read_log_ = time.time()
+                    sra_dir = os.path.join(new_outdir, "sra")  # .sra file
+                    utils_.mkdir_join(sra_dir)
+                    ass_dir = os.path.join(new_outdir, "Assembled")
+                    utils_.mkdir_join(ass_dir)
+                    fastq_dir = os.path.join(new_outdir, 'fastq')
+                    utils_.mkdir_join(fastq_dir)
+                    assemble_dir = os.path.join(new_outdir, "assembly_result")
+                    utils_.mkdir_join(assemble_dir)
+                    print("sra_dir:{}\nass_dir={}\nfastq_dir={}\nassemble_dir={}\n".format(sra_dir, ass_dir, fastq_dir,
+                                                                                           assemble_dir))
+                    read_log_ = time.time()
 
-                f = open(check_log, 'r')
-                line = f.readlines()
-                print("check log :{}\n".format(line))
-                f.close()
+                    f = open(check_log, 'r')
+                    line = f.readlines()
+                    print("check log :{}\n".format(line))
+                    f.close()
 
-                for s in line:
-                    print("{}\n".format(s))
-                finish = list(filter(lambda x: len(x.split(" ")) >= 4, line))
-                finish_run = list(map(lambda x: x.split(" ")[1], finish))
-                need_run = list(filter(lambda x: x not in finish_run, run_list))
-                print("finish: {}\nfinish_run: {}\nneed_run".format(finish, finish_run, need_run))
-                print("finish length: {}\nfinish_run length: {}\nneed_run length: ".format(len(finish), len(finish_run),
-                                                                                           len(need_run)))
-                print("Toal", len(need_run), "sra runs need to downlaod.")
+                    for s in line:
+                        print("{}\n".format(s))
+                    finish = list(filter(lambda x: len(x.split(" ")) >= 4, line))
+                    finish_run = list(map(lambda x: x.split(" ")[1], finish))
+                    need_run = list(filter(lambda x: x not in finish_run, run_list))
+                    print("finish: {}\nfinish_run: {}\nneed_run".format(finish, finish_run, need_run))
+                    print("finish length: {}\nfinish_run length: {}\nneed_run length: ".format(len(finish),
+                                                                                               len(finish_run),
+                                                                                               len(need_run)))
+                    print("Toal", len(need_run), "sra runs need to downlaod.")
 
-                num = len(finish_run)
-                progress_list = []
-                prog_num = 0
-                finish_num = 0
-                finish_num = len(finish_run)
-                pool_list=[]
-                try:
-                    for k in need_run:
-                        print("########### hello %d ############\n" % prog_num)
-                        print("########## {}/{} ###########".format(finish_num, count))
-                        pool_list.append(pool.apply_async(SRA_Analysis, (k,sra_dir,ass_dir,fastq_dir,assemble_dir,new_outdir,thread,gsize,start,)))
-                        #pool.apply_async(test, (k,new_outdir,))
-                        #progress_list.append(multiprocessing.Process(target=SRA_Analysis, args=(k,)))
-                        prog_num += 1
-                        finish_num += 1
-                        sra_num_+=1
+                    num = len(finish_run)
+                    progress_list = []
+                    prog_num = 0
+                    finish_num = 0
+                    finish_num = len(finish_run)
+                    pool_list = []
+                    try:
+                        for k in need_run:
+                            print("########### hello %d ############\n" % prog_num)
+                            print("########## {}/{} ###########".format(finish_num, count))
+                            pool_list.append(executor.submit(SRA_Analysis,(k,sra_dir,ass_dir,fastq_dir,assemble_dir,new_outdir,thread,gsize,start)))
+                            # pool_list.append(pool.apply_async(SRA_Analysis, (k,sra_dir,ass_dir,fastq_dir,assemble_dir,new_outdir,thread,gsize,start,)))
+                            # pool.apply_async(test, (k,new_outdir,))
+                            # progress_list.append(multiprocessing.Process(target=SRA_Analysis, args=(k,)))
+                            prog_num += 1
+                            finish_num += 1
+                            sra_num_ += 1
 
 
-                except KeyboardInterrupt:
-                    print("Catch keyboardinterdinterupterror\n")
-                    print("srart : {}\n".format(start))
-                    print("Download all ", 'Done,total cost', time.time() - start, 'secs')
-                    print("Download {} ".format(date), 'Done,total cost', time.time() - ds, 'secs')
-                    pid = os.getgid()
-                    with open("./SRA_run_error.txt", "a+") as f:
-                        f.write("Catch keyboardinterdinterupterror : {}/{}/{}\n".format())
-                    # with open("./Automate_check.log", "a+") as f:
-                    #    f.write("keyboardinterupter")
-                    #    f.write("{}:{}:{}\n".format(date, time.time() - ds, time.time() - start))
-                    #sys.exit("Catch keyboardinterdinterupterror")
-                    os.popen("taskkill.exe /f /pid:%d"%pid)
-                except Exception as e:
-                    error_class = e.__class__.__name__  # 取得錯誤類型
-                    detail = e.args[0]  # 取得詳細內容
-                    cl, exc, tb = sys.exc_info()  # 取得Call Stack
-                    lastCallStack = traceback.extract_tb(tb)[-1]  # 取得Call Stack的最後一筆資料
-                    fileName = lastCallStack[0]  # 取得發生的檔案名稱
-                    lineNum = lastCallStack[1]  # 取得發生的行號
-                    funcName = lastCallStack[2]  # 取得發生的函數名稱
-                    errMsg = "File \"{}\", line {}, in {}: [{}] {}".format(fileName, lineNum, funcName, error_class,
-                                                                           detail)
-                    print(errMsg)
-                    with open("./SRA_run_error.txt", "a+") as f:
-                        f.write("{} :\n{}\n".format(date, errMsg))
+                    except KeyboardInterrupt:
+                        print("Catch keyboardinterdinterupterror\n")
+                        print("srart : {}\n".format(start))
+                        print("Download all ", 'Done,total cost', time.time() - start, 'secs')
+                        print("Download {} ".format(date), 'Done,total cost', time.time() - ds, 'secs')
+                        pid = os.getgid()
+                        with open("./SRA_run_error.txt", "a+") as f:
+                            f.write("Catch keyboardinterdinterupterror : {}/{}/{}\n".format())
+                        # with open("./Automate_check.log", "a+") as f:
+                        #    f.write("keyboardinterupter")
+                        #    f.write("{}:{}:{}\n".format(date, time.time() - ds, time.time() - start))
+                        # sys.exit("Catch keyboardinterdinterupterror")
+                        os.popen("taskkill.exe /f /pid:%d" % pid)
+                    except Exception as e:
+                        error_class = e.__class__.__name__  # 取得錯誤類型
+                        detail = e.args[0]  # 取得詳細內容
+                        cl, exc, tb = sys.exc_info()  # 取得Call Stack
+                        lastCallStack = traceback.extract_tb(tb)[-1]  # 取得Call Stack的最後一筆資料
+                        fileName = lastCallStack[0]  # 取得發生的檔案名稱
+                        lineNum = lastCallStack[1]  # 取得發生的行號
+                        funcName = lastCallStack[2]  # 取得發生的函數名稱
+                        errMsg = "File \"{}\", line {}, in {}: [{}] {}".format(fileName, lineNum, funcName, error_class,
+                                                                               detail)
+                        print(errMsg)
+                        with open("./SRA_run_error.txt", "a+") as f:
+                            f.write("{} :\n{}\n".format(date, errMsg))
 
-                with open("./Automate_check.log", "a+") as f:
-                    f.write("{}\n".format(date))
+                    with open("./Automate_check.log", "a+") as f:
+                        f.write("{}\n".format(date))
                 #print("Download all {} ".format(date), 'Done,total cost', time.time() - ds, 'secs')
                 #time.sleep(3)
                 # for i in range(prog_num):
                 #    progress_list[i].join()
 
-    pool.close()
+    #pool.close()
     print("pool.close()\n")
     #time.sleep(3)
     #signal.signal(signal.SIGCHLD, wait_child)
     if os.getpid():
 
-    pool.join()
+    #pool.join()
     print("pool.join()\n")
     print("Program Done\n")
     print('Done,total cost', time.time() - start, 'secs')
