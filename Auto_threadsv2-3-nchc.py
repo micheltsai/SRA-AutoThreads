@@ -892,10 +892,8 @@ if __name__ == '__main__':
     print("pool.close()\n")
     #time.sleep(3)
     #signal.signal(signal.SIGCHLD, wait_child)
-    for pp in pool_list:
-        if not pp.is_alive():
-            os.kill(os.getpid(),signal.SIGTERM)
-            print("kill {}\n".format(os.getpid()))
+    #os.kill(os.getpid(),signal.SIGTERM)
+    print("kill {}\n".format(os.getpid()))
     pool.join()
     print("pool.join()\n")
     print("Program Done\n")
