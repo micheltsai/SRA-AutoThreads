@@ -851,7 +851,7 @@ if __name__ == '__main__':
                         for k in need_run:
                             print("########### hello %d ############\n" % prog_num)
                             print("########## {}/{} ###########".format(finish_num, count))
-                            pool_list.append(executor.submit(SRA_Analysis,(k,sra_dir,ass_dir,fastq_dir,assemble_dir,new_outdir,thread,gsize,start)))
+                            pool_list.append(executor.map(SRA_Analysis,(k,sra_dir,ass_dir,fastq_dir,assemble_dir,new_outdir,thread,gsize,start)))
                             # pool_list.append(pool.apply_async(SRA_Analysis, (k,sra_dir,ass_dir,fastq_dir,assemble_dir,new_outdir,thread,gsize,start,)))
                             # pool.apply_async(test, (k,new_outdir,))
                             # progress_list.append(multiprocessing.Process(target=SRA_Analysis, args=(k,)))
