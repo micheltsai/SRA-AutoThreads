@@ -660,6 +660,7 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
     with open(check_log,"a+") as f:
         f.write("Run {} is ok.\n".format(sra_id))
     sra_num_ +=1
+    print('Done,current total cost', time.time() - start, 'secs\n')
     return 0
 
 def test(sra_id,_outdir):
