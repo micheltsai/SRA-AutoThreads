@@ -850,15 +850,14 @@ if __name__ == '__main__':
                         for k in need_run:
                             print("########### hello %d ############\n" % prog_num)
                             print("########## {}/{} ###########".format(finish_num, count))
-                            pool_list.append(executor.submit(SRA_Analysis,(k,sra_dir,ass_dir,fastq_dir,assemble_dir,new_outdir,thread,gsize,start)))
+                            ss=executor.submit(SRA_Analysis,(k,sra_dir,ass_dir,fastq_dir,assemble_dir,new_outdir,thread,gsize,start))
                             # pool_list.append(pool.apply_async(SRA_Analysis, (k,sra_dir,ass_dir,fastq_dir,assemble_dir,new_outdir,thread,gsize,start,)))
                             # pool.apply_async(test, (k,new_outdir,))
                             # progress_list.append(multiprocessing.Process(target=SRA_Analysis, args=(k,)))
                             prog_num += 1
                             finish_num += 1
                             sra_num_ += 1
-
-
+                            print(ss.result())
                     except KeyboardInterrupt:
                         print("Catch keyboardinterdinterupterror\n")
                         print("srart : {}\n".format(start))
