@@ -894,13 +894,10 @@ if __name__ == '__main__':
                 #    progress_list[i].join()
 
     #pool.close()
-    print("pool.close()\n")
+    #print("pool.close()\n")
     #time.sleep(3)
     #signal.signal(signal.SIGCHLD, wait_child)
-    if os.getpid():
-
-    #pool.join()
-    print("pool.join()\n")
+    #print("pool.join()\n")
     print("Program Done\n")
     print('Done,total cost', time.time() - start, 'secs')
     with open("./threads_time.csv", "a+") as f:
