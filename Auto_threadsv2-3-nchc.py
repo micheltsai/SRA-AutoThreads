@@ -668,8 +668,8 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
     with open(check_log,"a+") as f:
         f.write("Run {} is ok.\n".format(sra_id))
     finish_num_+=1
-    #if finish_num_ == sra_num_:
-       # print("kill {}\n".format(os.getpid()))
+    if finish_num_ == sra_num_:
+        print("kill {}\n".format(os.getpid()))
     return 0
 
 def test(sra_id,_outdir):
