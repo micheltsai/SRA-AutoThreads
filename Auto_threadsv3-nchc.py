@@ -16,6 +16,7 @@ import subprocess
 import sys
 import time
 import traceback
+from concurrent.futures import as_completed
 from pathlib import Path
 import pandas as pd
 
@@ -891,7 +892,9 @@ if __name__ == '__main__':
                 #time.sleep(3)
                 # for i in range(prog_num):
                 #    progress_list[i].join()
-
+    for future in as_completed(all_task):
+        data = future.result()
+        print("in main: get page {}s success".format(data))
     #pool.close()
     #print("pool.close()\n")
     #time.sleep(3)
