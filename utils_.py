@@ -365,8 +365,8 @@ def getlayout(path_):
 
 def run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start,check_log):
     print ("sra_id = {}\nsra_dir = {}\noutdir= {}\n".format(sra_id,sra_dir,outdir))
-    path_ = os.path.join(sra_dir,sra_id)
-    path_=path_+"/"+sra_id+".sra"
+    path_1 = os.path.join(sra_dir,sra_id)
+    path_=path_1+"/"+sra_id+".sra"
     #outdir__=os.path.join(outdir, "Assembled")
     #mkdir_join(outdir__)
     #path_= os.path.join(path_,str("{}.sra".format(sra_id)))
@@ -399,7 +399,7 @@ def run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,sta
     dump_fastq_from_sra(path_, fastq_dir_)
     # os.listdir(fastq_dir) list files in dir
     print (fastq_dir_)
-    shutil.rmtree(path_)
+    shutil.rmtree(path_1)
     print("remove {}.sra".format(sra_id))
     with open("./ana_time.csv", "a+") as f:
         fieldnames = ["func", "time"]
