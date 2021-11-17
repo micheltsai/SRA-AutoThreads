@@ -502,11 +502,6 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
                 f.write("sistr is ok\n")
         step += 1
         # time
-        with open("./ana_time.csv", "a+") as f:
-            fieldnames = ["func", "time"]
-            writer = csv.DictWriter(f, fieldnames=fieldnames)
-            writer.writeheader()
-            writer.writerow({"func": "{} sistr".format(inId), "time": str(time.time() - step4_time)})
     else:
         print("********** sistr was running. **********\n next step\n")
 
@@ -902,6 +897,8 @@ if __name__ == '__main__':
     #print("pool.join()\n")
     print("Program Done\n")
     print('Done,total cost', time.time() - start, 'secs')
+    with open("./run_time.txt", "a+") as f:
+        f.write("{}-{}: {} sec".format(start_date,expiry_date,time.time() - start))
     with open("./threads_time.csv", "a+") as f:
         fieldnames = ["func", "time"]
         writer = csv.DictWriter(f, fieldnames=fieldnames)

@@ -399,8 +399,6 @@ def run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,sta
     dump_fastq_from_sra(path_, fastq_dir_)
     # os.listdir(fastq_dir) list files in dir
     print (fastq_dir_)
-    shutil.rmtree(path_1)
-    print("remove {}.sra".format(sra_id))
     with open("./ana_time.csv", "a+") as f:
         fieldnames = ["func", "time"]
         writer = csv.DictWriter(f, fieldnames=fieldnames)

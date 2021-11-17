@@ -117,6 +117,7 @@ def Assembled(x,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir,thread,gsize,star
         # one_run_prefetch = time.time()
         # utils_.prefetch_sra(x,sra_dir)
         one_run_ass = time.time()
+        sra_file_dir = os.path.join(sra_dir, x)
         sra_file = os.path.join(sra_dir, "{}/{}.sra".format(x, x))
         print(sra_file)
         if os.path.isfile(sra_file):
@@ -132,8 +133,9 @@ def Assembled(x,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir,thread,gsize,star
         # print ("shutil.rmtree({})\n".format(current_path))
         #utils_.run_cmd2("rm -rf {}".format(current_path))
         #print("remove {}\n".format(current_path))
-        rmsra_cmd="rm -rf {}".format(sra_file)
+        rmsra_cmd="rm -rf {}".format(sra_file_dir)
         print(rmsra_cmd)
+        print("remove {}.sra".format(x))
         run_cmd(rmsra_cmd)
 
 
@@ -903,6 +905,8 @@ if __name__ == '__main__':
     print("pool.join()\n")
     print("Program Done\n")
     print('Done,total cost', time.time() - start, 'secs')
+    with open("./run_time.txt", "a+") as f:
+        f.write("{}-{}: {} sec".format(start_date,expiry_date,time.time() - start))
     with open("./threads_time.csv", "a+") as f:
         fieldnames = ["func", "time"]
         writer = csv.DictWriter(f, fieldnames=fieldnames)
