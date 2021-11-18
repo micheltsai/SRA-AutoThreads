@@ -399,18 +399,12 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         mlst_outdir = os.path.join(logpath_, "mlst")
         utils_.mkdir_join(mlst_outdir)
         mlst_datajson = os.path.join(mlst_outdir, "data.json")
-        f = open(mlst_datajson, "w+")
-        f.close()
         #mlst_cmd = "docker run --rm -it \-v {}:/databases \-v {}:/workdir \mlst -i {} -o {} -s {}".format(MLST_DB,current_path,relative_input,mlst_outdir,mlst_organism)
 
         mlst_cmd = "singularity exec --containall --bind /work/linsslab01/:/home/linsslab01/ /work/linsslab01/mlst.sif python3 /home/linsslab01/mlst/mlst.py -i {} -o {} -s {}".format(relative_input,mlst_outdir.replace("work", "home"),mlst_organism)
         print(mlst_cmd, "\n")
-        try:
-            mlst, err = utils_.run_cmd3(mlst_cmd)
-        except Exception as e:
-            time.sleep(3)
-            print("again mlst\n")
-            mlst, err = utils_.run_cmd3(mlst_cmd)
+        mlst, err = utils_.run_cmd3(mlst_cmd)
+
 
 
 
@@ -528,20 +522,40 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
 
     # read mlst 'Sequence Type'
     mlst_file = os.path.join(relative_path2, "mlst/results.txt")
-    with open(mlst_file, "r") as f:
-        data = f.readlines()
-        print(data[6])
-        # Sequence Type: 11
-        sequenceType = data[6].split(" ")
-        sequenceType = sequenceType[len(sequenceType) - 1].strip("\n")
+    try:
+        with open(mlst_file, "r") as f:
+            data = f.readlines()
+            print(data[6])
+            # Sequence Type: 11
+            sequenceType = data[6].split(" ")
+            sequenceType = sequenceType[len(sequenceType) - 1].strip("\n")
 
-        print(sequenceType)
+            print(sequenceType)
+    except Exception as e:
+        time.sleep(3)
+        print("not found mlst data.json\n")
+        mlst, err = utils_.run_cmd3(mlst_cmd)
+        with open(mlst_file, "r") as f:
+            data = f.readlines()
+            print(data[6])
+            # Sequence Type: 11
+            sequenceType = data[6].split(" ")
+            sequenceType = sequenceType[len(sequenceType) - 1].strip("\n")
 
     # read plasmidfinder 'gene'
-    plas_file = os.path.join(relative_path2, "plasmidfinder/results_tab.tsv")
-    pladf = pd.read_table(plas_file, sep='\t')
-    # print(df)
-    pladf = pd.DataFrame(pladf)
+    try:
+        plas_file = os.path.join(relative_path2, "plasmidfinder/results_tab.tsv")
+        pladf = pd.read_table(plas_file, sep='\t')
+        # print(df)
+        pladf = pd.DataFrame(pladf)
+    except Exception as e:
+        time.sleep(3)
+        print("not found mlst data.json\n")
+        plas = run_cmd(plas_cmd)
+        plas_file = os.path.join(relative_path2, "plasmidfinder/results_tab.tsv")
+        pladf = pd.read_table(plas_file, sep='\t')
+        # print(df)
+        pladf = pd.DataFrame(pladf)
     print(pladf)
     print(pladf.columns)
     print(pladf.Plasmid)
