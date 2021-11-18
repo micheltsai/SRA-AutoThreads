@@ -355,9 +355,9 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
     print("analysis outdir: {}\n".format(anoutdir_))
 
     # set {genomoe}_log_output
-    logpath = os.path.join(anoutdir_, inId)
-    utils_.mkdir_join(logpath)
-    logpath = os.path.join(logpath, "analysis_log.txt")
+    logpath_ = os.path.join(anoutdir_, inId)
+    utils_.mkdir_join(logpath_)
+    logpath = os.path.join(logpath_, "analysis_log.txt")
 
     # get relative output dir path
     outdir_list = anoutdir_.split("/")
@@ -396,9 +396,10 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         print("STEP{}\n".format(step + 1))
         print("********** Now MLST analysis running. **********\n")
         #MLST_DB = "/home/linsslab01/mlst_db"
-        mlst_outdir = os.path.join(relative_path2, "mlst")
+        mlst_outdir = os.path.join(logpath_, "mlst")
         utils_.mkdir_join(mlst_outdir)
         mlst_datajson = os.path.join(mlst_outdir, "data.json")
+        mlst_datajson=mlst_datajson.replace("work","home")
         f = open(mlst_datajson, "a+")
         f.close()
         #mlst_cmd = "docker run --rm -it \-v {}:/databases \-v {}:/workdir \mlst -i {} -o {} -s {}".format(MLST_DB,current_path,relative_input,mlst_outdir,mlst_organism)
@@ -440,9 +441,10 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         print("STEP{}\n".format(step + 1))
         print("********** Now plasmidfinder analysis running. **********\n")
         #PLASMID_DB = "/home/linsslab01/plasmidfinder_db"
-        utils_.mkdir_join(relative_path2)
-        plas_outdir = os.path.join(relative_path2, "plasmidfinder")
+        utils_.mkdir_join(logpath_)
+        plas_outdir = os.path.join(logpath_, "plasmidfinder")
         utils_.mkdir_join(plas_outdir)
+        plas_outdir=plas_outdir.replace("work","home")
         #plas_cmd = "docker run --rm -it \-v {}:/databases \-v {}:/workdir \plasmidfinder -i {} -o {}".format(PLASMID_DB, current_path, relative_input, plas_outdir)
         plas_cmd = "singularity exec --containall --bind /work/linsslab01/:/home/linsslab01/ /work/linsslab01/plasmidfinder.sif python3 /home/linsslab01/plasmidfinder/plasmidfinder.py -i {} -o {}".format(relative_input,plas_outdir)
 
