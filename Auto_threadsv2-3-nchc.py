@@ -402,10 +402,17 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         f = open(mlst_datajson, "a+")
         f.close()
         #mlst_cmd = "docker run --rm -it \-v {}:/databases \-v {}:/workdir \mlst -i {} -o {} -s {}".format(MLST_DB,current_path,relative_input,mlst_outdir,mlst_organism)
+
         mlst_cmd = "singularity exec --containall --bind /work/linsslab01/:/home/linsslab01/ /work/linsslab01/mlst.sif python3 /home/linsslab01/mlst/mlst.py -i {} -o {} -s {}".format(relative_input,mlst_outdir,mlst_organism)
         print(mlst_cmd, "\n")
-        mlst, err = utils_.run_cmd3(mlst_cmd)
-        time.sleep(3)
+        try:
+            mlst, err = utils_.run_cmd3(mlst_cmd)
+        except Exception as e:
+            time.sleep(3)
+            print("again mlst\n")
+            mlst, err = utils_.run_cmd3(mlst_cmd)
+
+
 
 
         with open(logpath, "a+") as f:
@@ -426,13 +433,14 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
             writer.writerow({"func": "{} mlst".format(inId), "time": str(time.time() - step1_time)})
     else:
         print("**********       mlst was running.      **********\n next step\n")
-    time.sleep(1)
+    time.sleep(2)
     # run plasmidfinder
     if step < 2:
         step2_time = time.time()
         print("STEP{}\n".format(step + 1))
         print("********** Now plasmidfinder analysis running. **********\n")
         #PLASMID_DB = "/home/linsslab01/plasmidfinder_db"
+        utils_.mkdir_join(relative_path2)
         plas_outdir = os.path.join(relative_path2, "plasmidfinder")
         utils_.mkdir_join(plas_outdir)
         #plas_cmd = "docker run --rm -it \-v {}:/databases \-v {}:/workdir \plasmidfinder -i {} -o {}".format(PLASMID_DB, current_path, relative_input, plas_outdir)
