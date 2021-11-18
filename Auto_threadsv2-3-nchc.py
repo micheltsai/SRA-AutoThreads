@@ -339,6 +339,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
 
     # workdir
     current_path = os.path.abspath(os.getcwd())
+    current_path = current_path.replace("/SRA-AutoThreads", "")
     print("current_path: ", current_path, "\n")
     relative_input = input.replace(current_path, ".")
     print("relative input: {}\n".format(relative_input))
@@ -360,7 +361,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
 
     # get relative output dir path
     outdir_list = anoutdir_.split("/")
-    current_path = current_path.replace("/SRA-AutoThreads", "")
+
     relative_path2 = anoutdir_.replace(current_path, ".")
     print("relative2: {}\n".format(relative_path2))
     print("relative_path: {}".format(relative_path2))
