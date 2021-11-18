@@ -461,7 +461,7 @@ def run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,sta
 
     shovill_time=time.time()
     #cmd = f"shovill --R1 {r1} --R2 {r2} --outdir {assemble_dir_} --depth 100 --tmpdir . --cpus {threads} --ram 3 --force"
-    cmd = f"singularity exec /home/linsslab01/shovill.sif shovill --R1 {r1} --R2 {r2} --outdir {assemble_dir_} --depth 80 --tmpdir . --cpus {threads} --ram 8 --force"
+    cmd = f"shovill --R1 {r1} --R2 {r2} --outdir {assemble_dir_} --depth 80 --tmpdir . --cpus {threads} --ram 8 --force"
     if gsize:
         cmd += f" --gsize {gsize}"
     print(cmd)

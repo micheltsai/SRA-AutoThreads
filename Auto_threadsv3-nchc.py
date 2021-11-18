@@ -399,7 +399,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         f = open(mlst_datajson, "a+")
         f.close()
         #mlst_cmd = "docker run --rm -it \-v {}:/databases \-v {}:/workdir \mlst -i {} -o {} -s {}".format(MLST_DB,current_path,relative_input,mlst_outdir,mlst_organism)
-        mlst_cmd = "singularity exec /home/linsslab01/mlst.sif python3 /home/linsslab01/mlst/mlst.py -i {} -o {} -s {}".format(
+        mlst_cmd = "singularity exec --containall --bind /work/linsslab01/:/home/linsslab01/ /work/linsslab01/mlst.sif python3 /home/linsslab01/mlst/mlst.py -i {} -o {} -s {}".format(
                                                                                                           relative_input,
                                                                                                           mlst_outdir,
                                                                                                           mlst_organism)
@@ -431,7 +431,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         plas_outdir = os.path.join(relative_path2, "plasmidfinder")
         utils_.mkdir_join(plas_outdir)
         #plas_cmd = "docker run --rm -it \-v {}:/databases \-v {}:/workdir \plasmidfinder -i {} -o {}".format(PLASMID_DB, current_path, relative_input, plas_outdir)
-        plas_cmd = "singularity exec /home/linsslab01/plasmidfinder.sif python3 /home/linsslab01/plasmidfinder/plasmidfinder.py -i {} -o {}".format(
+        plas_cmd = "singularity exec --containall --bind /work/linsslab01/:/home/linsslab01/ /work/linsslab01/plasmidfinder.sif python3 /home/linsslab01/plasmidfinder/plasmidfinder.py -i {} -o {}".format(
                                                                                                              relative_input,
                                                                                                              plas_outdir)
 
