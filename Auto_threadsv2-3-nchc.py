@@ -339,11 +339,12 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
 
     # workdir
     current_path = os.path.abspath(os.getcwd())
-    current_path = current_path.replace("/SRA-AutoThreads", "")
+    current_path2 = current_path.replace("/SRA-AutoThreads", "")
     print("current_path: ", current_path, "\n")
+    relative_input_ = input.replace(current_path2, ".")
     relative_input = input.replace(current_path, ".")
     print("relative input: {}\n".format(relative_input))
-
+    print("relative input_: {}\n".format(relative_input_))
     origin_outdir = _outdir
     allinfopath = os.path.join(origin_outdir, "info.txt")
     check = os.path.join(origin_outdir, "Anacheck.log")
@@ -361,8 +362,8 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
 
     # get relative output dir path
     outdir_list = anoutdir_.split("/")
-
-    relative_path2 = anoutdir_.replace(current_path, ".")
+    relative_path_o2 = anoutdir_.replace(current_path, ".")
+    relative_path2 = anoutdir_.replace(current_path2, ".")
     print("relative2: {}\n".format(relative_path2))
     print("relative_path: {}".format(relative_path2))
 
@@ -401,7 +402,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         mlst_datajson = os.path.join(mlst_outdir, "data.json")
         #mlst_cmd = "docker run --rm -it \-v {}:/databases \-v {}:/workdir \mlst -i {} -o {} -s {}".format(MLST_DB,current_path,relative_input,mlst_outdir,mlst_organism)
 
-        mlst_cmd = "singularity exec --containall --bind /work/linsslab01/:/home/linsslab01/ /work/linsslab01/mlst.sif python3 /home/linsslab01/mlst/mlst.py -i {} -o {} -s {}".format(relative_input,mlst_outdir.replace("work", "home"),mlst_organism)
+        mlst_cmd = "singularity exec --containall --bind /work/linsslab01/:/home/linsslab01/ /work/linsslab01/mlst.sif python3 /home/linsslab01/mlst/mlst.py -i {} -o {} -s {}".format(relative_input_,mlst_outdir.replace("work", "home"),mlst_organism)
         print(mlst_cmd, "\n")
         mlst, err = utils_.run_cmd3(mlst_cmd)
 
@@ -439,7 +440,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         utils_.mkdir_join(plas_outdir)
         plas_outdir=plas_outdir.replace("work","home")
         #plas_cmd = "docker run --rm -it \-v {}:/databases \-v {}:/workdir \plasmidfinder -i {} -o {}".format(PLASMID_DB, current_path, relative_input, plas_outdir)
-        plas_cmd = "singularity exec --containall --bind /work/linsslab01/:/home/linsslab01/ /work/linsslab01/plasmidfinder.sif python3 /home/linsslab01/plasmidfinder/plasmidfinder.py -i {} -o {}".format(relative_input,plas_outdir)
+        plas_cmd = "singularity exec --containall --bind /work/linsslab01/:/home/linsslab01/ /work/linsslab01/plasmidfinder.sif python3 /home/linsslab01/plasmidfinder/plasmidfinder.py -i {} -o {}".format(relative_input_,plas_outdir)
 
         print(plas_cmd, "\n")
         plas = run_cmd(plas_cmd)
