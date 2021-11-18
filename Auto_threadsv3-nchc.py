@@ -338,6 +338,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
 
     # workdir
     current_path = os.path.abspath(os.getcwd())
+    current_path=current_path.replace("/SRA-AutoThreads","")
     print("current_path: ", current_path, "\n")
     relative_input = input.replace(current_path, ".")
     print("relative input: {}\n".format(relative_input))
