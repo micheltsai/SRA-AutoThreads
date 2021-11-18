@@ -399,9 +399,9 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         mlst_outdir = os.path.join(logpath_, "mlst")
         utils_.mkdir_join(mlst_outdir)
         mlst_datajson = os.path.join(mlst_outdir, "data.json")
-        mlst_datajson=mlst_datajson.replace("work","home")
-        f = open(mlst_datajson, "a+")
+        f = open(mlst_datajson, "w+")
         f.close()
+        mlst_datajson = mlst_datajson.replace("work", "home")
         #mlst_cmd = "docker run --rm -it \-v {}:/databases \-v {}:/workdir \mlst -i {} -o {} -s {}".format(MLST_DB,current_path,relative_input,mlst_outdir,mlst_organism)
 
         mlst_cmd = "singularity exec --containall --bind /work/linsslab01/:/home/linsslab01/ /work/linsslab01/mlst.sif python3 /home/linsslab01/mlst/mlst.py -i {} -o {} -s {}".format(relative_input,mlst_outdir,mlst_organism)
