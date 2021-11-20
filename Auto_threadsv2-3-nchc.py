@@ -520,9 +520,10 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
     ########################
     ########################
     # save data in analysis_final.csv and update DB
-
+s
     # read mlst 'Sequence Type'
     mlst_file = os.path.join(relative_path2, "mlst/results.txt")
+    print("mlst_file:",mlst_file)
     try:
         with open(mlst_file, "r") as f:
             data = f.readlines()
@@ -535,7 +536,10 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
     except Exception as e:
         time.sleep(3)
         print("not found mlst data.json\n")
+        mlst_cmd = "singularity exec --containall --bind /work/linsslab01/:/home/linsslab01/ /work/linsslab01/mlst.sif python3 /home/linsslab01/mlst/mlst.py -i {} -o {} -s {}".format(
+            relative_input_, mlst_outdir.replace("work", "home"), mlst_organism)
         mlst, err = utils_.run_cmd3(mlst_cmd)
+
         with open(mlst_file, "r") as f:
             data = f.readlines()
             print(data[6])
