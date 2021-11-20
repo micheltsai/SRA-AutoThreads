@@ -520,7 +520,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
     ########################
     ########################
     # save data in analysis_final.csv and update DB
-s
+
     # read mlst 'Sequence Type'
     mlst_file = os.path.join(relative_path2, "mlst/results.txt")
     print("mlst_file:",mlst_file)
