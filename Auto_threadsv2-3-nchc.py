@@ -466,7 +466,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         step3_time = time.time()
         print("STEP{}\n".format(step + 1))
         print("********** Now amrfinder analysis running. **********\n")
-        amr_outdir = os.path.join(relative_path2, "amrfinder")
+        amr_outdir = os.path.join(relative_path_o2, "amrfinder")
         utils_.mkdir_join(amr_outdir)
         amr_outdir = os.path.join(amr_outdir, "amrout.tsv")
         amr_cmd = "amrfinder -n {} -o {} -O {}".format(input, amr_outdir, amr_organism)
@@ -492,7 +492,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         step4_time = time.time()
         print("STEP{}\n".format(step + 1))
         print("********** Now sistr analysis running. **********")
-        sistr_outdir = os.path.join(relative_path2, "sistr")
+        sistr_outdir = os.path.join(relative_path_o2, "sistr")
         utils_.mkdir_join(sistr_outdir)
         sistr_outdir = os.path.join(sistr_outdir, "sistr_out")
         input_list = input.split("/")
@@ -522,7 +522,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
     # save data in analysis_final.csv and update DB
 
     # read mlst 'Sequence Type'
-    mlst_file = os.path.join(relative_path2, "mlst/results.txt")
+    mlst_file = os.path.join(relative_path_o2, "mlst/results.txt")
     print("mlst_file:",mlst_file)
     try:
         with open(mlst_file, "r") as f:
@@ -550,7 +550,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
 
     # read plasmidfinder 'gene'
     try:
-        plas_file = os.path.join(relative_path2, "plasmidfinder/results_tab.tsv")
+        plas_file = os.path.join(relative_path_o2, "plasmidfinder/results_tab.tsv")
         pladf = pd.read_table(plas_file, sep='\t')
         # print(df)
         pladf = pd.DataFrame(pladf)
@@ -558,7 +558,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         time.sleep(3)
         print("not found mlst data.json\n")
         plas = run_cmd(plas_cmd)
-        plas_file = os.path.join(relative_path2, "plasmidfinder/results_tab.tsv")
+        plas_file = os.path.join(relative_path_o2, "plasmidfinder/results_tab.tsv")
         pladf = pd.read_table(plas_file, sep='\t')
         # print(df)
         pladf = pd.DataFrame(pladf)
@@ -576,7 +576,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
 
     # read amrfinder 'Gene symbol', 'subtype'
     ##add amr "Point"
-    amr_file = os.path.join(relative_path2, "amrfinder/amrout.tsv")
+    amr_file = os.path.join(relative_path_o2, "amrfinder/amrout.tsv")
     amrdf = pd.read_table(amr_file, sep='\t')
     # print(df)
     amrdf = pd.DataFrame(amrdf)
@@ -613,7 +613,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
     print(amr_format)
     print(point_format)
 
-    sistr_file = os.path.join(relative_path2, "sistr")
+    sistr_file = os.path.join(relative_path_o2, "sistr")
     utils_.mkdir_join(sistr_file)
     sistr_file = os.path.join(sistr_file, "sistr_out.csv")
 
