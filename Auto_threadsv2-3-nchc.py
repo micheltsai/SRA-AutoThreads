@@ -540,7 +540,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         mlst_cmd = "singularity exec --containall --bind /work/linsslab01/:/home/linsslab01/ /work/linsslab01/mlst.sif python3 /home/linsslab01/mlst/mlst.py -i {} -o {} -s {}".format(
             relative_input_, mlst_outdir.replace("work", "home"), mlst_organism)
         mlst, err = utils_.run_cmd3(mlst_cmd)
-
+        mlst_file = os.path.join(relative_path_o2, "mlst/results.txt")
         with open(mlst_file, "r") as f:
             data = f.readlines()
             print(data[6])
