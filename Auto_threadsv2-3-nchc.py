@@ -366,7 +366,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
     relative_path2 = anoutdir_.replace(current_path2, ".")
     print("relative2: {}\n".format(relative_path2))
     print("relative_path: {}".format(relative_path2))
-
+    relative_path_o2 = os.path.join(relative_path_o2, inId)
     relative_path2 = os.path.join(relative_path2, inId)
     utils_.mkdir_join(relative_path2)
     print("relative_path: {}".format(relative_path2))
