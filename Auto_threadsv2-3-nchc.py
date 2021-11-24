@@ -681,6 +681,7 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
         print("target_= {}\n".format(target_))
         time.sleep(1)
         Analysis(sra_id,genome,target_,_outdir,_outdir,thread,gsize,start)
+        print("{} / {}\n".format(finish_num_,sra_num_))
         print("Run {} is Done\n".format(sra_id))
     except Exception as e:
         error_class = e.__class__.__name__  # 取得錯誤類型
