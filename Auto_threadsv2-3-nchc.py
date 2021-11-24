@@ -881,6 +881,8 @@ if __name__ == '__main__':
                 prog_num = 0
                 finish_num = 0
                 finish_num = len(finish_run)
+                finish_num_ = len(finish_run)
+                print("finish_num = {}".format(finish_num))
                 pool_list=[]
                 try:
                     for k in need_run:
@@ -933,7 +935,7 @@ if __name__ == '__main__':
     print("pool.close()\n")
     #time.sleep(3)
     #signal.signal(signal.SIGCHLD, wait_child)
-    #os.kill(os.getpid(),signal.SIGTERM)S
+    #os.kill(os.getpid(),signal.SIGTERM)
     pool.join()
     print("pool.join()\n")
     print("Program Done\n")
