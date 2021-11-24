@@ -368,7 +368,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
     print("relative_path: {}".format(relative_path2))
     relative_path_o2 = os.path.join(relative_path_o2, inId)
     relative_path2 = os.path.join(relative_path2, inId)
-    utils_.mkdir_join(relative_path2)
+    utils_.mkdir_join(relative_path_o2)
     print("relative_path: {}".format(relative_path2))
 
     # load log.txt read running statedat
