@@ -768,7 +768,7 @@ thread = 4
 sra_num_=0
 ##############
 if __name__ == '__main__':
-    pool = multiprocessing.Pool(processes=100)
+    pool = multiprocessing.Pool(processes=14)
     start=time.time()
     #Month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
