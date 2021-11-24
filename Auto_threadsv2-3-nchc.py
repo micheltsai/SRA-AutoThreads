@@ -876,6 +876,7 @@ if __name__ == '__main__':
                                                                                            len(need_run)))
                 print("Toal", len(need_run), "sra runs need to downlaod.")
                 sra_num_=len(finish_run)+len(need_run)
+                print("len(finish_run)+len(need_run) = {}".format(sra_num_))
                 num = len(finish_run)
                 progress_list = []
                 prog_num = 0
