@@ -407,6 +407,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         try:
             mlst, err = utils_.run_cmd3(mlst_cmd)
         except Exception as e:
+            print("mlst err\n")
             with open("./err_need_again.txt","a+"):
                 f.write(sra_id)
             sys.exit(e)
