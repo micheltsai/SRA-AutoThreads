@@ -875,7 +875,7 @@ if __name__ == '__main__':
                 print("finish length: {}\nfinish_run length: {}\nneed_run length: ".format(len(finish), len(finish_run),
                                                                                            len(need_run)))
                 print("Toal", len(need_run), "sra runs need to downlaod.")
-
+                sra_num_=len(finish_run)+len(need_run)
                 num = len(finish_run)
                 progress_list = []
                 prog_num = 0
@@ -893,7 +893,7 @@ if __name__ == '__main__':
                         #progress_list.append(multiprocessing.Process(target=SRA_Analysis, args=(k,)))
                         prog_num += 1
                         finish_num += 1
-                        sra_num_+=1
+                        #sra_num_+=1
                         time.sleep(1)
 
 
