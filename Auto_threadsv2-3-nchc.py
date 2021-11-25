@@ -703,7 +703,7 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
         if finish_num_ == sra_num_:
             print("kill {}\n".format(os.getpid()))
             with open("./run_time.txt", "a+") as f:
-                f.write("{}-{}: {} secs".format(start_date, expiry_date, time.time() - start))
+                f.write("{}/{}:{}-{}: {} secs\n".format(finish_num_,sra_num_,start_date, expiry_date, time.time() - start))
     except Exception as e:
         error_class = e.__class__.__name__  # 取得錯誤類型
         detail = e.args[0]  # 取得詳細內容
