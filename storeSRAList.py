@@ -120,7 +120,7 @@ def main():
                 with open(sraList,"w+") as f:
                     for aa in run_list:
                         f.write(aa)
-                        f.write("\n")
+                        f.write(",")
 
 if __name__ == '__main__':
     main()
