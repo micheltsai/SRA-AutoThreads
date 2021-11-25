@@ -24,10 +24,8 @@ logging.basicConfig(
     level=logging.DEBUG,
     format='%(asctime)-15s - %(levelname)s - %(message)s'
 )
-global sra_num_
-global finish_num_
-sra_num_=0
-finish_num_=0
+
+
 def wait_child(signum, frame):
     logging.info('receive SIGCHLD')
     try:
@@ -648,8 +646,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
     with open(check, "a+") as f:
         f.write("Run {} is ok.\n".format(inId))
 
-
-def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gsize,start,finish_num_,sra_num_):
+def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gsize,start,sra_num_):
     SRA_start=time.time()
     QC_error=os.path.join(_outdir,"nofillQC.txt")
     try:
@@ -883,12 +880,15 @@ if __name__ == '__main__':
                 print("finish length: {}\nfinish_run length: {}\nneed_run length: ".format(len(finish), len(finish_run),
                                                                                            len(need_run)))
                 print("Toal", len(need_run), "sra runs need to downlaod.")
-                sra_num_=len(finish_run)+len(need_run)
+                global sra_num_
+                global finish_num_
+                sra_num_ = len(finish_run) + len(need_run)
+                finish_num = 0
                 print("len(finish_run)+len(need_run) = {}".format(sra_num_))
                 num = len(finish_run)
                 progress_list = []
                 prog_num = 0
-                finish_num = 0
+
                 finish_num = len(finish_run)
                 finish_num_ = len(finish_run)
                 print("finish_num = {}".format(finish_num))
@@ -897,7 +897,7 @@ if __name__ == '__main__':
                     for k in need_run:
                         print("########### hello %d ############\n" % prog_num)
                         print("########## {}/{} ###########".format(finish_num, count))
-                        pool_list.append(pool.apply_async(SRA_Analysis, (k,sra_dir,ass_dir,fastq_dir,assemble_dir,new_outdir,thread,gsize,start,finish_num_,sra_num_,)))
+                        pool_list.append(pool.apply_async(SRA_Analysis, (k,sra_dir,ass_dir,fastq_dir,assemble_dir,new_outdir,thread,gsize,start,sra_num_,)))
                         #pool.apply_async(test, (k,new_outdir,))
                         #progress_list.append(multiprocessing.Process(target=SRA_Analysis, args=(k,)))
                         prog_num += 1
