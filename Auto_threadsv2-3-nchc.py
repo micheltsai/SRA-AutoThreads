@@ -685,6 +685,8 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
         print("target_= {}\n".format(target_))
         time.sleep(1)
         Analysis(sra_id,genome,target_,_outdir,_outdir,thread,gsize,start)
+        global sra_num_
+        global finish_num_
         finish_num_ += 1
         print("{} / {}\n".format(finish_num_,sra_num_))
         print("Run {} is Done\n".format(sra_id))
@@ -881,6 +883,8 @@ if __name__ == '__main__':
                 print("finish length: {}\nfinish_run length: {}\nneed_run length: ".format(len(finish), len(finish_run),
                                                                                            len(need_run)))
                 print("Toal", len(need_run), "sra runs need to downlaod.")
+                global sra_num_
+                global finish_num_
                 sra_num_ = len(finish_run) + len(need_run)
                 finish_num = 0
                 print("len(finish_run)+len(need_run) = {}".format(sra_num_))
