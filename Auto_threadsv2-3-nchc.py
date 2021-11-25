@@ -649,8 +649,6 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
 sra_num_=0
 finish_num_=0
 def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gsize,start):
-    global sra_num_
-    global finish_num_
     SRA_start=time.time()
     QC_error=os.path.join(_outdir,"nofillQC.txt")
     try:
@@ -883,8 +881,6 @@ if __name__ == '__main__':
                 print("finish length: {}\nfinish_run length: {}\nneed_run length: ".format(len(finish), len(finish_run),
                                                                                            len(need_run)))
                 print("Toal", len(need_run), "sra runs need to downlaod.")
-                global sra_num_
-                global finish_num_
                 sra_num_ = len(finish_run) + len(need_run)
                 finish_num = 0
                 print("len(finish_run)+len(need_run) = {}".format(sra_num_))
