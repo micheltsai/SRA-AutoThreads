@@ -866,7 +866,9 @@ if __name__ == '__main__':
                 sraList = os.path.join(new_outdir, "sraList.txt")
 
                 with open(sraList,"r") as f:
-                    run_list=f.readlines().split(",")
+                    run_list=f.readlines()
+                for rr in run_list:
+                    run_list=rr.split(",")
 
 
                 sra_dir = os.path.join(new_outdir, "sra")  # .sra file
