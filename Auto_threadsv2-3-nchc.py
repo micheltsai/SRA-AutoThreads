@@ -852,17 +852,22 @@ if __name__ == '__main__':
                     f.write(str(datetime.datetime.now()).split(".")[0])
                     f.write("\n")
 
-                pattern, count = utils_.count_egquery(pattern, date, date)
-                print("pattern: {}\ncount: {}\n".format(pattern, count))
+                #pattern, count = utils_.count_egquery(pattern, date, date)
+                #print("pattern: {}\ncount: {}\n".format(pattern, count))
 
-                i_e_ = time.time()
-                idlist = utils_.IdList_esearch(pattern, 'sra', count)
+                #i_e_ = time.time()
+                #idlist = utils_.IdList_esearch(pattern, 'sra', count)
 
-                print(idlist)
+                #print(idlist)
 
-                runinfo = utils_.Get_RunInfo(idlist)
-                run_list = list(runinfo['Run'])  # get SRAfile nameList stored in run_list
-                print("runinfo: {}\n run_list: {}\n".format(runinfo, run_list))
+                #runinfo = utils_.Get_RunInfo(idlist)
+                #run_list = list(runinfo['Run'])  # get SRAfile nameList stored in run_list
+               #print("runinfo: {}\n run_list: {}\n".format(runinfo, run_list))
+                sraList = os.path.join(new_outdir, "sraList.txt")
+
+                with open(sraList,"r") as f:
+                    run_list=f.readlines().slipt(",")
+
 
                 sra_dir = os.path.join(new_outdir, "sra")  # .sra file
                 utils_.mkdir_join(sra_dir)
