@@ -118,7 +118,8 @@ def main():
                 print("runinfo: {}\n run_list: {}\n".format(runinfo, run_list))
                 sraList=os.path.join(new_outdir,"sraList.txt")
                 with open(sraList,"w+") as f:
-                    f.write(run_list)
+                    for aa in run_list:
+                        f.write(aa)
 
 if __name__ == '__main__':
     main()
