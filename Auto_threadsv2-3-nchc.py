@@ -870,7 +870,8 @@ if __name__ == '__main__':
                 for rr in run_list:
                     run_list=rr.split(",")
 
-
+                print(run_list)
+                
                 sra_dir = os.path.join(new_outdir, "sra")  # .sra file
                 utils_.mkdir_join(sra_dir)
                 ass_dir = os.path.join(new_outdir, "Assembled")
