@@ -194,8 +194,8 @@ def QualityCheck(sra_id,_outdir,genome_Path,thread,gsize,start):
     print("reseq: {}\n qen: {}\n outdir: {}\nout_txt: {}\n{}\n".format(refPath, genome_Path, outdir, outfile,
                                                                        os.path.join(outdir_ani, outfile_)))
     utils_.progress_bar("fastANI excuting")
-    #fastani_ = "/data/usrhome/LabSSLin/user30/Desktop/FastANI/fastANI -t {} --rl {} -q {} -o {}".format(thread,refPath, genome_Path, outfile)
-    fastani_ = "/home/linsslab01/FastANI/fastANI -t {} --rl {} -q {} -o {}".format(thread, refPath,genome_Path,outfile)
+    fastani_ = "/data/usrhome/LabSSLin/user30/Desktop/FastANI/fastANI -t {} --rl {} -q {} -o {}".format(thread,refPath, genome_Path, outfile)
+    #fastani_ = "/home/linsslab01/FastANI/fastANI -t {} --rl {} -q {} -o {}".format(thread, refPath,genome_Path,outfile)
     print(fastani_ + "\n")
     if os.path.isfile(outfile):
         print(outfile, " is exist.\n")
@@ -270,8 +270,8 @@ def QualityCheck(sra_id,_outdir,genome_Path,thread,gsize,start):
 
     # genome is "one excuting"
     # busco -i /data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/RefSeq/GCF_000335875.2.fa -o cofig --out_path /data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/SRA-AutomatedAnalysis/QualityCheck -l enterobacterales_odb10 -m geno --download_path /data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/SRA-AutomatedAnalysis/QualityCheck/QualityCheck/busco_db -f
-    #cmd_bus = 'bash -c "source /data/usrhome/LabSSLin/user30/anaconda3/etc/profile.d/conda.sh && conda activate busco && busco -c {} -i {} -o {} --out_path {} -l {} -m {} --download_path {} -f"'.format(
-    cmd_bus = 'bash -c "source /home/linsslab01/miniconda3/etc/profile.d/conda.sh && conda activate busco && busco -c {} -i {} -o {} --out_path {} -l {} -m {} --download_path {} -f"'.format(
+    cmd_bus = 'bash -c "source /data/usrhome/LabSSLin/user30/anaconda3/etc/profile.d/conda.sh && conda activate busco && busco -c {} -i {} -o {} --out_path {} -l {} -m {} --download_path {} -f"'.format(
+    #cmd_bus = 'bash -c "source /home/linsslab01/miniconda3/etc/profile.d/conda.sh && conda activate busco && busco -c {} -i {} -o {} --out_path {} -l {} -m {} --download_path {} -f"'.format(
         thread,targetPath, gID, outdir, db, mode, busco_db)
     print(cmd_bus, "\n")
     utils_.run_cmd(cmd_bus)
@@ -398,10 +398,10 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         mlst_outdir = os.path.join(logpath_, "mlst")
         utils_.mkdir_join(mlst_outdir)
         mlst_datajson = os.path.join(mlst_outdir, "data.json")
-        #mlst_cmd = "docker run --rm -it \-v {}:/databases \-v {}:/workdir \mlst -i {} -o {} -s {}".format(MLST_DB,current_path,relative_input,mlst_outdir,mlst_organism)
+        mlst_cmd = "docker run --rm -it \-v {}:/databases \-v {}:/workdir \mlst -i {} -o {} -s {}".format(MLST_DB,current_path,relative_input,mlst_outdir,mlst_organism)
 
         #mlst_cmd = "singularity exec --containall --bind /work/linsslab01/:/home/linsslab01/ /work/linsslab01/mlst.sif python3 /home/linsslab01/mlst/mlst.py -i {} -o {} -s {}".format(relative_input_,mlst_outdir.replace("work", "home"),mlst_organism)
-        mlst_cmd="/home/linsslab01/miniconda3/bin/python3 /work/linsslab01/mlst/mlst.py -i {} -o {} -s {}".format(relative_input,mlst_outdir,mlst_organism)
+        #mlst_cmd="/home/linsslab01/miniconda3/bin/python3 /work/linsslab01/mlst/mlst.py -i {} -o {} -s {}".format(relative_input,mlst_outdir,mlst_organism)
         print(mlst_cmd, "\n")
         try:
             mlst, err = utils_.run_cmd3(mlst_cmd)
@@ -442,8 +442,8 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         plas_outdir = os.path.join(logpath_, "plasmidfinder")
         utils_.mkdir_join(plas_outdir)
         plas_outdir=plas_outdir.replace("work","home")
-        #plas_cmd = "docker run --rm -it \-v {}:/databases \-v {}:/workdir \plasmidfinder -i {} -o {}".format(PLASMID_DB, current_path, relative_input, plas_outdir)
-        plas_cmd = "singularity exec --containall --bind /work/linsslab01/:/home/linsslab01/ /work/linsslab01/plasmidfinder.sif python3 /home/linsslab01/plasmidfinder/plasmidfinder.py -i {} -o {}".format(relative_input_,plas_outdir)
+        plas_cmd = "docker run --rm -it \-v {}:/databases \-v {}:/workdir \plasmidfinder -i {} -o {}".format(PLASMID_DB, current_path, relative_input, plas_outdir)
+        #plas_cmd = "singularity exec --containall --bind /work/linsslab01/:/home/linsslab01/ /work/linsslab01/plasmidfinder.sif python3 /home/linsslab01/plasmidfinder/plasmidfinder.py -i {} -o {}".format(relative_input_,plas_outdir)
 
         print(plas_cmd, "\n")
         plas = run_cmd(plas_cmd)
@@ -540,16 +540,16 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         time.sleep(3)
         print("not found mlst data.json\n")
         mlst_outdir = os.path.join(logpath_, "mlst")
-        mlst_cmd = "singularity exec --containall --bind /work/linsslab01/:/home/linsslab01/ /work/linsslab01/mlst.sif python3 /home/linsslab01/mlst/mlst.py -i {} -o {} -s {}".format(
-            relative_input_, mlst_outdir.replace("work", "home"), mlst_organism)
-        mlst, err = utils_.run_cmd3(mlst_cmd)
-        mlst_file = os.path.join(relative_path_o2, "mlst/results.txt")
-        with open(mlst_file, "r") as f:
-            data = f.readlines()
-            print(data[6])
-            # Sequence Type: 11
-            sequenceType = data[6].split(" ")
-            sequenceType = sequenceType[len(sequenceType) - 1].strip("\n")
+        #mlst_cmd = "singularity exec --containall --bind /work/linsslab01/:/home/linsslab01/ /work/linsslab01/mlst.sif python3 /home/linsslab01/mlst/mlst.py -i {} -o {} -s {}".format(
+        #    relative_input_, mlst_outdir.replace("work", "home"), mlst_organism)
+        #mlst, err = utils_.run_cmd3(mlst_cmd)
+        #mlst_file = os.path.join(relative_path_o2, "mlst/results.txt")
+        #with open(mlst_file, "r") as f:
+        #    data = f.readlines()
+        #    print(data[6])
+        #    # Sequence Type: 11
+         #   sequenceType = data[6].split(" ")
+         #   sequenceType = sequenceType[len(sequenceType) - 1].strip("\n")
 
     # read plasmidfinder 'gene'
     try:
