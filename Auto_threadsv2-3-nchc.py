@@ -540,6 +540,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         time.sleep(3)
         print("not found mlst data.json\n")
         mlst_outdir = os.path.join(logpath_, "mlst")
+        run_cmd("rm -rf {}".format(mlst_outdir))
         mlst_cmd = "singularity exec --containall --bind /work/linsslab01/:/home/linsslab01/ /work/linsslab01/mlst.sif python3 /home/linsslab01/mlst/mlst.py -i {} -o {} -s {}".format(
             relative_input_, mlst_outdir.replace("work", "home"), mlst_organism)
         mlst, err = utils_.run_cmd3(mlst_cmd)
@@ -673,19 +674,24 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
 
         # if sra_layout==2 continue
         Download(sra_id,_outdir,sra_dir)
-        Assembled(sra_id,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir,thread,gsize,start)
+        Assembled(sra_id,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir,thread,gsize,start,sra_num_)
+        with open("./checkAssembled.txt","a+") as f:
+            f.write("Run {} is ok.\n".format(sra_id))
         #####
 
         genome = os.path.join(ass_dir, "{}_contig.fa".format(sra_id))
         #sys.exit()
         targetPath=QualityCheck(sra_id,_outdir,genome,thread,gsize,start)
         time.sleep(1)
+        with open("./checkQC.txt","a+") as f:
+            f.write("Run {} is ok.\n".format(sra_id))
         print("targetPAth = {}\n######\n".format(targetPath.encode("utf-8").decode()))
         target_ = targetPath.replace(current_path, ".")
         print("target_= {}\n".format(target_))
         time.sleep(1)
         Analysis(sra_id,genome,target_,_outdir,_outdir,thread,gsize,start)
-        global sra_num_
+        with open("./checkAnalysis.txt","a+") as f:
+            f.write("Run {} is ok.\n".format(sra_id))
         global finish_num_
         finish_num_ += 1
         print("{} / {}\n".format(finish_num_,sra_num_))
@@ -898,7 +904,7 @@ if __name__ == '__main__':
                     for k in need_run:
                         print("########### hello %d ############\n" % prog_num)
                         print("########## {}/{} ###########".format(finish_num, count))
-                        pool_list.append(pool.apply_async(SRA_Analysis, (k,sra_dir,ass_dir,fastq_dir,assemble_dir,new_outdir,thread,gsize,start,)))
+                        pool_list.append(pool.apply_async(SRA_Analysis, (k,sra_dir,ass_dir,fastq_dir,assemble_dir,new_outdir,thread,gsize,start,sra_num_,)))
                         #pool.apply_async(test, (k,new_outdir,))
                         #progress_list.append(multiprocessing.Process(target=SRA_Analysis, args=(k,)))
                         prog_num += 1
