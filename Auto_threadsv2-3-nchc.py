@@ -646,7 +646,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
     with open(check, "a+") as f:
         f.write("Run {} is ok.\n".format(inId))
 sra_num_=0
-finish_num=0_
+finish_num=0
 def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gsize,start):
     global sra_num_
     global finish_num_
