@@ -770,7 +770,6 @@ print(sd_Y, sd_M, sd_D)
 print(ed_Y, ed_M, ed_D)
 utils_.mkdir_join(outdir)
 thread = 4
-sra_num_=0
 ##############
 if __name__ == '__main__':
     pool = multiprocessing.Pool(processes=14)
