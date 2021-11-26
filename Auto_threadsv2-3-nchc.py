@@ -782,7 +782,7 @@ utils_.mkdir_join(outdir)
 thread = 4
 ##############
 if __name__ == '__main__':
-    pool = multiprocessing.Pool(processes=14)
+    pool = multiprocessing.Pool(processes=4)
     start=time.time()
     #Month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
@@ -871,7 +871,7 @@ if __name__ == '__main__':
                     run_list=rr.split(",")
 
                 print(run_list)
-                
+
                 sra_dir = os.path.join(new_outdir, "sra")  # .sra file
                 utils_.mkdir_join(sra_dir)
                 ass_dir = os.path.join(new_outdir, "Assembled")
