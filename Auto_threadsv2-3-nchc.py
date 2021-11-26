@@ -651,29 +651,29 @@ sra_num_=0
 finish_num_=0
 def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gsize,start,sra_num_):
     SRA_start=time.time()
-    QC_error=os.path.join(_outdir,"nofillQC.txt")
+    #QC_error=os.path.join(_outdir,"nofillQC.txt")
     try:
-        print("SequenceReadArchive\n")
-        sra = utils_.SequenceReadArchivev2(sra_id)
-        _base_ = sra.base_percentage()*100
-        print("base percentage: ",_base_,"\n")
-        #######Q30 base>=80%
-        if  _base_< 80 :
-            # shutil.rmtree(outdir)
-            with open(QC_error,"a+")as f:
-                f.write("{}: Reads quality is too low\n".format(sra_id))
-            sys.exit('Reads quality is too low.\n')
-        ###### layout = 2
+    #    print("SequenceReadArchive\n")
+    #    sra = utils_.SequenceReadArchivev2(sra_id)
+    #    _base_ = sra.base_percentage()*100
+    #    print("base percentage: ",_base_,"\n")
+    #    #######Q30 base>=80%
+    #    if  _base_< 80 :
+    #        # shutil.rmtree(outdir)
+    #        with open(QC_error,"a+")as f:
+    #            f.write("{}: Reads quality is too low\n".format(sra_id))
+    #        sys.exit('Reads quality is too low.\n')
+    #    ###### layout = 2
 
-        if sra.layout != '2':
-            with open(QC_error,"a+")as f:
-                f.write("{}: File layout is not pair-end\n".format(sra_id))
-            sys.exit(f'File layout is not pair-end\n')
+    #    if sra.layout != '2':
+    #        with open(QC_error,"a+")as f:
+    #            f.write("{}: File layout is not pair-end\n".format(sra_id))
+    #        sys.exit(f'File layout is not pair-end\n')
 
-        print("layout=2\n")
+     #   print("layout=2\n")
 
         # if sra_layout==2 continue
-        Download(sra_id,_outdir,sra_dir)
+        #Download(sra_id,_outdir,sra_dir)
         Assembled(sra_id,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir,thread,gsize,start)
         with open("./checkAssembled.txt","a+") as f:
             f.write("Run {} is ok.\n".format(sra_id))

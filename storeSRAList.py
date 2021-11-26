@@ -1,11 +1,70 @@
 import datetime
 import os
+import sys
+import time
 
 import pandas as pd
 
 import utils_
+def Download(x,_outdir,sra_dir):
+    one_ = time.time()
+    #print(
+    #   "---------------------\n---------------------[ {} / {} ]---------------------\n".format(num + 1,
+    #                                                                                           len(idlist)))
+    #num += 1
+    print("x = {}".format(x))
+    # outdir__ = os.path.join(output, "out")
+    outdir__ = os.path.join(_outdir, "Assembled")
+    check_log = os.path.join(_outdir, "Analysischeck.log")
+    final_dir = os.path.join(outdir__, "{}_contig.fa".format(x))
+    sra_file=os.path.join(sra_dir,"{}/{}.sra".format(x,x))
+    print(final_dir)
+    print(sra_file)
+    if os.path.isfile(final_dir):
+        print("was ran assembly ,contig.fa is exist\n------------------------------\n\n")
+    elif os.path.isfile(sra_file):
+        print("was ran download ,sra is exist\n------------------------------\n\n")
+    else:
+        utils_.prefetch_sra(x, sra_dir)
+        print("Download {}\n.".format(x))
+        #with open(Downloadcheck_log, "a+") as f:
+        #    f.write("{}\n".format(x))
+    dltime=time.time() - one_
+    print('Done,total cost',dltime, 'secs')
+    print("###########################################################")
+
+def sra_stat(sra_id,outdir,sra_dir):
+
+    QC_error = os.path.join(outdir, "nofillQC.txt")
+
+    print("SequenceReadArchive\n")
+    sra = utils_.SequenceReadArchivev2(sra_id)
+    _base_ = sra.base_percentage() * 100
+    print("base percentage: ", _base_, "\n")
+    #######Q30 base>=80%
+    if _base_ < 80:
+        # shutil.rmtree(outdir)
+        with open(QC_error, "a+") as f:
+            f.write("{}: Reads quality is too low\n".format(sra_id))
+        sys.exit('Reads quality is too low.\n')
+    ###### layout = 2
+
+    if sra.layout != '2':
+        with open(QC_error, "a+") as f:
+            f.write("{}: File layout is not pair-end\n".format(sra_id))
+        sys.exit(f'File layout is not pair-end\n')
+
+    print("layout=2\n")
+
+    # if sra_layout==2 continue
+    Download(sra_id, outdir, sra_dir)
+    sraList = os.path.join(outdir, "sraList.txt")
+    with open(sraList, "w+") as f:
+        f.write(sra_id)
+        f.write(",")
 
 def main():
+    start=time.time()
     current_path = os.path.abspath(os.getcwd())
     print("current_path: ", current_path, "\n")
     ## read SRAsetting.txt
@@ -96,6 +155,7 @@ def main():
             ########
             for d in range(sD,eD+1):
 
+
                 pattern = "salmonella enterica[ORGN] AND illumina[PLAT] AND wgs[STRA] AND genomic[SRC] AND paired[LAY]"
 
                 date = datetime.date(yy, mon, d).strftime("%Y/%m/%d")
@@ -105,6 +165,8 @@ def main():
                 new_outdir = os.path.join(outdir, pdat)
                 utils_.mkdir_join(new_outdir)
                 print("output: {}\n".format(new_outdir))
+                sra_dir = os.path.join(new_outdir, "sra")  # .sra file
+                utils_.mkdir_join(sra_dir)
 
                 pattern, count = utils_.count_egquery(pattern, date, date)
                 print("pattern: {}\ncount: {}\n".format(pattern, count))
@@ -116,11 +178,12 @@ def main():
                 runinfo = utils_.Get_RunInfo(idlist)
                 run_list = list(runinfo['Run'])  # get SRAfile nameList stored in run_list
                 print("runinfo: {}\n run_list: {}\n".format(runinfo, run_list))
-                sraList=os.path.join(new_outdir,"sraList.txt")
-                with open(sraList,"w+") as f:
-                    for aa in run_list:
-                        f.write(aa)
-                        f.write(",")
+
+                for aa in run_list:
+                    sra_stat(aa,new_outdir,sra_dir)
+                print('Done,total cost', time.time() - start, 'secs')
+
+
 
 if __name__ == '__main__':
     main()
