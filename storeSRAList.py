@@ -59,9 +59,11 @@ def sra_stat(sra_id,outdir,sra_dir):
     # if sra_layout==2 continue
     Download(sra_id, outdir, sra_dir)
     sraList = os.path.join(outdir, "sraList.txt")
-    with open(sraList, "w+") as f:
+    with open(sraList, "a+") as f:
         f.write(sra_id)
         f.write(",")
+    with open(sraList, "r") as f:
+        print(f.readlines())
 
 def main():
     start=time.time()
