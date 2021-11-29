@@ -38,6 +38,41 @@ def mkdir_join(dir):
         print(e)
     return dir
 
+def prefetch_srav2(sralist,outdir):
+    #ss = " ".join(sralist)
+    #progress_bar("prefetch")
+    outdir
+    try:
+        cmd = "singularity exec --containall --bind /work/linsslab01/:/home/linsslab01/ /work/linsslab01/sra-tools_latest.sif prefetch "+sralist+" --output-directory "+outdir.replace("work","home")
+        print (cmd,"\n")
+        run_cmd3(cmd)
+        time.sleep(1)
+    except Exception as e:
+        print ("prefetch has problem:\n")
+        error_class = e.__class__.__name__  # 取得錯誤類型
+        detail = e.args[0]  # 取得詳細內容
+        cl, exc, tb = sys.exc_info()  # 取得Call Stack
+        lastCallStack = traceback.extract_tb(tb)[-1]  # 取得Call Stack的最後一筆資料
+        fileName = lastCallStack[0]  # 取得發生的檔案名稱
+        lineNum = lastCallStack[1]  # 取得發生的行號
+        funcName = lastCallStack[2]  # 取得發生的函數名稱
+        errMsg = "File \"{}\", line {}, in {}: [{}] {}".format(fileName, lineNum, funcName, error_class, detail)
+        print(errMsg)
+        with open("./SRA_run_error.txt", "a+") as f:
+            f.write("{} :\n{}\n".format(sralist, errMsg))
+        #處理檔案已存在問題
+        current_path = os.path.join(os.path.abspath(os.getcwd()), sralist)
+        print(current_path, "\n")
+        print("shutil.rmtree({})\n".format(current_path))
+        shutil.rmtree(current_path)
+
+        print("######run again\n")
+        run_cmd2(cmd)
+        time.sleep(1)
+        pass
+    print("now download", sralist, "runs.")
+
+
 def prefetch_sra(sralist,outdir):
     #ss = " ".join(sralist)
     #progress_bar("prefetch")
@@ -203,6 +238,48 @@ def dump_fastq_from_sra(srafile, outdir):
     run_cmd(cmd)
     print("#################### dump_fastq_from_sra END ####################\n")
 
+class SequenceReadArchivev3:
+    #sra_file-->filepath
+    def __init__(self,sraid):
+       self._set_sraid(sraid)
+       self._get_stat()
+
+    #設置filepath
+    def _set_sraid(self,sraid):
+        self._sraid = sraid
+
+    #發出指令
+    def _get_stat(self):
+        #sra-stat統計sra文件
+        p = run_cmd2(f'singularity exec --containall --bind /work/linsslab01/:/home/linsslab01/ /work/linsslab01/sra-tools_latest.sif sra-stat -x -s -b 1 -e 2 {self._sraid}')
+        #xml: ElementTree, xml節點: Element
+        #fromstring: 從xml_str構成Element賦予變數self._stat_tree
+        self._stat_tree = ET.fromstring(p.stdout.decode())
+
+    @property
+    def sraid(self):
+        return self._sraid
+
+    @property
+    def layout(self):
+        #find()從節點的直接子節點中查詢,非遞回
+        #.attrib: class dict
+        return self._stat_tree.find('Statistics').attrib['nreads']
+
+    def base_percentage(self):
+        root = self._stat_tree.find('QualityCount')
+        no30_count=0
+        q30_count=0
+        for child in root:
+            #print(child.tag,":",child.attrib['value'].strip())
+            q30=int(child.attrib['value'].strip())
+            count=int(child.attrib['count'].strip())
+            if q30>=30:
+                q30_count+=count
+            else:
+                no30_count+=count
+        print(q30_count , " : ", no30_count)
+        return q30_count/(q30_count+no30_count)
 
 class SequenceReadArchivev2:
     #sra_file-->filepath

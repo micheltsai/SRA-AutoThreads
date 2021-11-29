@@ -26,7 +26,7 @@ def Download(x,_outdir,sra_dir):
     elif os.path.isfile(sra_file):
         print("was ran download ,sra is exist\n------------------------------\n\n")
     else:
-        utils_.prefetch_sra(x, sra_dir)
+        utils_.prefetch_srav2(x, sra_dir)
         print("Download {}\n.".format(x))
         #with open(Downloadcheck_log, "a+") as f:
         #    f.write("{}\n".format(x))
