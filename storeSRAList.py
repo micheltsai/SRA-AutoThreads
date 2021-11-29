@@ -2,6 +2,7 @@ import datetime
 import os
 import sys
 import time
+from pathlib import Path
 
 import pandas as pd
 
@@ -182,6 +183,8 @@ def main():
                 print("runinfo: {}\n run_list: {}\n".format(runinfo, run_list))
 
                 sraList = os.path.join(new_outdir, "sraList.txt")
+                myfile2 = Path(sraList)
+                myfile2.touch(exist_ok=True)
                 f = open(sraList, 'r')
                 line = f.readlines()
                 print("check log :{}\n".format(line))
@@ -193,7 +196,7 @@ def main():
                 finish_run = list(map(lambda x: x, finish))
                 need_run = list(filter(lambda x: x not in finish_run, run_list))
                 print("finish: {}\nfinish_run: {}\nneed_run".format(finish, finish_run, need_run))
-                print("finish length: {}\nfinish_run length: {}\nneed_run length: ".format(len(finish), len(finish_run),
+                print("finish length: {}\nfinish_run length: {}\nneed_run length: {}".format(len(finish), len(finish_run),
                                                                                            len(need_run)))
 
 
