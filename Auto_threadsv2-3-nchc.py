@@ -402,7 +402,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         #mlst_cmd = "docker run --rm -it \-v {}:/databases \-v {}:/workdir \mlst -i {} -o {} -s {}".format(MLST_DB,current_path,relative_input,mlst_outdir,mlst_organism)
 
         #mlst_cmd = "singularity exec --containall --bind /work/linsslab01/:/home/linsslab01/ /work/linsslab01/mlst.sif python3 /home/linsslab01/mlst/mlst.py -i {} -o {} -s {}".format(relative_input_,mlst_outdir.replace("work", "home"),mlst_organism)
-        mlst_cmd="/home/linsslab01/miniconda3/bin/python3 /work/linsslab01/mlst/mlst.py -i {} -o {} -s {}".format(relative_input,mlst_outdir,mlst_organism)
+        mlst_cmd="/home/linsslab01/miniconda3/bin/python3 /work/linsslab01/mlst/mlst.py -i {} -o {} -s {}".format(relative_input.replace("work","home"),mlst_outdir,mlst_organism)
         print(mlst_cmd, "\n")
         try:
             mlst, err = utils_.run_cmd3(mlst_cmd)
@@ -444,7 +444,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         utils_.mkdir_join(plas_outdir)
         plas_outdir=plas_outdir.replace("work","home")
         #plas_cmd = "docker run --rm -it \-v {}:/databases \-v {}:/workdir \plasmidfinder -i {} -o {}".format(PLASMID_DB, current_path, relative_input, plas_outdir)
-        plas_cmd = "singularity exec --containall --bind /work/linsslab01/:/home/linsslab01/ /work/linsslab01/plasmidfinder.sif python3 /home/linsslab01/plasmidfinder/plasmidfinder.py -i {} -o {}".format(relative_input_,plas_outdir)
+        plas_cmd = "singularity exec --containall --bind /work/linsslab01/:/home/linsslab01/ /work/linsslab01/plasmidfinder.sif python3 /home/linsslab01/plasmidfinder/plasmidfinder.py -i {} -o {}".format(relative_input_.replace("work","home"),plas_outdir)
 
         print(plas_cmd, "\n")
         plas = run_cmd(plas_cmd)
