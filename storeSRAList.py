@@ -189,8 +189,8 @@ def main():
 
                 for s in line:
                     print("{}\n".format(s))
-                finish = list(filter(lambda x: len(x.split(" ")) >= 4, line))
-                finish_run = list(map(lambda x: x.split(" ")[1], finish))
+                finish = list(filter(lambda x: len(x.split(",")) >= 4, line))
+                finish_run = list(map(lambda x: x, finish))
                 need_run = list(filter(lambda x: x not in finish_run, run_list))
                 print("finish: {}\nfinish_run: {}\nneed_run".format(finish, finish_run, need_run))
                 print("finish length: {}\nfinish_run length: {}\nneed_run length: ".format(len(finish), len(finish_run),
