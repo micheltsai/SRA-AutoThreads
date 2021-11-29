@@ -264,7 +264,8 @@ def QualityCheck(sra_id,_outdir,genome_Path,thread,gsize,start):
     # use conda enterring the busco VM(vm name is "busco")
     busco_time = time.time()
     outdir_bus = os.path.join(outdir, 'busco_db')
-    busco_db = utils_.mkdir_join(outdir_bus)
+    busco_db="/work/linsslab01/busco_db"
+    #busco_db = utils_.mkdir_join(outdir_bus)
 
     # -f overwrite
 
