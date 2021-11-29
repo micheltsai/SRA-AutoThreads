@@ -181,7 +181,23 @@ def main():
                 run_list = list(runinfo['Run'])  # get SRAfile nameList stored in run_list
                 print("runinfo: {}\n run_list: {}\n".format(runinfo, run_list))
 
-                for aa in run_list:
+                sraList = os.path.join(new_outdir, "sraList.txt")
+                f = open(sraList, 'r')
+                line = f.readlines()
+                print("check log :{}\n".format(line))
+                f.close()
+
+                for s in line:
+                    print("{}\n".format(s))
+                finish = list(filter(lambda x: len(x.split(" ")) >= 4, line))
+                finish_run = list(map(lambda x: x.split(" ")[1], finish))
+                need_run = list(filter(lambda x: x not in finish_run, run_list))
+                print("finish: {}\nfinish_run: {}\nneed_run".format(finish, finish_run, need_run))
+                print("finish length: {}\nfinish_run length: {}\nneed_run length: ".format(len(finish), len(finish_run),
+                                                                                           len(need_run)))
+
+
+                for aa in need_run:
                     sra_stat(aa,new_outdir,sra_dir)
                 print('Done,total cost', time.time() - start, 'secs')
 
