@@ -50,17 +50,17 @@ def run_cmd(cmd):
     print(cmd)
     p = subprocess.Popen(cmd, shell=False, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     #print (cmd)
-    print("--------------------------------------\nSubprogram output:\n")
+    print("--------------------------------------\n{}\noutput:\n".format(cmd))
     while p.poll() is None:
         #progress_bar("sub excuting")
         line = p.stdout.readline()
         line = line.strip()
-        if line:
-            line_=line.decode().split("\n")
-            for s in line_:
-                print (str("{}\n".format(s)))
-            sys.stdout.flush()
-            sys.stderr.flush()
+        #if line:
+        #    line_=line.decode().split("\n")
+        #    for s in line_:
+        #        print (str("{}\n".format(s)))
+        #    sys.stdout.flush()
+        #    sys.stderr.flush()
     if p.returncode ==0:
         print ("Subprogram sucess")
     else:
@@ -405,7 +405,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         mlst_cmd="/home/linsslab01/miniconda3/bin/python3 /work/linsslab01/mlst/mlst.py -i {} -o {} -s {}".format(relative_input.replace("work","home"),mlst_outdir,mlst_organism)
         print(mlst_cmd, "\n")
         try:
-            mlst, err = utils_.run_cmd3(mlst_cmd)
+            mlst, err = run_cmd(mlst_cmd)
         except Exception as e:
             print("mlst err\n")
             with open("./err_need_again.txt","a+"):
@@ -693,9 +693,20 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
         Analysis(sra_id,genome,target_,_outdir,_outdir,thread,gsize,start)
         with open("./checkAnalysis.txt","a+") as f:
             f.write("Run {} is ok.\n".format(sra_id))
-        global finish_num_
-        finish_num_ += 1
+        #global finish_num_
+        #finish_num_ += 1
+        check_log = os.path.join(_outdir, "Analysischeck.log")
+        with open(check_log, "a+") as f:
+            f.write("Run {} is ok.\n".format(sra_id))
+
+        with open(check_log,"r") as f:
+            check_lines=f.readlines()
+
+        finish = list(filter(lambda x: len(x.split(" ")) >= 4, check_lines))
+        finish_num_ = list(map(lambda x: x.split(" ")[1], finish))
+        print("finish num={}\n".format(finish_num_))
         print("{} / {}\n".format(finish_num_,sra_num_))
+
         print("Run {} is Done\n".format(sra_id))
         with open("./threads_time.csv", "a+") as f:
             fieldnames = ["func", "time"]
@@ -703,16 +714,9 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
             writer.writeheader()
             writer.writerow({"func": "{}".format(sra_id), "time": str(time.time() - SRA_start)})
         #######
-        check_log = os.path.join(_outdir, "Analysischeck.log")
-        with open(check_log,"a+") as f:
-            f.write("Run {} is ok.\n".format(sra_id))
-
         print('Done,current total cost', time.time() - start, 'secs\n')
-        with open(check_log,"r") as f:
-            check_lines=f.readlines()
-        finish = list(filter(lambda x: len(x.split(" ")) >= 4, check_lines))
-        finish_num_ = list(map(lambda x: x.split(" ")[1], finish))
-        print("finish num={}\n".format(finish_num_))
+
+
         if finish_num_ == sra_num_:
             print("kill {}\n".format(os.getpid()))
             with open("./run_time.txt", "a+") as f:
