@@ -647,7 +647,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
     # after run all state, save ID in "Anackeck.log" and remove ./analysis
     with open(check, "a+") as f:
         f.write("Run {} is ok.\n".format(inId))
-
+    return 0
 sra_num_=0
 finish_num_=0
 def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gsize,start,sra_num_):
@@ -708,6 +708,11 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
             f.write("Run {} is ok.\n".format(sra_id))
 
         print('Done,current total cost', time.time() - start, 'secs\n')
+        with open(check_log,"r") as f:
+            check_lines=f.readlines()
+        finish = list(filter(lambda x: len(x.split(" ")) >= 4, check_lines))
+        finish_num_ = list(map(lambda x: x.split(" ")[1], finish))
+        print("finish num={}\n".format(finish_num_))
         if finish_num_ == sra_num_:
             print("kill {}\n".format(os.getpid()))
             with open("./run_time.txt", "a+") as f:
@@ -725,7 +730,7 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
         with open("./SRA_run_error.txt", "a+") as f:
             f.write("{} :\n{}\n".format(sra_id, errMsg))
         sys.exit(e)
-
+    sys.exit("subpreocess End\n")
     return 0
 
 def test(sra_id,_outdir):
@@ -961,6 +966,7 @@ if __name__ == '__main__':
     #time.sleep(3)
     #signal.signal(signal.SIGCHLD, wait_child)
     #os.kill(os.getpid(),signal.SIGTERM)
+
     pool.join()
     print("pool.join()\n")
     print("Program Done\n")
