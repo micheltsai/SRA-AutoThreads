@@ -36,7 +36,7 @@ def Download(x,_outdir,sra_dir):
     print('Done,total cost',dltime, 'secs')
     print("###########################################################")
 
-def sra_stat(sra_id,outdir,sra_dir):
+def sra_stat(sra_id,outdir,sra_dir,isfinal):
 
     QC_error = os.path.join(outdir, "nofillQC.txt")
 
@@ -64,7 +64,8 @@ def sra_stat(sra_id,outdir,sra_dir):
     sraList = os.path.join(outdir, "sraList.txt")
     with open(sraList, "a+") as f:
         f.write(sra_id)
-        f.write(",")
+        if isfinal == False:
+            f.write(",")
     with open(sraList, "r") as f:
         print(f.readlines())
 
@@ -203,9 +204,13 @@ if __name__ == '__main__':
                     "finish length: {}\nfinish_run length: {}\nneed_run length: {}".format(len(finish), len(finish_run),
                                                                                            len(need_run)))
                 for aa in need_run:
+                    isFinal=False
+                    if aa == need_run[len(need_run)-1]:
+
+                        isFinal=True
                     try:
                         print("#########################\nhello {}\n".format(aa))
-                        pool_list.append(pool.apply_async(sra_stat,(aa,new_outdir,sra_dir,)))
+                        pool_list.append(pool.apply_async(sra_stat,(aa,new_outdir,sra_dir,isFinal,)))
                         # pool.apply_async(test, (k,new_outdir,))
                         #sra_stat(aa, new_outdir, sra_dir)
                     except KeyboardInterrupt:
