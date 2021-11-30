@@ -212,7 +212,6 @@ if __name__ == '__main__':
                         print("Catch keyboardinterdinterupterror\n")
                         print("srart : {}\n".format(start))
                         print("Download all ", 'Done,total cost', time.time() - start, 'secs')
-                        print("Download {} ".format(date), 'Done,total cost', time.time() - ds, 'secs')
                         pid = os.getgid()
                         with open("./SRA_run_error.txt", "a+") as f:
                             f.write("Catch keyboardinterdinterupterror : {}/{}/{}\n".format())
