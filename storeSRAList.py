@@ -204,6 +204,7 @@ if __name__ == '__main__':
                                                                                            len(need_run)))
                 for aa in need_run:
                     try:
+                        print("#########################\nhello {}\n".format(aa))
                         pool_list.append(pool.apply_async(sra_stat,(aa,new_outdir,sra_dir,)))
                         # pool.apply_async(test, (k,new_outdir,))
                         #sra_stat(aa, new_outdir, sra_dir)
