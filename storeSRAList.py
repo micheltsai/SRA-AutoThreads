@@ -1,7 +1,9 @@
 import datetime
+import multiprocessing
 import os
 import sys
 import time
+import traceback
 from pathlib import Path
 
 import pandas as pd
@@ -66,8 +68,9 @@ def sra_stat(sra_id,outdir,sra_dir):
     with open(sraList, "r") as f:
         print(f.readlines())
 
-def main():
-    start=time.time()
+if __name__ == '__main__':
+    pool = multiprocessing.Pool(processes=4)
+    start = time.time()
     current_path = os.path.abspath(os.getcwd())
     print("current_path: ", current_path, "\n")
     ## read SRAsetting.txt
@@ -115,7 +118,7 @@ def main():
     utils_.mkdir_join(outdir)
     thread = 4
 
-    for yy in range(sd_Y,ed_Y+1):
+    for yy in range(sd_Y, ed_Y + 1):
         Month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
         ########
         if (yy % 4) == 0:
@@ -143,7 +146,7 @@ def main():
             sD = 1
 
         ########
-        for mon in range(sM, eM+1):
+        for mon in range(sM, eM + 1):
             ###########
             if yy != ed_Y:
                 eD = Month[mon - 1]
@@ -156,8 +159,8 @@ def main():
                     eD = ed_D
                     sD = sd_D
             ########
-            for d in range(sD,eD+1):
-
+            pool_list = []
+            for d in range(sD, eD + 1):
 
                 pattern = "salmonella enterica[ORGN] AND illumina[PLAT] AND wgs[STRA] AND genomic[SRC] AND paired[LAY]"
 
@@ -196,15 +199,44 @@ def main():
                 finish_run = list(map(lambda x: x, finish))
                 need_run = list(filter(lambda x: x not in finish_run, run_list))
                 print("finish: {}\nfinish_run: {}\nneed_run".format(finish, finish_run, need_run))
-                print("finish length: {}\nfinish_run length: {}\nneed_run length: {}".format(len(finish), len(finish_run),
+                print(
+                    "finish length: {}\nfinish_run length: {}\nneed_run length: {}".format(len(finish), len(finish_run),
                                                                                            len(need_run)))
-
-
                 for aa in need_run:
-                    sra_stat(aa,new_outdir,sra_dir)
-                print('Done,total cost', time.time() - start, 'secs')
+                    try:
+                        pool_list.append(pool.apply_async(sra_stat,(aa,new_outdir,sra_dir,)))
+                        # pool.apply_async(test, (k,new_outdir,))
+                        #sra_stat(aa, new_outdir, sra_dir)
+                    except KeyboardInterrupt:
+                        print("Catch keyboardinterdinterupterror\n")
+                        print("srart : {}\n".format(start))
+                        print("Download all ", 'Done,total cost', time.time() - start, 'secs')
+                        print("Download {} ".format(date), 'Done,total cost', time.time() - ds, 'secs')
+                        pid = os.getgid()
+                        with open("./SRA_run_error.txt", "a+") as f:
+                            f.write("Catch keyboardinterdinterupterror : {}/{}/{}\n".format())
+                        # with open("./Automate_check.log", "a+") as f:
+                        #    f.write("keyboardinterupter")
+                        #    f.write("{}:{}:{}\n".format(date, time.time() - ds, time.time() - start))
+                        # sys.exit("Catch keyboardinterdinterupterror")
+                        os.popen("taskkill.exe /f /pid:%d" % pid)
+                    except Exception as e:
+                        error_class = e.__class__.__name__  # 取得錯誤類型
+                        detail = e.args[0]  # 取得詳細內容
+                        cl, exc, tb = sys.exc_info()  # 取得Call Stack
+                        lastCallStack = traceback.extract_tb(tb)[-1]  # 取得Call Stack的最後一筆資料
+                        fileName = lastCallStack[0]  # 取得發生的檔案名稱
+                        lineNum = lastCallStack[1]  # 取得發生的行號
+                        funcName = lastCallStack[2]  # 取得發生的函數名稱
+                        errMsg = "File \"{}\", line {}, in {}: [{}] {}".format(fileName, lineNum, funcName, error_class,
+                                                                               detail)
+                        print(errMsg)
+                        with open("./SRA_run_error.txt", "a+") as f:
+                            f.write("{} :\n{}\n".format(date, errMsg))
+    pool.close()
+    print("pool.close()\n")
+    pool.join()
+    print("pool.join()\n")
+    print("Program Done\n")
 
-
-
-if __name__ == '__main__':
-    main()
+    print('Done,total cost', time.time() - start, 'secs')
