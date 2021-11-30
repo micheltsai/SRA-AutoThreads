@@ -82,7 +82,7 @@ def prefetch_srav2(sralist,outdir):
             errMsg = "File \"{}\", line {}, in {}: [{}] {}".format(fileName, lineNum, funcName, error_class, detail)
             print(errMsg)
             with open("./prefetch_err.txt", "a+") as f:
-                f.write("{} :\n{}\n".format(sralist, errMsg))
+                f.write("{}\n".format(sralist))
         time.sleep(1)
         pass
     print("now download", sralist, "runs.")
