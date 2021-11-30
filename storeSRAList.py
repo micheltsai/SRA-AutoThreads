@@ -39,7 +39,7 @@ def sra_stat(sra_id,outdir,sra_dir):
     QC_error = os.path.join(outdir, "nofillQC.txt")
 
     print("SequenceReadArchive\n")
-    sra = utils_.SequenceReadArchivev2(sra_id)
+    sra = utils_.SequenceReadArchivev3(sra_id)
     _base_ = sra.base_percentage() * 100
     print("base percentage: ", _base_, "\n")
     #######Q30 base>=80%
