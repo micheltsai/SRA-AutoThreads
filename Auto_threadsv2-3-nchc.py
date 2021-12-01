@@ -176,7 +176,7 @@ def QualityCheck(sra_id,_outdir,genome_Path,thread,gsize,start):
     info_txt = os.path.join(outdir_ani, '{}_info.txt'.format(gID))  # stroed fastANI output in out.txt
     db = buscoDB
     mode = buscoMode
-    utils_.progress_bar("load args")
+
     with open("./ana_time.csv", "a+") as f:
         fieldnames = ["func", "time"]
         writer = csv.DictWriter(f, fieldnames=fieldnames)
@@ -193,7 +193,7 @@ def QualityCheck(sra_id,_outdir,genome_Path,thread,gsize,start):
     print("-------------------------------fastANI start.-------------------------------")
     print("reseq: {}\n qen: {}\n outdir: {}\nout_txt: {}\n{}\n".format(refPath, genome_Path, outdir, outfile,
                                                                        os.path.join(outdir_ani, outfile_)))
-    utils_.progress_bar("fastANI excuting")
+    #utils_.progress_bar("fastANI excuting")
     #fastani_ = "/data/usrhome/LabSSLin/user30/Desktop/FastANI/fastANI -t {} --rl {} -q {} -o {}".format(thread,refPath, genome_Path, outfile)
     fastani_ = "/home/linsslab01/FastANI/fastANI -t {} --rl {} -q {} -o {}".format(thread, refPath,genome_Path,outfile)
     print(fastani_ + "\n")
