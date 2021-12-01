@@ -425,12 +425,6 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
                 f.write("mlst is ok\n")
         step += 1
 
-        # time
-        with open("./ana_time.csv", "a+") as f:
-            fieldnames = ["func", "time"]
-            writer = csv.DictWriter(f, fieldnames=fieldnames)
-            writer.writeheader()
-            writer.writerow({"func": "{} mlst".format(inId), "time": str(time.time() - step1_time)})
     else:
         print("**********       mlst was running.      **********\n next step\n")
     time.sleep(2)
