@@ -131,10 +131,10 @@ def Assembled(x,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir,thread,gsize,star
         # print ("shutil.rmtree({})\n".format(current_path))
         #utils_.run_cmd2("rm -rf {}".format(current_path))
         #print("remove {}\n".format(current_path))
-        rmsra_cmd="rm -rf {}".format(sra_file_dir)
-        print(rmsra_cmd)
-        print("remove {}.sra".format(x))
-        run_cmd(rmsra_cmd)
+        #rmsra_cmd="rm -rf {}".format(sra_file_dir)
+        #print(rmsra_cmd)
+       # print("remove {}.sra".format(x))
+        #run_cmd(rmsra_cmd)
 
 
 def QualityCheck(sra_id,_outdir,genome_Path,thread,gsize,start):
