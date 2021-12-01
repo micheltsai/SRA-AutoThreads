@@ -406,24 +406,26 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         print(mlst_cmd, "\n")
         try:
             mlst, err = utils_.run_cmd3(mlst_cmd)
+
+            with open(logpath, "a+") as f:
+                if mlst.returncode != 0:
+                    # print(mlst.stdout.readline())
+                    # print(err)
+                    f.write(err + "\n")
+                    sys.exit()
+                else:
+                    f.write("mlst is ok\n")
+            step += 1
         except Exception as e:
+            print(e)
             print("mlst err\n")
             with open("./err_need_again.txt","a+") as f1:
                 f1.write(sra_id)
                 f1.close()
-            mlst, err = utils_.run_cmd3(mlst_cmd)
+            utils_.run_cmd(mlst_cmd)
 
 
 
-        with open(logpath, "a+") as f:
-            if mlst.returncode != 0:
-                #print(mlst.stdout.readline())
-                #print(err)
-                f.write(err + "\n")
-                sys.exit()
-            else:
-                f.write("mlst is ok\n")
-        step += 1
 
     else:
         print("**********       mlst was running.      **********\n next step\n")
