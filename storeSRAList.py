@@ -105,7 +105,7 @@ def sra_stat(sra_id, outdir, sra_dir, isfinal):
 
 
 if __name__ == '__main__':
-    pool = multiprocessing.Pool(processes=16)
+    pool = multiprocessing.Pool(processes=50)
     start = time.time()
     current_path = os.path.abspath(os.getcwd())
     print("current_path: ", current_path, "\n")
