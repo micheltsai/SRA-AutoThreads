@@ -511,7 +511,7 @@ def run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,sta
             #print("again")
             #return run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start,check_log)
             #forward_reads, reverse_reads = [os.path.join(fastq_dir, fa) for fa in os.listdir(fastq_dir)]
-            sys.exit("again and exit")
+            sys.exit("{} again and exit\n".format(sra_id))
     with open("./ana_time.csv", "a+") as f:
         fieldnames = ["func", "time"]
         writer = csv.DictWriter(f, fieldnames=fieldnames)
@@ -548,7 +548,7 @@ def run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,sta
     #                                 --- depth<80 ---------> SPAdes
     # de-novo assembly(SPAdes)------>Polish(pilon)---->Contings(最後成果檔案:conting.fa)
     #print("Run assembly pipline 'shovill'")
-    progress_bar("Run assembly pipline 'shovill'")
+    #progress_bar("Run assembly pipline 'shovill'")
     # depth >= 80
 
     shovill_time=time.time()
@@ -708,7 +708,7 @@ def run_for_114(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start
     #                                 --- depth<80 ---------> SPAdes
     # de-novo assembly(SPAdes)------>Polish(pilon)---->Contings(最後成果檔案:conting.fa)
     #print("Run assembly pipline 'shovill'")
-    progress_bar("Run assembly pipline 'shovill'")
+    #progress_bar("Run assembly pipline 'shovill'")
     # depth >= 80
 
     shovill_time=time.time()
