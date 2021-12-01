@@ -405,12 +405,12 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         mlst_cmd="/home/linsslab01/miniconda3/bin/python3 /work/linsslab01/mlst/mlst.py -i {} -o {} -s {}".format(relative_input.replace("work","home"),mlst_outdir,mlst_organism)
         print(mlst_cmd, "\n")
         try:
-            mlst, err = run_cmd(mlst_cmd)
+            mlst, err = utils_.run_cmd(mlst_cmd)
         except Exception as e:
             print("mlst err\n")
-            with open("./err_need_again.txt","a+") as f:
-                f.write(sra_id)
-            sys.exit(e)
+            with open("./err_need_again.txt","a+") as f1:
+                f1.write(sra_id)
+                f1.close()
 
 
 
@@ -447,7 +447,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         plas_cmd = "singularity exec --containall --bind /work/linsslab01/:/home/linsslab01/ /work/linsslab01/plasmidfinder.sif python3 /home/linsslab01/plasmidfinder/plasmidfinder.py -i {} -o {}".format(relative_input_.replace("work","home"),plas_outdir)
 
         print(plas_cmd, "\n")
-        plas = run_cmd(plas_cmd)
+        plas = utils_.run_cmd(plas_cmd)
         with open(logpath, "a+") as f:
             if plas.returncode != 0:
                 # print(mlst.stdout.readline())
