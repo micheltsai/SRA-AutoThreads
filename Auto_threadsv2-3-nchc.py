@@ -405,12 +405,13 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         mlst_cmd="/home/linsslab01/miniconda3/bin/python3 /work/linsslab01/mlst/mlst.py -i {} -o {} -s {}".format(relative_input.replace("work","home"),mlst_outdir,mlst_organism)
         print(mlst_cmd, "\n")
         try:
-            mlst, err = utils_.run_cmd(mlst_cmd)
+            mlst, err = utils_.run_cmd3(mlst_cmd)
         except Exception as e:
             print("mlst err\n")
             with open("./err_need_again.txt","a+") as f1:
                 f1.write(sra_id)
                 f1.close()
+            mlst, err = utils_.run_cmd3(mlst_cmd)
 
 
 
