@@ -36,7 +36,7 @@ def Download(x,_outdir,sra_dir):
     print('Done,total cost',dltime, 'secs')
     print("###########################################################")
 
-def sra_stat(sra_id,outdir,sra_dir,isfinal):
+def sra_stat_old(sra_id,outdir,sra_dir,isfinal):
 
     QC_error = os.path.join(outdir, "nofillQC.txt")
 
@@ -68,6 +68,41 @@ def sra_stat(sra_id,outdir,sra_dir,isfinal):
             f.write(",")
     with open(sraList, "r") as f:
         print(f.readlines())
+
+
+def sra_stat(sra_id, outdir, sra_dir, isfinal):
+    QC_error = os.path.join(outdir, "nofillQC.txt")
+
+    print("SequenceReadArchive\n")
+    sra = utils_.SequenceReadArchivev3(sra_id)
+    _base_ = sra.base_percentage() * 100
+    print("base percentage: ", _base_, "\n")
+    #######Q30 base>=80%
+    if _base_ < 80:
+        # shutil.rmtree(outdir)
+        with open(QC_error, "a+") as f:
+            f.write("{}: Reads quality is too low\n".format(sra_id))
+        sys.exit('Reads quality is too low.\n')
+    else:
+        ###### layout = 2
+        if sra.layout != '2':
+            with open(QC_error, "a+") as f:
+                f.write("{}: File layout is not pair-end\n".format(sra_id))
+            sys.exit(f'File layout is not pair-end\n')
+        else:
+            print("layout=2\n")
+            # if sra_layout==2 continue
+            Download(sra_id, outdir, sra_dir)
+            sraList = os.path.join(outdir, "sraList.txt")
+            with open(sraList, "a+") as f:
+                f.write(sra_id)
+                if isfinal == False:
+                    f.write(",")
+            with open(sraList, "r") as f:
+                print(f.readlines())
+
+
+
 
 if __name__ == '__main__':
     pool = multiprocessing.Pool(processes=16)
