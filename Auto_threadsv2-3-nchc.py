@@ -423,6 +423,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
                 f1.write(sra_id)
                 f1.close()
             utils_.run_cmd(mlst_cmd)
+            pass
 
 
 
@@ -549,7 +550,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
             # Sequence Type: 11
             sequenceType = data[6].split(" ")
             sequenceType = sequenceType[len(sequenceType) - 1].strip("\n")
-
+        pass
     # read plasmidfinder 'gene'
     try:
         plas_file = os.path.join(relative_path_o2, "plasmidfinder/results_tab.tsv")
@@ -564,6 +565,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         pladf = pd.read_table(plas_file, sep='\t')
         # print(df)
         pladf = pd.DataFrame(pladf)
+        pass
     print(pladf)
     print(pladf.columns)
     print(pladf.Plasmid)
@@ -789,7 +791,7 @@ utils_.mkdir_join(outdir)
 thread = 4
 ##############
 if __name__ == '__main__':
-    pool = multiprocessing.Pool(processes=4)
+    pool = multiprocessing.Pool(processes=112)
     start=time.time()
     #Month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
@@ -951,10 +953,10 @@ if __name__ == '__main__':
                     funcName = lastCallStack[2]  # 取得發生的函數名稱
                     errMsg = "File \"{}\", line {}, in {}: [{}] {}".format(fileName, lineNum, funcName, error_class,
                                                                            detail)
-                    print(errMsg)
+                    #print(errMsg)
                     with open("./SRA_run_error.txt", "a+") as f:
                         f.write("{} :\n{}\n".format(date, errMsg))
-
+                    sys.exit(errMsg)
                 with open("./Automate_check.log", "a+") as f:
                     f.write("{}\n".format(date))
                 #print("Download all {} ".format(date), 'Done,total cost', time.time() - ds, 'secs')
