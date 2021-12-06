@@ -922,14 +922,15 @@ if __name__ == '__main__':
                         print("########### hello %d ############\n" % prog_num)
                         print("########## {}/{} ###########".format(finish_num, sra_num_))
                         #pool_list.append(pool.apply_async(SRA_Analysis, (k,sra_dir,ass_dir,fastq_dir,assemble_dir,new_outdir,thread,gsize,start,sra_num_,)))
-                        pool.apply_async(SRA_Analysis, (
-                        k, sra_dir, ass_dir, fastq_dir, assemble_dir, new_outdir, thread, gsize, start, sra_num_,))
                         #pool.apply_async(test, (k,new_outdir,))
-                        #progress_list.append(multiprocessing.Process(target=SRA_Analysis, args=(k,)))
+                        progress_list.append(multiprocessing.Process(target=SRA_Analysis, args=(k,)))
+                        progress_list[prog_num].start()
                         prog_num += 1
                         finish_num += 1
                         #sra_num_+=1
                         time.sleep(1)
+                    for k in need_run:
+                        progress_list[need_run.index(k)].join()
 
 
                 except KeyboardInterrupt:
@@ -966,14 +967,14 @@ if __name__ == '__main__':
                 # for i in range(prog_num):
                 #    progress_list[i].join()
 
-    pool.close()
-    print("pool.close()\n")
+    #pool.close()
+    #print("pool.close()\n")
     #time.sleep(3)
     #signal.signal(signal.SIGCHLD, wait_child)
     #os.kill(os.getpid(),signal.SIGTERM)
 
-    pool.join()
-    print("pool.join()\n")
+    #pool.join()
+    #print("pool.join()\n")
     print("Program Done\n")
     print('Done,total cost', time.time() - start, 'secs')
     with open("./run_time.txt", "a+") as f:
