@@ -732,8 +732,9 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
         errMsg = "File \"{}\", line {}, in {}: [{}] {}".format(fileName, lineNum, funcName, error_class, detail)
         print(errMsg)
         ###
-        process = psutil.Process(os.getpid())
-        print(str(datetime.datetime.now()), process.memory_info().rss)
+        #process = psutil.Process(os.getpid())
+        #print(str(datetime.datetime.now()), process.memory_info().rss)
+        run_cmd("cat /proc/meminfo > checkmem.log")
         ####
         with open("./SRA_run_error.txt", "a+") as f:
             f.write("{} :\n{}\n".format(sra_id, errMsg))
@@ -962,8 +963,9 @@ if __name__ == '__main__':
                                                                            detail)
                     print(errMsg)
                     ###
-                    process = psutil.Process(os.getpid())
-                    print(str(datetime.datetime.now()), process.memory_info().rss)
+                    #process = psutil.Process(os.getpid())
+                    #print(str(datetime.datetime.now()), process.memory_info().rss)
+                    run_cmd("cat /proc/meminfo > checkmem.log")
                     ####
                     with open("./SRA_run_error.txt", "a+") as f:
                         f.write("{} :\n{}\n".format(date, errMsg))
