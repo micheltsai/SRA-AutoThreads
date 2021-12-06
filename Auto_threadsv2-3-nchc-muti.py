@@ -733,7 +733,7 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
         with open("./SRA_run_error.txt", "a+") as f:
             f.write("{} :\n{}\n".format(sra_id, errMsg))
         sys.exit(e)
-    sys.exit("subpreocess End\n")
+    #sys.exit("subpreocess End\n")
     return 0
 
 def test(sra_id,_outdir):
