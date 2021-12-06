@@ -414,7 +414,8 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
                 if mlst.returncode != 0:
                     # print(mlst.stdout.readline())
                     # print(err)
-                    f.write(err + "\n")
+                    f.write(str(err))
+                    f.write("\n")
                     sys.exit()
                 else:
                     f.write("mlst is ok\n")
