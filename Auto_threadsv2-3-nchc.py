@@ -887,7 +887,11 @@ if __name__ == '__main__':
                 with open(sraList,"r") as f:
                     run_list=f.readlines()
 
-                run_list=run_list.split(",")
+                run_list=run_list[0].split(",")
+                print(run_list)
+                for rr in run_list:
+                    rr=rr.strip("\n")
+                    print(rr)
 
                 print(run_list)
 
