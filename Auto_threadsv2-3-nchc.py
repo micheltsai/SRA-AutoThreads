@@ -17,7 +17,6 @@ import time
 import traceback
 from pathlib import Path
 import pandas as pd
-import psutil as psutil
 
 import utils_
 
