@@ -801,7 +801,7 @@ utils_.mkdir_join(outdir)
 thread = 4
 ##############
 if __name__ == '__main__':
-    pool = multiprocessing.Pool(processes=56)
+    pool = multiprocessing.Pool(processes=16)
     start=time.time()
     #Month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
