@@ -458,7 +458,7 @@ def getlayout(path_):
 def run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start,check_log):
     print ("sra_id = {}\nsra_dir = {}\noutdir= {}\n".format(sra_id,sra_dir,outdir))
     path_1 = os.path.join(sra_dir,sra_id)
-    path_=path_1+"/"+sra_id+".sra"
+    path_ = os.path.join(path_1,"{}.sra".format(sra_id))
     #outdir__=os.path.join(outdir, "Assembled")
     #mkdir_join(outdir__)
     #path_= os.path.join(path_,str("{}.sra".format(sra_id)))
