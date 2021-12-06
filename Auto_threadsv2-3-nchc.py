@@ -17,6 +17,7 @@ import time
 import traceback
 from pathlib import Path
 import pandas as pd
+import psutil as psutil
 
 import utils_
 
@@ -730,6 +731,10 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
         funcName = lastCallStack[2]  # 取得發生的函數名稱
         errMsg = "File \"{}\", line {}, in {}: [{}] {}".format(fileName, lineNum, funcName, error_class, detail)
         print(errMsg)
+        ###
+        process = psutil.Process(os.getpid())
+        print(str(datetime.datetime.now()), process.memory_info().rss)
+        ####
         with open("./SRA_run_error.txt", "a+") as f:
             f.write("{} :\n{}\n".format(sra_id, errMsg))
         sys.exit(e)
@@ -791,7 +796,7 @@ utils_.mkdir_join(outdir)
 thread = 4
 ##############
 if __name__ == '__main__':
-    pool = multiprocessing.Pool(processes=112)
+    pool = multiprocessing.Pool(processes=56)
     start=time.time()
     #Month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
@@ -955,7 +960,11 @@ if __name__ == '__main__':
                     funcName = lastCallStack[2]  # 取得發生的函數名稱
                     errMsg = "File \"{}\", line {}, in {}: [{}] {}".format(fileName, lineNum, funcName, error_class,
                                                                            detail)
-                    #print(errMsg)
+                    print(errMsg)
+                    ###
+                    process = psutil.Process(os.getpid())
+                    print(str(datetime.datetime.now()), process.memory_info().rss)
+                    ####
                     with open("./SRA_run_error.txt", "a+") as f:
                         f.write("{} :\n{}\n".format(date, errMsg))
                     sys.exit(errMsg)
