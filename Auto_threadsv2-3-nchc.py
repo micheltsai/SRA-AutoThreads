@@ -205,7 +205,7 @@ def QualityCheck(sra_id,_outdir,genome_Path,thread,gsize,start):
             utils_.run_cmd(fastani_)
             print("fastANI done.\n")
         except Exception as e:
-            utils_.run_cmd("free -h")
+            utils_.run_cmd("free -h > ./checkmem.txt")
 
     # ANI>=95------
     print(
@@ -416,7 +416,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
                     # print(err)
                     f.write(str(err))
                     f.write("\n")
-                    sys.exit()
+                    sys.exit(err)
                 else:
                     f.write("mlst is ok\n")
             step += 1
@@ -693,7 +693,8 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
         target_ = targetPath.replace(current_path, ".")
         print("target_= {}\n".format(target_))
         time.sleep(1)
-        Analysis(sra_id,genome,target_,_outdir,_outdir,thread,gsize,start)
+
+        #Analysis(sra_id,genome,target_,_outdir,_outdir,thread,gsize,start)
         with open("./checkAnalysis.txt","a+") as f:
             f.write("Run {} is ok.\n".format(sra_id))
         #global finish_num_
@@ -968,7 +969,7 @@ if __name__ == '__main__':
                     ###
                     #process = psutil.Process(os.getpid())
                     #print(str(datetime.datetime.now()), process.memory_info().rss)
-                    utils_.run_cmd("free -h")
+                    utils_.run_cmd("free -h > ./checkmem.txt")
                     ####
                     with open("./SRA_run_error.txt", "a+") as f:
                         f.write("{} :\n{}\n".format(date, errMsg))
