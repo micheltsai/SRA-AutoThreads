@@ -404,8 +404,8 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         mlst_datajson = os.path.join(mlst_outdir, "data.json")
         #mlst_cmd = "docker run --rm -it \-v {}:/databases \-v {}:/workdir \mlst -i {} -o {} -s {}".format(MLST_DB,current_path,relative_input,mlst_outdir,mlst_organism)
 
-        #mlst_cmd = "singularity exec --containall --bind /work/linsslab01/:/home/linsslab01/ /work/linsslab01/mlst.sif python3 /home/linsslab01/mlst/mlst.py -i {} -o {} -s {}".format(relative_input_,mlst_outdir.replace("work", "home"),mlst_organism)
-        mlst_cmd="/home/linsslab01/miniconda3/bin/python3 /work/linsslab01/mlst/mlst.py -i {} -o {} -s {}".format(relative_input.replace("work","home"),mlst_outdir,mlst_organism)
+        mlst_cmd = "singularity exec --containall --bind /work/linsslab01/:/home/linsslab01/ /work/linsslab01/mlst.sif python3 /home/linsslab01/mlst/mlst.py -i {} -o {} -s {}".format(relative_input_,mlst_outdir.replace("work", "home"),mlst_organism)
+        #mlst_cmd="/home/linsslab01/miniconda3/bin/python3 /work/linsslab01/mlst/mlst.py -i {} -o {} -s {}".format(relative_input.replace("work","home"),mlst_outdir,mlst_organism)
         print(mlst_cmd, "\n")
         try:
             mlst, err = utils_.run_cmd3(mlst_cmd)
@@ -704,11 +704,11 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
 
         with open(check_log,"r") as f:
             check_lines=f.readlines()
-
         finish = list(filter(lambda x: len(x.split(" ")) >= 4, check_lines))
-        finish_num_ = list(map(lambda x: x.split(" ")[1], finish))
-        print("finish num={}\n".format(finish_num_))
-        print("{} / {}\n".format(finish_num_,sra_num_))
+        finish_num_s = list(map(lambda x: x.split(" ")[1], finish))
+
+        print("finish num={}\n".format(len(finish_num_s)))
+        print("{} / {}\n".format(len(finish_num_s),sra_num_))
 
         print("Run {} is Done\n".format(sra_id))
         with open("./threads_time.csv", "a+") as f:
@@ -717,7 +717,7 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
             writer.writeheader()
             writer.writerow({"func": "{}".format(sra_id), "time": str(time.time() - SRA_start)})
         #######
-        print('Done,current total cost', time.time() - start, 'secs\n')
+        print(str(datetime.datetime.now()),' Done,current total cost', time.time() - start, 'secs\n')
 
 
         if finish_num_ == sra_num_:
@@ -742,7 +742,7 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
         with open("./SRA_run_error.txt", "a+") as f:
             f.write("{} :\n{}\n".format(sra_id, errMsg))
         sys.exit(e)
-    sys.exit("subpreocess End\n")
+    #sys.exit("subpreocess End\n")
     return 0
 
 def test(sra_id,_outdir):
