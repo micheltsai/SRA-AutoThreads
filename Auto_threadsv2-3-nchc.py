@@ -201,8 +201,11 @@ def QualityCheck(sra_id,_outdir,genome_Path,thread,gsize,start):
         print(outfile, " is exist.\n")
         print("fastANI was done.\n")
     else:
-        utils_.run_cmd(fastani_)
-        print("fastANI done.\n")
+        try:
+            utils_.run_cmd(fastani_)
+            print("fastANI done.\n")
+        except Exception as e:
+            run_cmd("cat /proc/meminfo > ./checkmem.log")
 
     # ANI>=95------
     print(
@@ -733,7 +736,7 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
         ###
         #process = psutil.Process(os.getpid())
         #print(str(datetime.datetime.now()), process.memory_info().rss)
-        run_cmd("cat /proc/meminfo > checkmem.log")
+        run_cmd("cat /proc/meminfo > ./checkmem.log")
         ####
         with open("./SRA_run_error.txt", "a+") as f:
             f.write("{} :\n{}\n".format(sra_id, errMsg))
@@ -964,7 +967,7 @@ if __name__ == '__main__':
                     ###
                     #process = psutil.Process(os.getpid())
                     #print(str(datetime.datetime.now()), process.memory_info().rss)
-                    run_cmd("cat /proc/meminfo > checkmem.log")
+                    run_cmd("cat /proc/meminfo > ./checkmem.log")
                     ####
                     with open("./SRA_run_error.txt", "a+") as f:
                         f.write("{} :\n{}\n".format(date, errMsg))
