@@ -738,7 +738,7 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
         ###
         #process = psutil.Process(os.getpid())
         #print(str(datetime.datetime.now()), process.memory_info().rss)
-        utils_.run_cmd("free -h")
+        #utils_.run_cmd("free -h")
         ####
         with open("./SRA_run_error.txt", "a+") as f:
             f.write("{} :\n{}\n".format(sra_id, errMsg))
@@ -910,14 +910,13 @@ if __name__ == '__main__':
                 line = f.readlines()
                 print("check log :{}\n".format(line))
                 f.close()
-
                 for s in line:
                     print("{}\n".format(s))
                 finish = list(filter(lambda x: len(x.split(" ")) >= 4, line))
                 finish_run = list(map(lambda x: x.split(" ")[1], finish))
                 need_run = list(filter(lambda x: x not in finish_run, run_list))
-                print("finish: {}\nfinish_run: {}\nneed_run".format(finish, finish_run, need_run))
-                print("finish length: {}\nfinish_run length: {}\nneed_run length: ".format(len(finish), len(finish_run),
+                print("finish: {}\nfinish_run: {}\nneed_run: {}".format(finish, finish_run, need_run))
+                print("finish length: {}\nfinish_run length: {}\nneed_run length: {}".format(len(finish), len(finish_run),
                                                                                            len(need_run)))
                 print("Toal", len(need_run), "sra runs need to downlaod.")
                 sra_num_ = len(run_list)
