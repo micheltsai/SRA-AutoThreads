@@ -316,11 +316,6 @@ def QualityCheck(sra_id,_outdir,genome_Path,thread,gsize,start):
         f.write("{} is ok.\n".format(gID))
         print("commit on check \n")
 
-    with open("./ana_time.csv", "a+") as f:
-        fieldnames = ["func", "time"]
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
-        writer.writeheader()
-        writer.writerow({"func": "{} busco".format(gID), "time": str(time.time() - busco_time)})
     print('Done,total cost', time.time() - start, 'secs\n')
 
     return targetPath
@@ -724,7 +719,7 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
         if finish_num_ == sra_num_:
             print("kill {}\n".format(os.getpid()))
             with open("./run_time.txt", "a+") as f:
-                f.write("{}/{}:{}-{}: {} secs\n".format(finish_num_,sra_num_,start_date, expiry_date, time.time() - start))
+                f.write("\n{}/{}:{}-{}: {} secs\n".format(finish_num_,sra_num_,start_date, expiry_date, time.time() - start))
     except Exception as e:
         error_class = e.__class__.__name__  # 取得錯誤類型
         detail = e.args[0]  # 取得詳細內容
@@ -733,7 +728,7 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
         fileName = lastCallStack[0]  # 取得發生的檔案名稱
         lineNum = lastCallStack[1]  # 取得發生的行號
         funcName = lastCallStack[2]  # 取得發生的函數名稱
-        errMsg = "File \"{}\", line {}, in {}: [{}] {}".format(fileName, lineNum, funcName, error_class, detail)
+        errMsg = "File \"{}\", line {}, in {}: [{}] {}\n".format(fileName, lineNum, funcName, error_class, detail)
         print(errMsg)
         ###
         #process = psutil.Process(os.getpid())
