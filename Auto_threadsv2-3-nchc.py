@@ -692,7 +692,7 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
         print("target_= {}\n".format(target_))
         time.sleep(1)
 
-        #Analysis(sra_id,genome,target_,_outdir,_outdir,thread,gsize,start)
+        Analysis(sra_id,genome,target_,_outdir,_outdir,thread,gsize,start)
         with open("./checkAnalysis.txt","a+") as f:
             f.write("Run {} is ok.\n".format(sra_id))
         #global finish_num_
