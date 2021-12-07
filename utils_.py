@@ -509,9 +509,11 @@ def run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,sta
             run_cmd("rm -r {}".format(fastq_dir_))
             #agian
             #print("again")
-            #return run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start,check_log)
+            print("rm -r {}\n".format(fastq_dir_))
+            print("and return run_for_114v2({},{},{},{},{},{},{},{},{})\n".format(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start,check_log))
+            return run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start,check_log)
             #forward_reads, reverse_reads = [os.path.join(fastq_dir, fa) for fa in os.listdir(fastq_dir)]
-            sys.exit("{} again and exit\n".format(sra_id))
+            #sys.exit("{} again and exit\n".format(sra_id))
     with open("./ana_time.csv", "a+") as f:
         fieldnames = ["func", "time"]
         writer = csv.DictWriter(f, fieldnames=fieldnames)
