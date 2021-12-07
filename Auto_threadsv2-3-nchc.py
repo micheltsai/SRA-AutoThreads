@@ -689,7 +689,7 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
         print("target_= {}\n".format(target_))
         time.sleep(1)
 
-        Analysis(sra_id,genome,target_,_outdir,_outdir,thread,gsize,start)
+        #Analysis(sra_id,genome,target_,_outdir,_outdir,thread,gsize,start)
         with open("./checkAnalysis.txt","a+") as f:
             f.write("Run {} is ok.\n".format(sra_id))
         #global finish_num_
@@ -796,7 +796,7 @@ utils_.mkdir_join(outdir)
 thread = 4
 ##############
 if __name__ == '__main__':
-    pool = multiprocessing.Pool(processes=16)
+    pool = multiprocessing.Pool(processes=112)
     start=time.time()
     #Month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
