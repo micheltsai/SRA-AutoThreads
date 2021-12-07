@@ -889,9 +889,7 @@ if __name__ == '__main__':
 
                 run_list=run_list[0].split(",")
                 print(run_list)
-                for rr in run_list:
-                    rr=rr.strip("\n")
-                    print(rr)
+                run_list=[rr.strip() for rr in run_list if rr.strip()!='']
 
                 print(run_list)
 
@@ -932,6 +930,7 @@ if __name__ == '__main__':
                 pool_list=[]
                 try:
                     for k in need_run:
+                        k.strip("\n")
                         print("########### hello %d ############\n" % prog_num)
                         print(k)
                         print("########## {}/{} ###########".format(finish_num, sra_num_))
