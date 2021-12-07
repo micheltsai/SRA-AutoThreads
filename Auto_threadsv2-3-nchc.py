@@ -912,7 +912,7 @@ if __name__ == '__main__':
                 print("finish length: {}\nfinish_run length: {}\nneed_run length: {}".format(len(finish), len(finish_run),
                                                                                            len(need_run)))
                 print("Toal", len(need_run), "sra runs need to downlaod.")
-                sra_num_ = len(run_list)
+                sra_num_ = len(need_run)+len(finish_run)
                 finish_num = 0
                 print("len(finish_run)+len(need_run) = {}".format(sra_num_))
                 num = len(finish_run)
