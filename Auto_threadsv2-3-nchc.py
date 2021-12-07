@@ -399,6 +399,9 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         mlst_datajson = os.path.join(mlst_outdir, "data.json")
         #mlst_cmd = "docker run --rm -it \-v {}:/databases \-v {}:/workdir \mlst -i {} -o {} -s {}".format(MLST_DB,current_path,relative_input,mlst_outdir,mlst_organism)
 
+        with open(mlst_datajson,"w+") as f:
+            f.write()
+
         mlst_cmd = "singularity exec --containall --bind /work/linsslab01/:/home/linsslab01/ /work/linsslab01/mlst.sif python3 /home/linsslab01/mlst/mlst.py -i {} -o {} -s {}".format(relative_input_,mlst_outdir.replace("work", "home"),mlst_organism)
         #mlst_cmd="/home/linsslab01/miniconda3/bin/python3 /work/linsslab01/mlst/mlst.py -i {} -o {} -s {}".format(relative_input.replace("work","home"),mlst_outdir,mlst_organism)
         print(mlst_cmd, "\n")
@@ -793,10 +796,9 @@ ed_D = int(expiry_date.split("/")[2])
 print(sd_Y, sd_M, sd_D)
 print(ed_Y, ed_M, ed_D)
 utils_.mkdir_join(outdir)
-thread = 4
 ##############
 if __name__ == '__main__':
-    pool = multiprocessing.Pool(processes=56)
+    pool = multiprocessing.Pool(processes=cpu_process)
     start=time.time()
     #Month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
