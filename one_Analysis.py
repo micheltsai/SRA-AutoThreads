@@ -20,30 +20,52 @@ import pandas as pd
 
 import utils_
 
-logging.basicConfig(
-    level=logging.DEBUG,
-    format='%(asctime)-15s - %(levelname)s - %(message)s'
-)
 
+current_path = os.path.abspath(os.getcwd())
+print("current_path: ", current_path, "\n")
+## read SRAsetting.txt
+utils_.progress_bar("read SRAsetting.txt")
+setting_path = os.path.join(current_path, "SRAsettings.txt")
+with open(setting_path, "r") as f:
+    setList = f.readlines()
 
-def wait_child(signum, frame):
-    logging.info('receive SIGCHLD')
-    try:
-        while True:
-            # -1 表示任意子进程
-            # os.WNOHANG 表示如果没有可用的需要 wait 退出状态的子进程，立即返回不阻塞
-            cpid, status = os.waitpid(-1, os.WNOHANG)
-            if cpid == 0:
-                logging.info('no child process was immediately available')
-                break
-            exitcode = status >> 8
-            logging.info('child process %s exit with exitcode %s', cpid, exitcode)
-    except OSError as e:
-        if e.errno == errno.ECHILD:
-            logging.warning('current process has no existing unwaited-for child processes.')
-        else:
-            raise
-    logging.info('handle SIGCHLD end')
+print(setList)
+i = 0
+settings_dict = {}
+for line in setList:
+    line = line.strip("\n")
+    line_ = line.split("=")
+    if line != "" and len(line_) == 2:
+        print(line_)
+        print("line{}. {}:{}\n".format(i, line_[0], line_[1]))
+        settings_dict.update({line_[0]: line_[1]})
+    i += 1
+print(settings_dict)
+# setting_df=pd.DataFrame(settings_dict)
+setting_df = pd.DataFrame.from_dict(settings_dict, orient='index').T
+print(setting_df.columns)
+
+start_date = str(setting_df['start_date'][0])
+expiry_date = str(setting_df['expiry_date'][0])
+thread = int(setting_df['cpu_thread'][0])
+cpu_process = int(setting_df['process'][0])
+gsize = str(setting_df['gsize'][0])
+outdir = str(setting_df['output_dir'][0])
+ref_dir = str(setting_df['Busco_ReferenceSequenceFileDir_Path'][0])
+buscoDB = str(setting_df['Busco_database'][0])
+buscoMode = str(setting_df['Busco_mode'][0])
+mlstS = str(setting_df['MLST_organism'][0])
+amrS = str(setting_df['AMR_organism'][0])
+# get (Date) to (Date)
+sd_Y = int(start_date.split("/")[0])
+sd_M = int(start_date.split("/")[1])
+sd_D = int(start_date.split("/")[2])
+ed_Y = int(expiry_date.split("/")[0])
+ed_M = int(expiry_date.split("/")[1])
+ed_D = int(expiry_date.split("/")[2])
+print(sd_Y, sd_M, sd_D)
+print(ed_Y, ed_M, ed_D)
+utils_.mkdir_join(outdir)
 
 def run_cmd(cmd):
     cmd=shlex.split(cmd)
@@ -649,30 +671,10 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
     with open(check, "a+") as f:
         f.write("Run {} is ok.\n".format(inId))
     return 0
-sra_num_=0
-finish_num_=0
+
 def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gsize,start,sra_num_):
     SRA_start=time.time()
-    #QC_error=os.path.join(_outdir,"nofillQC.txt")
     try:
-    #    print("SequenceReadArchive\n")
-    #    sra = utils_.SequenceReadArchivev2(sra_id)
-    #    _base_ = sra.base_percentage()*100
-    #    print("base percentage: ",_base_,"\n")
-    #    #######Q30 base>=80%
-    #    if  _base_< 80 :
-    #        # shutil.rmtree(outdir)
-    #        with open(QC_error,"a+")as f:
-    #            f.write("{}: Reads quality is too low\n".format(sra_id))
-    #        sys.exit('Reads quality is too low.\n')
-    #    ###### layout = 2
-
-    #    if sra.layout != '2':
-    #        with open(QC_error,"a+")as f:
-    #            f.write("{}: File layout is not pair-end\n".format(sra_id))
-    #        sys.exit(f'File layout is not pair-end\n')
-
-     #   print("layout=2\n")
 
         # if sra_layout==2 continue
         #Download(sra_id,_outdir,sra_dir)
@@ -704,10 +706,10 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
         with open(check_log,"r") as f:
             check_lines=f.readlines()
         finish = list(filter(lambda x: len(x.split(" ")) >= 4, check_lines))
-        finish_num_ = list(map(lambda x: x.split(" ")[1], finish))
+        finish_num_s = list(map(lambda x: x.split(" ")[1], finish))
 
-        print("finish num={}\n".format(len(finish_num_)))
-        print("{} / {}\n".format(len(finish_num_),sra_num_))
+        print("finish num={}\n".format(len(finish_num_s)))
+        print("{} / {}\n".format(len(finish_num_s),sra_num_))
 
         print("Run {} is Done\n".format(sra_id))
         with open("./threads_time.csv", "a+") as f:
@@ -717,12 +719,6 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
             writer.writerow({"func": "{}".format(sra_id), "time": str(time.time() - SRA_start)})
         #######
         print(str(datetime.datetime.now()),' Done,current total cost', time.time() - start, 'secs\n')
-
-
-        if finish_num == sra_num_:
-            print("kill {}\n".format(os.getpid()))
-            with open("./run_time.txt", "a+") as f:
-                f.write("\n{}/{}:{}-{}: {} secs\n".format(finish_num_,sra_num_,start_date, expiry_date, time.time() - start))
     except Exception as e:
         error_class = e.__class__.__name__  # 取得錯誤類型
         detail = e.args[0]  # 取得詳細內容
@@ -744,262 +740,25 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
     #sys.exit("subpreocess End\n")
     return 0
 
-def test(sra_id,_outdir):
-    print("test\n")
-    check_log = os.path.join(_outdir, "Analysischeck.log")
-    with open(check_log, "a+") as f:
-        f.write("Run {} is ok.\n".format(sra_id))
-    return 0
-##############################
-current_path = os.path.abspath(os.getcwd())
-print("current_path: ", current_path, "\n")
-## read SRAsetting.txt
-utils_.progress_bar("read SRAsetting.txt")
-setting_path = os.path.join(current_path, "SRAsettings.txt")
-with open(setting_path, "r") as f:
-    setList = f.readlines()
-
-print(setList)
-i = 0
-settings_dict = {}
-for line in setList:
-    line = line.strip("\n")
-    line_ = line.split("=")
-    if line != "" and len(line_) == 2:
-        print(line_)
-        print("line{}. {}:{}\n".format(i, line_[0], line_[1]))
-        settings_dict.update({line_[0]: line_[1]})
-    i += 1
-print(settings_dict)
-# setting_df=pd.DataFrame(settings_dict)
-setting_df = pd.DataFrame.from_dict(settings_dict, orient='index').T
-print(setting_df.columns)
-
-start_date = str(setting_df['start_date'][0])
-expiry_date = str(setting_df['expiry_date'][0])
-thread = int(setting_df['cpu_thread'][0])
-cpu_process = int(setting_df['process'][0])
-gsize = str(setting_df['gsize'][0])
-outdir = str(setting_df['output_dir'][0])
-ref_dir = str(setting_df['Busco_ReferenceSequenceFileDir_Path'][0])
-buscoDB = str(setting_df['Busco_database'][0])
-buscoMode = str(setting_df['Busco_mode'][0])
-mlstS = str(setting_df['MLST_organism'][0])
-amrS = str(setting_df['AMR_organism'][0])
-# get (Date) to (Date)
-sd_Y = int(start_date.split("/")[0])
-sd_M = int(start_date.split("/")[1])
-sd_D = int(start_date.split("/")[2])
-ed_Y = int(expiry_date.split("/")[0])
-ed_M = int(expiry_date.split("/")[1])
-ed_D = int(expiry_date.split("/")[2])
-print(sd_Y, sd_M, sd_D)
-print(ed_Y, ed_M, ed_D)
-utils_.mkdir_join(outdir)
-##############
 if __name__ == '__main__':
-    pool = multiprocessing.Pool(processes=cpu_process)
-    start=time.time()
-    #Month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+    start = time.time()
+    argvs=sys.argv
+    print(argvs)
+    pdat=argvs[1]
+    sra_num_ = argvs[2]
+    sra_id=argvs[3]
 
-    #####################
-    with open("./Automate_check.log", "a+") as f:
-        f.write(str(datetime.datetime.now()).split(".")[0])
-    for yy in range(sd_Y,ed_Y+1):
-        Month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-        ########
-        if (yy % 4) == 0:
-            if (yy % 100) == 0:
-                if (yy % 400) == 0:
-                    Month = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-            else:
-                Month = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-
-        ########
-        if sd_Y != ed_Y:
-            if sd_Y == yy:
-                sM = sd_M
-                eM = 12
-                sD = sd_D
-                print("a")
-            elif yy == ed_Y:
-                sM = 1
-                eM = ed_M
-                sD = 1
-                print("b")
-        else:
-            sM = sd_M
-            eM = ed_M
-            sD = 1
-
-        ########
-        for mon in range(sM, eM+1):
-            ###########
-            if yy != ed_Y:
-                eD = Month[mon - 1]
-                sD = 1
-            else:
-                if mon != eM:
-                    eD = Month[mon - 1]
-                    sD = 1
-                else:
-                    eD = ed_D
-                    sD = sd_D
-            ########
-            for d in range(sD,eD+1):
-
-                pattern = "salmonella enterica[ORGN] AND illumina[PLAT] AND wgs[STRA] AND genomic[SRC] AND paired[LAY]"
-                ds = time.time()
-
-                date = datetime.date(yy, mon, d).strftime("%Y/%m/%d")
-                # temp="{}/{}/{}".format(str(2020),str(mon+1),str(d))
-                ######
-                pdat = date.replace("/", "")
-                new_outdir = os.path.join(outdir, pdat)
-                utils_.mkdir_join(new_outdir)
-                print("output: {}\n".format(new_outdir))
-
-                # commit
-                check_log = os.path.join(new_outdir, "Analysischeck.log")
-
-                myfile2 = Path(check_log)
-                myfile2.touch(exist_ok=True)
-                with open(check_log, "a+") as f:
-                    f.write(str(datetime.datetime.now()).split(".")[0])
-                    f.write("\n")
-
-                #pattern, count = utils_.count_egquery(pattern, date, date)
-                #print("pattern: {}\ncount: {}\n".format(pattern, count))
-
-                #i_e_ = time.time()
-                #idlist = utils_.IdList_esearch(pattern, 'sra', count)
-
-                #print(idlist)
-
-                #runinfo = utils_.Get_RunInfo(idlist)
-                #run_list = list(runinfo['Run'])  # get SRAfile nameList stored in run_list
-               #print("runinfo: {}\n run_list: {}\n".format(runinfo, run_list))
-                sraList = os.path.join(new_outdir, "sraList.txt")
-
-                with open(sraList,"r") as f:
-                    run_list=f.readlines()
-
-                run_list=run_list[0].split(",")
-                print(run_list)
-                run_list=[rr.strip() for rr in run_list if rr.strip()!='']
-
-                print(run_list)
-
-                sra_dir = os.path.join(new_outdir, "sra")  # .sra file
-                utils_.mkdir_join(sra_dir)
-                ass_dir = os.path.join(new_outdir, "Assembled")
-                utils_.mkdir_join(ass_dir)
-                fastq_dir = os.path.join(new_outdir, 'fastq')
-                utils_.mkdir_join(fastq_dir)
-                assemble_dir = os.path.join(new_outdir, "assembly_result")
-                utils_.mkdir_join(assemble_dir)
-                print("sra_dir:{}\nass_dir={}\nfastq_dir={}\nassemble_dir={}\n".format(sra_dir,ass_dir,fastq_dir,assemble_dir))
-                read_log_ = time.time()
-
-                f = open(check_log, 'r')
-                line = f.readlines()
-                print("check log :{}\n".format(line))
-                f.close()
-                for s in line:
-                    print("{}\n".format(s))
-                finish = list(filter(lambda x: len(x.split(" ")) >= 4, line))
-                finish_run = list(map(lambda x: x.split(" ")[1], finish))
-                need_run = list(filter(lambda x: x not in finish_run, run_list))
-                print("finish: {}\nfinish_run: {}\nneed_run: {}".format(finish, finish_run, need_run))
-                print("finish length: {}\nfinish_run length: {}\nneed_run length: {}".format(len(finish), len(finish_run),
-                                                                                           len(need_run)))
-                print("Toal", len(need_run), "sra runs need to downlaod.")
-                sra_num_ = len(need_run)+len(finish_run)
-                finish_num = 0
-                print("len(finish_run)+len(need_run) = {}".format(sra_num_))
-                num = len(finish_run)
-                progress_list = []
-                prog_num = 0
-
-                finish_num = len(finish_run)
-                finish_num_ = len(finish_run)
-                print("finish_num = {}".format(finish_num))
-                pool_list=[]
-                try:
-                    for k in need_run:
-                        k.strip("\n")
-                        print("########### hello %d ############\n" % prog_num)
-                        print(k)
-                        print("########## {}/{} ###########".format(finish_num, sra_num_))
-                        #pool_list.append(pool.apply_async(SRA_Analysis, (k,sra_dir,ass_dir,fastq_dir,assemble_dir,new_outdir,thread,gsize,start,sra_num_,)))
-                        pool.apply_async(SRA_Analysis, (
-                        k, sra_dir, ass_dir, fastq_dir, assemble_dir, new_outdir, thread, gsize, start, sra_num_,))
-                        #pool.apply_async(test, (k,new_outdir,))
-                        #progress_list.append(multiprocessing.Process(target=SRA_Analysis, args=(k,)))
-                        prog_num += 1
-                        finish_num += 1
-                        #sra_num_+=1
-                        time.sleep(1)
-
-
-                except KeyboardInterrupt:
-                    print("Catch keyboardinterdinterupterror\n")
-                    print("srart : {}\n".format(start))
-                    print("Download all ", 'Done,total cost', time.time() - start, 'secs')
-                    print("Download {} ".format(date), 'Done,total cost', time.time() - ds, 'secs')
-                    pid = os.getgid()
-                    with open("./SRA_run_error.txt", "a+") as f:
-                        f.write("Catch keyboardinterdinterupterror : {}/{}/{}\n".format())
-                    # with open("./Automate_check.log", "a+") as f:
-                    #    f.write("keyboardinterupter")
-                    #    f.write("{}:{}:{}\n".format(date, time.time() - ds, time.time() - start))
-                    #sys.exit("Catch keyboardinterdinterupterror")
-                    os.popen("taskkill.exe /f /pid:%d"%pid)
-                except Exception as e:
-                    error_class = e.__class__.__name__  # 取得錯誤類型
-                    detail = e.args[0]  # 取得詳細內容
-                    cl, exc, tb = sys.exc_info()  # 取得Call Stack
-                    lastCallStack = traceback.extract_tb(tb)[-1]  # 取得Call Stack的最後一筆資料
-                    fileName = lastCallStack[0]  # 取得發生的檔案名稱
-                    lineNum = lastCallStack[1]  # 取得發生的行號
-                    funcName = lastCallStack[2]  # 取得發生的函數名稱
-                    errMsg = "File \"{}\", line {}, in {}: [{}] {}".format(fileName, lineNum, funcName, error_class,
-                                                                           detail)
-                    print(errMsg)
-                    ###
-                    #process = psutil.Process(os.getpid())
-                    #print(str(datetime.datetime.now()), process.memory_info().rss)
-                    utils_.run_cmd("free -h > ./checkmem.txt")
-                    ####
-                    with open("./SRA_run_error.txt", "a+") as f:
-                        f.write("{} :\n{}\n".format(date, errMsg))
-                    sys.exit(errMsg)
-                with open("./Automate_check.log", "a+") as f:
-                    f.write("{}\n".format(date))
-                #print("Download all {} ".format(date), 'Done,total cost', time.time() - ds, 'secs')
-                #time.sleep(3)
-                # for i in range(prog_num):
-                #    progress_list[i].join()
-
-    pool.close()
-    print("pool.close()\n")
-    #time.sleep(3)
-    #signal.signal(signal.SIGCHLD, wait_child)
-    #os.kill(os.getpid(),signal.SIGTERM)
-
-    pool.join()
-    print("pool.join()\n")
-    print("Program Done\n")
-    print('Done,total cost', time.time() - start, 'secs')
-    with open("./run_time.txt", "a+") as f:
-        f.write("{}-{}: {} sec".format(start_date,expiry_date,time.time() - start))
-    with open("./threads_time.csv", "a+") as f:
-        fieldnames = ["func", "time"]
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
-        writer.writeheader()
-        writer.writerow({"func": "{}-{}".format(start_date,expiry_date), "time": str(time.time() - start)})
-    ##########
-
-
-
-
+    new_outdir = os.path.join(outdir, pdat)
+    utils_.mkdir_join(new_outdir)
+    print("output: {}\n".format(new_outdir))
+    check_log = os.path.join(new_outdir, "Analysischeck.log")
+    sra_dir = os.path.join(new_outdir, "sra")  # .sra file
+    utils_.mkdir_join(sra_dir)
+    ass_dir = os.path.join(new_outdir, "Assembled")
+    utils_.mkdir_join(ass_dir)
+    fastq_dir = os.path.join(new_outdir, 'fastq')
+    utils_.mkdir_join(fastq_dir)
+    assemble_dir = os.path.join(new_outdir, "assembly_result")
+    utils_.mkdir_join(assemble_dir)
+    print("sra_dir:{}\nass_dir={}\nfastq_dir={}\nassemble_dir={}\n".format(sra_dir, ass_dir, fastq_dir, assemble_dir))
+    SRA_Analysis(sra_id, sra_dir, ass_dir, fastq_dir, assemble_dir, new_outdir, thread, gsize, start, sra_num_)
