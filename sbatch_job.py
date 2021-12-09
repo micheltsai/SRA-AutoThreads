@@ -196,8 +196,7 @@ def main():
                         f.write("#SBATCH -o test_array_%a.txt\n")
                         f.write("#SBATCH -e array_err_%a.log\n")
                         f.write("echo $SLURM_ARRAY_TASK_ID\n")
-                        f.write("/home/linsslab01/miniconda3/bin/python3 one_Analysis.py {} {} {} {}\n".format(pdat,
-                                                                                                                 need_run,
+                        f.write("/home/linsslab01/miniconda3/bin/python3 one_Analysis.py {} {} {}\n".format(pdat,
                                                                                                                  sra_num_,
                                                                                                                  "$SLURM_ARRAY_TASK_ID"))
                     print("sbatch {}".format(job_file))
