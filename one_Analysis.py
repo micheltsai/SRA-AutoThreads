@@ -769,9 +769,9 @@ if __name__ == '__main__':
     with open(needList,"r") as f:
         needlines=f.readlines()
     need_run=needlines
-    need_run = [rr.strip() for rr in need_run if rr.strip() != '']
+    need_run = [rr.strip() for rr in need_run if rr.strip()!='']
     print(need_run)
-    sra_id=need_run[sra_index]
+    sra_id=need_run[sra_index].strip("\n")
 
     print("sra_dir:{}\nass_dir={}\nfastq_dir={}\nassemble_dir={}\n".format(sra_dir, ass_dir, fastq_dir, assemble_dir))
     #print(need_run)

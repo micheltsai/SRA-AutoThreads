@@ -866,7 +866,7 @@ if __name__ == '__main__':
                 myfile2.touch(exist_ok=True)
                 with open(check_log, "a+") as f:
                     f.write(str(datetime.datetime.now()).split(".")[0])
-                    f.write("\n")
+                    f.write(",")
 
                 #pattern, count = utils_.count_egquery(pattern, date, date)
                 #print("pattern: {}\ncount: {}\n".format(pattern, count))
