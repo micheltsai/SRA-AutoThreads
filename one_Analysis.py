@@ -564,8 +564,10 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         print("not found mlst data.json\n")
         mlst_outdir = os.path.join(logpath_, "mlst")
         run_cmd("rm -rf {}".format(mlst_outdir))
+
         mlst_cmd = "singularity exec --containall --bind /work/linsslab01/:/home/linsslab01/ /work/linsslab01/mlst.sif python3 /home/linsslab01/mlst/mlst.py -i {} -o {} -s {}".format(
             relative_input_.replace("work","home"), mlst_outdir.replace("work", "home"), mlst_organism)
+        print(mlst_cmd)
         mlst, err = utils_.run_cmd3(mlst_cmd)
         mlst_file = os.path.join(relative_path_o2, "mlst/results.txt")
         with open(mlst_file, "r") as f:
