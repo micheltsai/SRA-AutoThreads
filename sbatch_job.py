@@ -185,16 +185,18 @@ def main():
                         prog_num += 1
                         finish_num += 1
                         time.sleep(1)
+                    job_out_o=os.path.join(job_out,"test_array_%a.log")
+                    job_out_err=os.path.join(job_out,"array_err_%a.log")
                     with open(job_file, "w+") as f:
                         f.write("#!/usr/bin/sh\n")
                         f.write("#SBATCH -A MST109178\n")
                         f.write("#SBATCH -J {}_job\n".format(pdat))
-                        f.write("#SBATCH -p ngs48G\n")
-                        f.write("#SBATCH -c 14\n")
-                        f.write("#SBATCH --mem=46g\n")
-                        f.write("#SBATCH --array=1-4\n")
-                        f.write("#SBATCH -o test_array_%a.txt\n")
-                        f.write("#SBATCH -e array_err_%a.log\n")
+                        f.write("#SBATCH -p ngs448core\n")
+                        f.write("#SBATCH -c 56\n")
+                        f.write("#SBATCH -n 8\n")
+                        f.write("#SBATCH --array=1-{}\n".format(sra_num_))
+                        f.write("#SBATCH -o {}\n".format(job_out_o))
+                        f.write("#SBATCH -e {}\n".format(job_out_err))
                         f.write("echo $SLURM_ARRAY_TASK_ID\n")
                         f.write("/home/linsslab01/miniconda3/bin/python3 one_Analysis.py {} {} {}\n".format(pdat,
                                                                                                                  sra_num_,
