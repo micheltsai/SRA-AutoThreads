@@ -175,27 +175,28 @@ def main():
                         print(k)
                         print(need_run.index(k))
                         print("########## {}/{} ###########".format(finish_num, sra_num_))
-                        with open(job_file, "w+") as f:
-                            f.write("#!/usr/bin/sh\n")
-                            f.write("#SBATCH -A MST109178\n")
-                            f.write("#SBATCH -J {}_job\n".format(pdat))
-                            f.write("#SBATCH -p ngs48G\n")
-                            f.write("#SBATCH -c 14\n")
-                            f.write("#SBATCH --mem=46g\n")
-                            f.write("#SBATCH --array=1-4\n")
-                            f.write("#SBATCH -o test_array_%a.txt\n")
-                            f.write("#SBATCH -e array_err_%a.log\n")
-                            f.write("echo $SLURM_ARRAY_TASK_ID\n")
-                            f.write("/home/linsslab01/miniconda/bin/python3 one_Analysis.py {} {} {} {} {}\n".format(pdat,need_run,sra_num_,"$SLURM_ARRAY_TASK_ID",k))
-
-
                         #utils_.run_cmd("sbatch -A MST109178 -J Job_test -p ngs48G -c 14 --mem=46g -o ./out/{}_array_out.log -e ./out/{}_array_out.log "
                         #               "--mail-user=sj985517@gmail.com --mail-type=BEGIN,END --wrap='/home/linsslab01/miniconda/bin/python3 one_Analysis.py'--array=1-4")
                         prog_num += 1
                         finish_num += 1
                         time.sleep(1)
-
-
+                    with open(job_file, "w+") as f:
+                        f.write("#!/usr/bin/sh\n")
+                        f.write("#SBATCH -A MST109178\n")
+                        f.write("#SBATCH -J {}_job\n".format(pdat))
+                        f.write("#SBATCH -p ngs48G\n")
+                        f.write("#SBATCH -c 14\n")
+                        f.write("#SBATCH --mem=46g\n")
+                        f.write("#SBATCH --array=1-4\n")
+                        f.write("#SBATCH -o test_array_%a.txt\n")
+                        f.write("#SBATCH -e array_err_%a.log\n")
+                        f.write("echo $SLURM_ARRAY_TASK_ID\n")
+                        f.write("/home/linsslab01/miniconda/bin/python3 one_Analysis.py {} {} {} {}\n".format(pdat,
+                                                                                                                 need_run,
+                                                                                                                 sra_num_,
+                                                                                                                 "$SLURM_ARRAY_TASK_ID"))
+                    print("sbatch {}".format(job_file))
+                    utils_.run_cmd("sbatch {}".format(job_file))
                 except KeyboardInterrupt:
                     print("Catch keyboardinterdinterupterror\n")
                     print("srart : {}\n".format(start))
