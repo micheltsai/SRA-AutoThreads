@@ -197,6 +197,8 @@ def main():
                         f.write("#SBATCH --array=1-{}\n".format(sra_num_))
                         f.write("#SBATCH -o {}\n".format(job_out_o))
                         f.write("#SBATCH -e {}\n".format(job_out_err))
+                        f.write("#SBATCH --mail-user=sj985517@gmail.com\n")
+                        f.write("#SBATCH --mail-type=BEGIN,END\n")
                         f.write("echo $SLURM_ARRAY_TASK_ID\n")
                         f.write("/home/linsslab01/miniconda3/bin/python3 one_Analysis.py {} {} {}\n".format(pdat,
                                                                                                                  sra_num_,
