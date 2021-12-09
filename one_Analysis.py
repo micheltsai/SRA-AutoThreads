@@ -768,7 +768,7 @@ if __name__ == '__main__':
 
     with open(needList,"r") as f:
         needlines=f.readlines()
-    need_run=needlines[0].split("\n")
+    need_run=needlines
     print(need_run)
     sra_id=need_run[sra_index]
 
