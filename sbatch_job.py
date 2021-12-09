@@ -133,6 +133,7 @@ def main():
                     f.write("\n")
 
                 sraList = os.path.join(new_outdir, "sraList.txt")
+                needList = os.path.join(new_outdir, "need_run.txt")
 
                 with open(sraList, "r") as f:
                     run_list = f.readlines()
@@ -167,7 +168,8 @@ def main():
                 finish_num_ = len(finish_run)
                 print("finish_num = {}".format(finish_num))
                 pool_list = []
-
+                with open(needList, "w+")as f:
+                    f.write()
                 try:
                     for k in need_run:
                         k.strip("\n")
@@ -177,6 +179,9 @@ def main():
                         print("########## {}/{} ###########".format(finish_num, sra_num_))
                         #utils_.run_cmd("sbatch -A MST109178 -J Job_test -p ngs48G -c 14 --mem=46g -o ./out/{}_array_out.log -e ./out/{}_array_out.log "
                         #               "--mail-user=sj985517@gmail.com --mail-type=BEGIN,END --wrap='/home/linsslab01/miniconda/bin/python3 one_Analysis.py'--array=1-4")
+                        with open(needList,"a+"):
+                            f.write("{}\n".format(k))
+
                         prog_num += 1
                         finish_num += 1
                         time.sleep(1)
