@@ -169,7 +169,7 @@ def main():
                 print("finish_num = {}".format(finish_num))
                 pool_list = []
                 with open(needList, "w+")as f:
-                    f.write()
+                    f.write("")
                 try:
                     for k in need_run:
                         k.strip("\n")
