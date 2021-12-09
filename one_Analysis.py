@@ -773,7 +773,7 @@ if __name__ == '__main__':
     print("sra_dir:{}\nass_dir={}\nfastq_dir={}\nassemble_dir={}\n".format(sra_dir, ass_dir, fastq_dir, assemble_dir))
     #print(need_run)
     #print(need_run.type)
-    print(int(argvs[4])-1)
+    print(sra_index)
     print(sra_id)
 
     #SRA_Analysis(sra_id, sra_dir, ass_dir, fastq_dir, assemble_dir, new_outdir, thread, gsize, start, sra_num_)
