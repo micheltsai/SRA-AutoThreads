@@ -173,8 +173,7 @@ def main():
                         k.strip("\n")
                         print("########### hello %d ############\n" % prog_num)
                         print(k)
-                        print(k.index())
-                        print(need_run[k.index()])
+                        print(need_run.index(k))
                         print("########## {}/{} ###########".format(finish_num, sra_num_))
                         with open(job_file, "w+") as f:
                             f.write("#!/usr/bin/sh\n")
