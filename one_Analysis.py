@@ -747,7 +747,7 @@ if __name__ == '__main__':
     pdat=argvs[1]
     need_run=argvs[2]
     sra_num_ = argvs[3]
-    sra_id=need_run[int(argvs[4])]
+    sra_id=need_run[int(argvs[4])-1]
     sra_id_test=argvs[5]
 
     new_outdir = os.path.join(outdir, pdat)
