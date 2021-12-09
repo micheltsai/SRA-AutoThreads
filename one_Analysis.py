@@ -776,4 +776,4 @@ if __name__ == '__main__':
     print(sra_index)
     print(sra_id)
 
-    #SRA_Analysis(sra_id, sra_dir, ass_dir, fastq_dir, assemble_dir, new_outdir, thread, gsize, start, sra_num_)
+    SRA_Analysis(sra_id, sra_dir, ass_dir, fastq_dir, assemble_dir, new_outdir, thread, gsize, start, sra_num_)
