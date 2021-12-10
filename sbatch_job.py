@@ -194,7 +194,7 @@ def main():
                         f.write("#SBATCH -p ngs448core\n")
                         f.write("#SBATCH -c 56\n")
                         f.write("#SBATCH -n 8\n")
-                        f.write("#SBATCH --array=1-{}\n".format(sra_num_))
+                        f.write("#SBATCH --array=1-{}\n".format(len((need_run))))
                         f.write("#SBATCH -o {}\n".format(job_out_o))
                         f.write("#SBATCH -e {}\n".format(job_out_err))
                         f.write("#SBATCH --mail-user=sj985517@gmail.com\n")
