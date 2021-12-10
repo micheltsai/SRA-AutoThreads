@@ -7,6 +7,7 @@ import glob
 import logging
 import multiprocessing
 import os
+import random
 import re
 import shlex
 import shutil
@@ -428,6 +429,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         mlst_cmd="/home/linsslab01/miniconda3/bin/python3 /work/linsslab01/mlst/mlst.py -i {} -o {} -s {}".format(relative_input,mlst_outdir,mlst_organism)
         print(mlst_cmd, "\n")
         try:
+            time.sleep(random.randint(0,30))
             mlst, err = utils_.run_cmd3(mlst_cmd)
 
             with open(logpath, "a+") as f:
