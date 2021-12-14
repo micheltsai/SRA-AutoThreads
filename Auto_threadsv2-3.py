@@ -603,7 +603,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         f.write("Run {} is ok.\n".format(inId))
 
 
-def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gsize,start):
+def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gsize,start,sra_num_):
     SRA_start=time.time()
     QC_error=os.path.join(_outdir,"nofillQC.txt")
     try:
@@ -637,6 +637,28 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
         print("target_= {}\n".format(target_))
         Analysis(sra_id,genome,target_,_outdir,_outdir,thread,gsize,start)
         print("Run {} is Done\n".format(sra_id))
+        #####################
+        check_log = os.path.join(_outdir, "Analysischeck.log")
+        with open(check_log, "a+") as f:
+            f.write("Run {} is ok.\n".format(sra_id))
+        #sra_num_ += 1
+
+        with open(check_log, "r") as f:
+            check_lines = f.readlines()
+        finish = list(filter(lambda x: len(x.split(" ")) >= 4, check_lines))
+        finish_num_ = list(map(lambda x: x.split(" ")[1], finish))
+
+        print("finish num={}\n".format(len(finish_num_)))
+        print("{} / {}\n".format(len(finish_num_), sra_num_))
+
+        print('Done,current total cost', time.time() - start, 'secs\n')
+
+        if finish_num == sra_num_:
+            print("kill {}\n".format(os.getpid()))
+            with open("./run_time.txt", "a+") as f:
+                f.write(
+                    "\n{}/{}:{}-{}: {} secs\n".format(finish_num_, sra_num_, start_date, expiry_date,
+                                                      time.time() - start))
     except Exception as e:
         error_class = e.__class__.__name__  # 取得錯誤類型
         detail = e.args[0]  # 取得詳細內容
@@ -656,11 +678,7 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
         writer.writeheader()
         writer.writerow({"func": "{}".format(sra_id), "time": str(time.time() - SRA_start)})
     #######
-    check_log = os.path.join(_outdir, "Analysischeck.log")
-    with open(check_log,"a+") as f:
-        f.write("Run {} is ok.\n".format(sra_id))
-    sra_num_ +=1
-    print('Done,current total cost', time.time() - start, 'secs\n')
+
     return 0
 
 def test(sra_id,_outdir):
@@ -832,12 +850,14 @@ if __name__ == '__main__':
                 prog_num = 0
                 finish_num = 0
                 finish_num = len(finish_run)
+
+                sra_num_=len(need_run)+len(finish_run)
                 try:
 
                     for k in need_run:
                         print("########### hello %d ############\n" % prog_num)
                         print("########## {}/{} ###########".format(finish_num, count))
-                        pool.apply_async(SRA_Analysis, (k,sra_dir,ass_dir,fastq_dir,assemble_dir,new_outdir,thread,gsize,start,))
+                        pool.apply_async(SRA_Analysis, (k,sra_dir,ass_dir,fastq_dir,assemble_dir,new_outdir,thread,gsize,start,sra_num_,))
                         #pool.apply_async(test, (k,new_outdir,))
                         #progress_list.append(multiprocessing.Process(target=SRA_Analysis, args=(k,)))
                         prog_num += 1
