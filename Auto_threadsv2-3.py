@@ -653,7 +653,7 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
 
         print('Done,current total cost', time.time() - start, 'secs\n')
 
-        if finish_num == sra_num_:
+        if finish_num_ == sra_num_:
             print("kill {}\n".format(os.getpid()))
             with open("./run_time.txt", "a+") as f:
                 f.write(
