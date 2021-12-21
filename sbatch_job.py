@@ -139,10 +139,10 @@ def main():
                     run_list = f.readlines()
 
                 #run_list = run_list[0].split("\n")
-                print(run_list)
-                run_list = [rr.strip() for rr in run_list if rr.strip() != '']
-
-                print(run_list)
+                print("run_list: ",run_list)
+                #run_list = [rr.strip() for rr in run_list if rr.strip() != '']
+                sys.exit()
+                #print(run_list)
                 f = open(check_log, 'r')
                 line = f.readlines()
                 print("check log :{}\n".format(line))
