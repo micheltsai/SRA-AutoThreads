@@ -138,7 +138,7 @@ def main():
                 with open(sraList, "r") as f:
                     run_list = f.readlines()
 
-                run_list = run_list[0].split("\n")
+                #run_list = run_list[0].split("\n")
                 print(run_list)
                 run_list = [rr.strip() for rr in run_list if rr.strip() != '']
 
