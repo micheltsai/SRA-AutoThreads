@@ -419,6 +419,8 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         #MLST_DB = "/home/linsslab01/mlst_db"
         mlst_outdir = os.path.join(logpath_, "mlst")
         utils_.mkdir_join(mlst_outdir)
+        mlst_tmp=os.path.join(mlst_outdir,"tmp")
+
         mlst_datajson = os.path.join(mlst_outdir, "data.json")
         #mlst_cmd = "docker run --rm -it \-v {}:/databases \-v {}:/workdir \mlst -i {} -o {} -s {}".format(MLST_DB,current_path,relative_input,mlst_outdir,mlst_organism)
 
@@ -426,7 +428,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
             f.close()
 
         #mlst_cmd = "singularity exec --containall --bind /work/linsslab01/:/home/linsslab01/ /work/linsslab01/mlst.sif python3 /home/linsslab01/mlst/mlst.py -i {} -o {} -s {}".format(relative_input_.replace("work","home"),mlst_outdir.replace("work", "home"),mlst_organism)
-        mlst_cmd="/home/linsslab01/miniconda3/bin/python3 /work/linsslab01/mlst/mlst.py -i {} -o {} -s {}".format(relative_input,mlst_outdir,mlst_organism)
+        mlst_cmd="/home/linsslab01/miniconda3/bin/python3 /work/linsslab01/mlst/mlst.py -i {} -o {} -s {} -t {}".format(relative_input,mlst_outdir,mlst_organism,mlst_tmp)
         print(mlst_cmd, "\n")
         try:
             time.sleep(random.randint(0,30))
