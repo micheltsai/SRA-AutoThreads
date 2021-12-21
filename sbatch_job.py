@@ -140,7 +140,7 @@ def main():
                 print("run_list: ", run_list)
 
                 #run_list = run_list[0].split("\n")
-                print("run_list: ",run_list)
+                #print("run_list: ",run_list)
                 run_list = [rr.strip() for rr in run_list if rr.strip() != '']
                 sys.exit()
                 #print(run_list)
