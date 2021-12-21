@@ -428,7 +428,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
             f.close()
 
         #mlst_cmd = "singularity exec --containall --bind /work/linsslab01/:/home/linsslab01/ /work/linsslab01/mlst.sif python3 /home/linsslab01/mlst/mlst.py -i {} -o {} -s {}".format(relative_input_.replace("work","home"),mlst_outdir.replace("work", "home"),mlst_organism)
-        mlst_cmd="/home/linsslab01/miniconda3/bin/python3 /work/linsslab01/mlst/mlst.py -i {} -o {} -s {} -t {}".format(relative_input,mlst_outdir,mlst_organism,mlst_tmp)
+        mlst_cmd="/home/linsslab01/miniconda3/bin/python3 /work/linsslab01/mlst/mlst.py -i {} -o {} -s {} -t {}".format(relative_input,mlst_outdir,mlst_organism,mlst_outdir)
         print(mlst_cmd, "\n")
         try:
             time.sleep(random.randint(0,30))
@@ -444,6 +444,10 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
                 else:
                     f.write("mlst is ok\n")
             step += 1
+
+            rmTMP_cmd="rm -rf {}\n".format(mlst_tmp)
+            print(rmTMP_cmd)
+            run_cmd(rmTMP_cmd)
         except Exception as e:
             error_class = e.__class__.__name__  # 取得錯誤類型
             detail = e.args[0]  # 取得詳細內容

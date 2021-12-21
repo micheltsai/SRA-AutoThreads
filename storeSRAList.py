@@ -97,7 +97,7 @@ def sra_stat(sra_id, outdir, sra_dir, isfinal):
             with open(sraList, "a+") as f:
                 f.write(sra_id)
                 if isfinal == False:
-                    f.write(",")
+                    f.write("\n")
             with open(sraList, "r") as f:
                 print(f.readlines())
 
@@ -231,7 +231,7 @@ if __name__ == '__main__':
 
                 for s in line:
                     print("{}\n".format(s))
-                finish = list(filter(lambda x: len(x.split(",")) >= 4, line))
+                finish = list(filter(lambda x: len(x.split(" ")) >= 4, line))
                 finish_run = list(map(lambda x: x, finish))
                 need_run = list(filter(lambda x: x not in finish_run, run_list))
                 print("finish: {}\nfinish_run: {}\nneed_run".format(finish, finish_run, need_run))
