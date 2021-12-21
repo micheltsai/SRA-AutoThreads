@@ -65,7 +65,7 @@ def sra_stat_old(sra_id,outdir,sra_dir,isfinal):
     with open(sraList, "a+") as f:
         f.write(sra_id)
         if isfinal == False:
-            f.write(",")
+            f.write("\n")
     with open(sraList, "r") as f:
         print(f.readlines())
 
