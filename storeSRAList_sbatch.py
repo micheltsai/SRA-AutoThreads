@@ -115,11 +115,6 @@ def sbatch_job(outdir,pdat):
     utils_.mkdir_join(job_out)
 
     check_log = os.path.join(new_outdir, "Analysischeck.log")
-    myfile2 = Path(check_log)
-    myfile2.touch(exist_ok=True)
-    with open(check_log, "a+") as f:
-        f.write(str(datetime.datetime.now()).split(".")[0])
-        f.write("\n")
 
     sraList = os.path.join(new_outdir, "sraList.txt")
     needList = os.path.join(new_outdir, "need_run.txt")
@@ -331,6 +326,7 @@ if __name__ == '__main__':
     ## read SRAsetting.txt
     utils_.progress_bar("read SRAsetting.txt")
     setting_path = os.path.join(current_path, "SRAsettings.txt")
+
     with open(setting_path, "r") as f:
         setList = f.readlines()
 
@@ -372,6 +368,8 @@ if __name__ == '__main__':
     print(ed_Y, ed_M, ed_D)
     utils_.mkdir_join(outdir)
     thread = 4
+
+
 
     for yy in range(sd_Y, ed_Y + 1):
         Month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
@@ -416,6 +414,17 @@ if __name__ == '__main__':
             ########
             pool_list = []
             for d in range(sD, eD + 1):
+                ######
+                date = datetime.date(yy, mon, d).strftime("%Y/%m/%d")
+                pdat = date.replace("/", "")
+                new_outdir = os.path.join(outdir, pdat)
+                check_log = os.path.join(new_outdir, "Analysischeck.log")
+                myfile2 = Path(check_log)
+                myfile2.touch(exist_ok=True)
+                with open(check_log, "a+") as f:
+                    f.write(str(datetime.datetime.now()).split(".")[0])
+                    f.write("\n")
+                ##########
                 main(yy,mon,d)
 
 
