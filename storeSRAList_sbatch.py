@@ -279,7 +279,7 @@ def main(yy,mon,d):
     check_log = os.path.join(new_outdir, "Analysischeck.log")
     for aa in need_run:
         try:
-            if fin_num%200==0: ##if download 200 to sbatch ,and next sbatch has n-200
+            if fin_num>0 and fin_num%200==0: ##if download 200 to sbatch ,and next sbatch has n-200
                 print("fin_num%200==0\n")
                 print("fin_num={}\n".format(fin_num))
                 sbatch_job(outdir,pdat)
