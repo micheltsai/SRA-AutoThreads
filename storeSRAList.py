@@ -36,7 +36,7 @@ def Download(x,_outdir,sra_dir):
     print('Done,total cost',dltime, 'secs')
     print("###########################################################")
 
-def sra_stat_old(sra_id,outdir,sra_dir,isfinal):
+def sra_stat(sra_id,outdir,sra_dir,isfinal):
 
     QC_error = os.path.join(outdir, "nofillQC.txt")
 
@@ -72,7 +72,7 @@ def sra_stat_old(sra_id,outdir,sra_dir,isfinal):
         print(f.readlines())
 
 
-def sra_stat(sra_id, outdir, sra_dir, isfinal):
+def sra_stat_old(sra_id, outdir, sra_dir, isfinal):
     QC_error = os.path.join(outdir, "nofillQC.txt")
 
     print("SequenceReadArchive\n")
