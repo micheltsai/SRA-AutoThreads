@@ -66,7 +66,7 @@ def sra_stat(sra_id,outdir,sra_dir,sraNUM,date):
         #sra_id_=sra_id + "\n"
         #print(sra_id_)
         f.write("Run {} is ok.\n".format(sra_id))
-        time.sleep(1)
+        #time.sleep(1)
 
     with open(sraList, "r") as f:
         sraL=f.readlines()
@@ -245,6 +245,7 @@ if __name__ == '__main__':
                 print(
                     "finish length: {}\nfinish_run length: {}\nneed_run length: {}".format(len(finish), len(finish_run),
                                                                                            len(need_run)))
+                sra_num_=0
                 sra_num_=len(need_run)+len(finish_run)
                 for aa in need_run:
                     isFinal=False
