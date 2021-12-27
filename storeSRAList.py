@@ -64,7 +64,8 @@ def sra_stat_old(sra_id,outdir,sra_dir,isfinal):
     sraList = os.path.join(outdir, "sraList.txt")
     with open(sraList, "a+") as f:
         sra_id_=sra_id + "\n"
-        f.write(sra_id_)
+        print(sra_id_)
+        f.write("{}\n".format(sra_id))
     with open(sraList, "r") as f:
         print(f.readlines())
 
