@@ -239,7 +239,7 @@ if __name__ == '__main__':
                 for s in line:
                     print("{}\n".format(s))
                 finish = list(filter(lambda x: len(x.split(" ")) >= 4, line))
-                finish_run = list(map(lambda x: x, finish))
+                finish_run = list(map(lambda x: x.split(" ")[1], finish))
                 need_run = list(filter(lambda x: x not in finish_run, run_list))
                 print("finish: {}\nfinish_run: {}\nneed_run".format(finish, finish_run, need_run))
                 print(
