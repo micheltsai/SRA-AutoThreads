@@ -427,6 +427,7 @@ if __name__ == '__main__':
                 date = datetime.date(yy, mon, d).strftime("%Y/%m/%d")
                 pdat = date.replace("/", "")
                 new_outdir = os.path.join(outdir, pdat)
+                utils_.mkdir_join(new_outdir)
                 check_log = os.path.join(new_outdir, "Analysischeck.log")
                 myfile2 = Path(check_log)
                 myfile2.touch(exist_ok=True)
