@@ -96,7 +96,7 @@ def sra_stat(sra_id, outdir, sra_dir, isfinal):
             sraList = os.path.join(outdir, "sraList.txt")
             with open(sraList, "a+") as f:
                 f.write(sra_id+"\n")
-
+                time.sleep(1)
             with open(sraList, "r") as f:
                 print(f.readlines())
             fin_num+=1

@@ -36,7 +36,7 @@ def Download(x,_outdir,sra_dir):
     print('Done,total cost',dltime, 'secs')
     print("###########################################################")
 
-def sra_stat(sra_id,outdir,sra_dir,isfinal):
+def sra_stat(sra_id,outdir,sra_dir,sraNUM,date):
 
     QC_error = os.path.join(outdir, "nofillQC.txt")
 
@@ -63,13 +63,17 @@ def sra_stat(sra_id,outdir,sra_dir,isfinal):
     Download(sra_id, outdir, sra_dir)
     sraList = os.path.join(outdir, "sraList.txt")
     with open(sraList, "a+") as f:
-        sra_id_=sra_id + "\n"
-        print(sra_id_)
+        #sra_id_=sra_id + "\n"
+        #print(sra_id_)
         f.write("{}\n".format(sra_id))
         time.sleep(1)
 
     with open(sraList, "r") as f:
-        print(f.readlines())
+        sraL=f.readlines()
+        print("{}: {}\n".format(len(sraL),sraL))
+
+    if sraNUM == len(sraL):
+        sys.exit("{} store SRAList End.\n".format(date))
 
 
 def sra_stat_old(sra_id, outdir, sra_dir, isfinal):
@@ -240,6 +244,7 @@ if __name__ == '__main__':
                 print(
                     "finish length: {}\nfinish_run length: {}\nneed_run length: {}".format(len(finish), len(finish_run),
                                                                                            len(need_run)))
+                sra_num_=len(need_run)+len(finish_run)
                 for aa in need_run:
                     isFinal=False
                     if aa == need_run[len(need_run)-1]:
@@ -247,7 +252,7 @@ if __name__ == '__main__':
                         isFinal=True
                     try:
                         print("#########################\nhello {}\n".format(aa))
-                        pool_list.append(pool.apply_async(sra_stat,(aa,new_outdir,sra_dir,isFinal,)))
+                        pool_list.append(pool.apply_async(sra_stat,(aa,new_outdir,sra_dir,sra_num_,date)))
                         # pool.apply_async(test, (k,new_outdir,))
                         #sra_stat(aa, new_outdir, sra_dir)
                     except KeyboardInterrupt:
