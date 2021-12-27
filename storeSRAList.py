@@ -73,7 +73,8 @@ def sra_stat(sra_id,outdir,sra_dir,sraNUM,date):
         print("{}/{}: {}\n".format(len(sraL),sraNUM,sraL))
 
     if sraNUM == len(sraL):
-        sys.exit("{} store SRAList End.\n".format(date))
+        print("{} store SRAList End.\n".format(date))
+        #sys.exit("{} store SRAList End.\n".format(date))
 
 
 def sra_stat_old(sra_id, outdir, sra_dir, isfinal):
