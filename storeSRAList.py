@@ -70,7 +70,7 @@ def sra_stat(sra_id,outdir,sra_dir,sraNUM,date):
 
     with open(sraList, "r") as f:
         sraL=f.readlines()
-        print("{}: {}\n".format(len(sraL),sraL))
+        print("{}/{}: {}\n".format(len(sraL),sraNUM,sraL))
 
     if sraNUM == len(sraL):
         sys.exit("{} store SRAList End.\n".format(date))
