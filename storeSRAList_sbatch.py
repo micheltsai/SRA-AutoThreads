@@ -316,16 +316,17 @@ def main(yy,mon,d):
             print(errMsg)
             with open("./SRA_run_error.txt", "a+") as f:
                 f.write("{} :\n{}\n".format(date, errMsg))
+    pool.close()
+    print("pool.close()\n")
+    pool.join()
+    print("pool.join()\n")
 
     # if fin_run<200
     print("need_run end. fin_run<200\n")
     print("fin_num={}\n".format(fin_num))
     sbatch_job(outdir, pdat)
 
-    pool.close()
-    print("pool.close()\n")
-    pool.join()
-    print("pool.join()\n")
+
 
 if __name__ == '__main__':
     start = time.time()
