@@ -37,7 +37,7 @@ def Download(x,_outdir,sra_dir):
     print("###########################################################")
 
 def sra_stat(sra_id,outdir,sra_dir,sraNUM,date):
-
+    global finish_num
     QC_error = os.path.join(outdir, "nofillQC.txt")
 
     print("SequenceReadArchive\n")
@@ -49,12 +49,14 @@ def sra_stat(sra_id,outdir,sra_dir,sraNUM,date):
         # shutil.rmtree(outdir)
         with open(QC_error, "a+") as f:
             f.write("{}: Reads quality is too low\n".format(sra_id))
+        finish_num+=1
         sys.exit('Reads quality is too low.\n')
     ###### layout = 2
 
     if sra.layout != '2':
         with open(QC_error, "a+") as f:
             f.write("{}: File layout is not pair-end\n".format(sra_id))
+        finish_num+=1
         sys.exit(f'File layout is not pair-end\n')
 
     print("layout=2\n")
@@ -70,12 +72,12 @@ def sra_stat(sra_id,outdir,sra_dir,sraNUM,date):
 
     with open(sraList, "r") as f:
         sraL=f.readlines()
-        print("{}/{}: {}\n".format(len(sraL),sraNUM,sraL))
+        print("{}/{}: {}\n".format(finish_num,sraNUM,sraL))
 
-    if sraNUM == len(sraL):
+    if sraNUM == finish_num:
         print("{} store SRAList End.\n".format(date))
         #sys.exit("{} store SRAList End.\n".format(date))
-
+    finish_num+=1
 
 def sra_stat_old(sra_id, outdir, sra_dir, isfinal):
     QC_error = os.path.join(outdir, "nofillQC.txt")
