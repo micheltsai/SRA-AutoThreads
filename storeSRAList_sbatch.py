@@ -70,9 +70,9 @@ def sra_stat_old(sra_id,outdir,sra_dir,isfinal):
         print(f.readlines())
 
 
-def sra_stat(sra_id, outdir, sra_dir, isfinal):
+def sra_stat(sra_id, outdir, sra_dir, isfinal,sraNUM,needNUM,date):
     QC_error = os.path.join(outdir, "nofillQC.txt")
-
+    global fin_number
     print("SequenceReadArchive\n")
     sra = utils_.SequenceReadArchivev3(sra_id)
     _base_ = sra.base_percentage() * 100
@@ -82,12 +82,14 @@ def sra_stat(sra_id, outdir, sra_dir, isfinal):
         # shutil.rmtree(outdir)
         with open(QC_error, "a+") as f:
             f.write("{}: Reads quality is too low\n".format(sra_id))
+        fin_number+=1
         sys.exit('Reads quality is too low.\n')
     else:
         ###### layout = 2
         if sra.layout != '2':
             with open(QC_error, "a+") as f:
                 f.write("{}: File layout is not pair-end\n".format(sra_id))
+            fin_number+=1
             sys.exit(f'File layout is not pair-end\n')
         else:
             print("layout=2\n")
@@ -95,12 +97,15 @@ def sra_stat(sra_id, outdir, sra_dir, isfinal):
             Download(sra_id, outdir, sra_dir)
             sraList = os.path.join(outdir, "sraList.txt")
             with open(sraList, "a+") as f:
-                f.write(sra_id+"\n")
-                time.sleep(1)
+                f.write("Run {} is ok.\n".format(sra_id))
             with open(sraList, "r") as f:
-                print(f.readlines())
-            fin_num+=1
-            print("fin_num={}\n".format(fin_num))
+                sraL = f.readlines()
+                print("{}/{}: {}\n".format(fin_number, sraNUM, sraL))
+
+            if needNUM == fin_number:
+                print("{} store SRAList End.\n".format(date))
+                # sys.exit("{} store SRAList End.\n".format(date))
+            fin_number += 1
 
 def sbatch_job(outdir,pdat):
     new_outdir = os.path.join(outdir, pdat)
@@ -268,10 +273,13 @@ def main(yy,mon,d):
     print(
         "finish length: {}\nfinish_run length: {}\nneed_run length: {}".format(len(finish), len(finish_run),
                                                                                len(need_run)))
-    fin_number=len(finish)
+
+    sra_num_=len(need_run)+len(finish_run)
     run_num=1
     ######
     check_log = os.path.join(new_outdir, "Analysischeck.log")
+    global fin_number
+    fin_number=len(finish)
     for aa in need_run:
         try:
             if fin_num>0 and fin_num%200==0: ##if download 200 to sbatch ,and next sbatch has n-200
@@ -280,7 +288,7 @@ def main(yy,mon,d):
                 sbatch_job(outdir,pdat)
             else:
                 print("#########################\nhello {}\n".format(aa))
-                pool_list.append(pool.apply_async(sra_stat, (aa, new_outdir, sra_dir,)))
+                pool_list.append(pool.apply_async(sra_stat, (aa, new_outdir, sra_dir,sra_num_,len(need_run),date)))
                 # pool.apply_async(test, (k,new_outdir,))
                 # sra_stat(aa, new_outdir, sra_dir)
         except KeyboardInterrupt:
