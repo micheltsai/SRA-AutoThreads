@@ -140,7 +140,7 @@ def sbatch_job(outdir,pdat):
     for s in line:
         print("{}\n".format(s))
     finish = list(filter(lambda x: len(x.split(" ")) >= 4, line))
-    finish_run = list(map(lambda x: x.split(" ")[1], finish))
+    finish_run = list(map(lambda x: x, finish))
     need_run = list(filter(lambda x: x not in finish_run, run_list))
     print("finish: {}\nfinish_run: {}\nneed_run: {}".format(finish, finish_run, need_run))
     print(
@@ -267,7 +267,7 @@ def main(yy,mon,d):
     for s in line:
         print("{}\n".format(s))
     finish = list(filter(lambda x: len(x.split(",")) >= 4, line))
-    finish_run = list(map(lambda x: x, finish))
+    finish_run = list(map(lambda x: x.split(" ")[1], finish))
     need_run = list(filter(lambda x: x not in finish_run, run_list))
     print("finish: {}\nfinish_run: {}\nneed_run".format(finish, finish_run, need_run))
     print(
