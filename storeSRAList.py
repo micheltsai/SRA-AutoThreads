@@ -36,7 +36,7 @@ def Download(x,_outdir,sra_dir):
     print('Done,total cost',dltime, 'secs')
     print("###########################################################")
 
-def sra_stat(sra_id,outdir,sra_dir,sraNUM,date):
+def sra_stat(sra_id,outdir,sra_dir,sraNUM,needNUM,date):
     global finish_num
     QC_error = os.path.join(outdir, "nofillQC.txt")
 
@@ -74,7 +74,7 @@ def sra_stat(sra_id,outdir,sra_dir,sraNUM,date):
         sraL=f.readlines()
         print("{}/{}: {}\n".format(finish_num,sraNUM,sraL))
 
-    if sraNUM == finish_num:
+    if needNUM == finish_num:
         print("{} store SRAList End.\n".format(date))
         #sys.exit("{} store SRAList End.\n".format(date))
     finish_num+=1
@@ -256,7 +256,7 @@ if __name__ == '__main__':
                         isFinal=True
                     try:
                         print("#########################\nhello {}\n".format(aa))
-                        pool_list.append(pool.apply_async(sra_stat,(aa,new_outdir,sra_dir,sra_num_,date)))
+                        pool_list.append(pool.apply_async(sra_stat,(aa,new_outdir,sra_dir,sra_num_,len(need_run),date)))
                         # pool.apply_async(test, (k,new_outdir,))
                         #sra_stat(aa, new_outdir, sra_dir)
                     except KeyboardInterrupt:
