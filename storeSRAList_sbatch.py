@@ -70,7 +70,7 @@ def sra_stat_old(sra_id,outdir,sra_dir,isfinal):
         print(f.readlines())
 
 
-def sra_stat(sra_id, outdir, sra_dir, isfinal,sraNUM,needNUM,date):
+def sra_stat(sra_id, outdir, sra_dir, sraNUM, needNUM, date):
     QC_error = os.path.join(outdir, "nofillQC.txt")
     global fin_number
     print("SequenceReadArchive\n")
