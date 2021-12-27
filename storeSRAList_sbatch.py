@@ -357,6 +357,7 @@ if __name__ == '__main__':
     buscoMode = str(setting_df['Busco_mode'][0])
     mlstS = str(setting_df['MLST_organism'][0])
     amrS = str(setting_df['AMR_organism'][0])
+    shovill_RAM = str(setting_df['shovill_RAM'][0])
     # get (Date) to (Date)
     sd_Y = int(start_date.split("/")[0])
     sd_M = int(start_date.split("/")[1])
@@ -367,7 +368,7 @@ if __name__ == '__main__':
     print(sd_Y, sd_M, sd_D)
     print(ed_Y, ed_M, ed_D)
     utils_.mkdir_join(outdir)
-    thread = 4
+
 
 
 

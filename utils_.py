@@ -455,7 +455,7 @@ def getlayout(path_):
     # if sra_layout==2 continue
 
 
-def run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start,check_log):
+def run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start,check_log,shovill_RAM):
     print ("sra_id = {}\nsra_dir = {}\noutdir= {}\n".format(sra_id,sra_dir,outdir))
     path_1 = os.path.join(sra_dir,sra_id)
     path_ = os.path.join(path_1,"{}.sra".format(sra_id))
@@ -559,7 +559,7 @@ def run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,sta
 
     shovill_time=time.time()
     #cmd = f"shovill --R1 {r1} --R2 {r2} --outdir {assemble_dir_} --depth 100 --tmpdir . --cpus {threads} --ram 3 --force"
-    cmd = f"shovill --R1 {r1} --R2 {r2} --outdir {assemble_dir_} --depth 80 --tmpdir . --cpus {threads} --ram 20 --force"
+    cmd = f"shovill --R1 {r1} --R2 {r2} --outdir {assemble_dir_} --depth 80 --tmpdir . --cpus {threads} --ram {shovill_RAM} --force"
     if gsize:
         cmd += f" --gsize {gsize}"
     print(cmd)

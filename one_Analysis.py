@@ -57,6 +57,7 @@ buscoDB = str(setting_df['Busco_database'][0])
 buscoMode = str(setting_df['Busco_mode'][0])
 mlstS = str(setting_df['MLST_organism'][0])
 amrS = str(setting_df['AMR_organism'][0])
+shovill_RAM=str(setting_df['shovill_RAM'][0])
 # get (Date) to (Date)
 sd_Y = int(start_date.split("/")[0])
 sd_M = int(start_date.split("/")[1])
@@ -147,7 +148,7 @@ def Assembled(x,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir,thread,gsize,star
             utils_.prefetch_sra(x, sra_dir)
             print("not found {}.sra, Download now\n".format(x))
 
-        utils_.run_for_114v2(x, sra_dir, fastq_dir, assemble_dir, _outdir, thread, gsize, start, check_log)
+        utils_.run_for_114v2(x, sra_dir, fastq_dir, assemble_dir, _outdir, thread, gsize, start, check_log, shovill_RAM)
         ### unnecessary ERR file
         #ERR_path = os.path.join(os.path.abspath(os.getcwd()), x)
         #print("suERR_path: ", ERR_path, "\n")

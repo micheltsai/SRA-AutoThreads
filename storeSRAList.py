@@ -63,7 +63,8 @@ def sra_stat_old(sra_id,outdir,sra_dir,isfinal):
     Download(sra_id, outdir, sra_dir)
     sraList = os.path.join(outdir, "sraList.txt")
     with open(sraList, "a+") as f:
-        f.write(sra_id+"\n")
+        sra_id_=sra_id + "\n"
+        f.write(sra_id_)
     with open(sraList, "r") as f:
         print(f.readlines())
 
