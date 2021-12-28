@@ -136,7 +136,7 @@ def main():
                 needList = os.path.join(new_outdir, "need_run.txt")
 
                 with open(sraList, "r") as f:
-                    run_list = f.read().split("\n")[1:-1]
+                    run_list = f.read().split("\n")[0:-1]
                 print("run_list: ", run_list)
                 run_list_ = list(filter(lambda x: len(x.split(" ")) >= 4, run_list))
                 run_list = list(map(lambda x: x.split(" ")[1], run_list_))
