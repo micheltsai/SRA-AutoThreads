@@ -205,7 +205,7 @@ def QualityCheck(sra_id,_outdir,genome_Path,thread,gsize,start):
         fieldnames = ["func", "time"]
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
-        writer.writerow({"func": "read args", "time": str(time.time() - start)})
+        writer.writerow({"func": "Now {} {} read args".format(time.time(),gID), "time": str(time.time() - start)})
 
     ##fastANI-------
     fastANI_time = time.time()
@@ -238,7 +238,7 @@ def QualityCheck(sra_id,_outdir,genome_Path,thread,gsize,start):
         fieldnames = ["func", "time"]
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
-        writer.writerow({"func": "{} fastANI".format(gID), "time": str(time.time() - start)})
+        writer.writerow({"func": "Now {} {} fastANI".format(time.time(), gID), "time": str(time.time() - start)})
 
     # open fastANI output
     f = open(outfile, 'r')
@@ -284,7 +284,7 @@ def QualityCheck(sra_id,_outdir,genome_Path,thread,gsize,start):
         fieldnames = ["func", "time"]
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
-        writer.writerow({"func": "{} fastANI".format(gID), "time": str(time.time() - fastANI_time)})
+        writer.writerow({"func": "Now {} {} fastANI".format(time.time(),gID), "time": str(time.time() - fastANI_time)})
 
     # BUSCO------
     print("-------------------------------ANI>=95 continue, BUSCO start-------------------------------\n")
@@ -474,6 +474,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         print("**********       mlst was running.      **********\n next step\n")
     time.sleep(2)
     # run plasmidfinder
+    print("**********       mlst end.      **********\n next step\n")
     if step < 2:
         step2_time = time.time()
         print("STEP{}\n".format(step + 1))
@@ -501,11 +502,12 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
             fieldnames = ["func", "time"]
             writer = csv.DictWriter(f, fieldnames=fieldnames)
             writer.writeheader()
-            writer.writerow({"func": "{} plasmidfinder".format(inId), "time": str(time.time() - step2_time)})
+            writer.writerow({"func": "Now {} {} plasmidfinder".format(time.time(),inId), "time": str(time.time() - step2_time)})
     else:
         print("********** plasmidfinder was running. **********\n next step\n")
     time.sleep(1)
     # run amrfinder
+    print("**********       plasmidfinder end.      **********\n next step\n")
     if step < 3:
         step3_time = time.time()
         print("STEP{}\n".format(step + 1))
@@ -527,10 +529,11 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
             fieldnames = ["func", "time"]
             writer = csv.DictWriter(f, fieldnames=fieldnames)
             writer.writeheader()
-            writer.writerow({"func": "{} amr".format(inId), "time": str(time.time() - step3_time)})
+            writer.writerow({"func": "Now {} {} amr".format(time.time(),inId), "time": str(time.time() - step3_time)})
     else:
-        print("**********   amrfinderr was running.   **********\n next step\n")
+        print("**********   amrfinder was running.   **********\n next step\n")
 
+    print("**********       amrfinder end.      **********\n next step\n")
     # run sistr
     if step < 4:
         step4_time = time.time()
@@ -557,10 +560,11 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
             fieldnames = ["func", "time"]
             writer = csv.DictWriter(f, fieldnames=fieldnames)
             writer.writeheader()
-            writer.writerow({"func": "{} sistr".format(inId), "time": str(time.time() - step4_time)})
+            writer.writerow({"func": "Now {} {} sistr".format(time.time(),inId), "time": str(time.time() - step4_time)})
     else:
         print("********** sistr was running. **********\n next step\n")
-
+        
+    print("**********       sistr end.      **********\n next step\n")
     ########################
     ########################
     # save data in analysis_final.csv and update DB
