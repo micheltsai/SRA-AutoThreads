@@ -192,7 +192,7 @@ def sbatch_job(outdir,pdat):
             f.write("#SBATCH -J {}_job\n".format(pdat))
             f.write("#SBATCH -p ngs7G\n")
             f.write("#SBATCH -c 2\n")
-            f.write("#SBATCH -mem 7g\n")
+            f.write("#SBATCH --mem 7g\n")
             f.write("#SBATCH --array=1-{}\n".format(len((need_run))))
             f.write("#SBATCH -o {}\n".format(job_out_o))
             f.write("#SBATCH -e {}\n".format(job_out_err))

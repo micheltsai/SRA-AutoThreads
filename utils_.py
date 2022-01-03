@@ -518,11 +518,7 @@ def run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,sta
             #return run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start,check_log)
             #forward_reads, reverse_reads = [os.path.join(fastq_dir, fa) for fa in os.listdir(fastq_dir)]
             #sys.exit("{} again and exit\n".format(sra_id))
-    with open("./ana_time.csv", "a+") as f:
-        fieldnames = ["func", "time"]
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
-        writer.writeheader()
-        writer.writerow({"func": "get forward and reverse reads", "time": str(time.time() - reverse_time)})
+
 
     ## up ok
     # 資料前處理：刪除爛的序列
@@ -533,11 +529,6 @@ def run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,sta
     r1, r2 = trimmingv2(forward_reads, reverse_reads, fastq_dir_, threads)
     print ("r1= {}, r2={}".format(r1,r2))
     # Q30>=90
-    with open("./ana_time.csv", "a+") as f:
-        fieldnames = ["func", "time"]
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
-        writer.writeheader()
-        writer.writerow({"func": "trimming", "time": str(time.time() - trim_time)})
 
     #bases_percentage_time=time.time()
     #if bases_percentage(r1, 30) < 90 and bases_percentage(r2, 30) < 90:
@@ -564,7 +555,7 @@ def run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,sta
         cmd += f" --gsize {gsize}"
     print(cmd)
     run_cmd(cmd)
-
+    print(run_cmd())
     with open("./ana_time.csv", "a+") as f:
         fieldnames = ["func", "time"]
         writer = csv.DictWriter(f, fieldnames=fieldnames)
