@@ -132,29 +132,39 @@ def sbatch_job(outdir,pdat):
     # print("run_list: ",run_list)
     #run_list = [rr.strip() for rr in run_list if rr.strip() != '']
 
-    # print(run_list)
     f = open(sraList, 'r')
     line = f.readlines()
     print("check log :{}\n".format(line))
     f.close()
     for s in line:
         print("{}\n".format(s))
-    finish = list(filter(lambda x: len(x.split(" ")) >= 4, line))
-    finish_run = list(map(lambda x: x.split(" ")[1], finish))
-    need_run = list(filter(lambda x: x not in finish_run, run_list))
-    print("finish: {}\nfinish_run: {}\nneed_run: {}".format(finish, finish_run, need_run))
+    need_list = list(filter(lambda x: len(x.split(" ")) >= 4, line))
+    run_list = list(map(lambda x: x.split(" ")[1], need_list))
+
+
+    # print(run_list)
+    f = open(check_log, 'r')
+    line_Analysis = f.readlines()
+    print("check log :{}\n".format(line_Analysis))
+    f.close()
+    for s in line_Analysis:
+        print("{}\n".format(s))
+    finish_Analysis = list(filter(lambda x: len(x.split(" ")) >= 4, line))
+    finish_Analysis_run = list(map(lambda x: x.split(" ")[1], finish_Analysis))
+    need_run = list(filter(lambda x: x not in finish_Analysis_run, run_list))
+    print("finish: {}\nfinish_run: {}\nneed_run: {}".format(finish_Analysis, finish_Analysis_run, need_run))
     print(
-        "finish length: {}\nfinish_run length: {}\nneed_run length: {}".format(len(finish), len(finish_run),
+        "finish length: {}\nfinish_run length: {}\nneed_run length: {}".format(len(finish_Analysis), len(finish_Analysis_run),
                                                                                len(need_run)))
-    sra_num_ = len(need_run) + len(finish_run)
+    sra_num_ = len(need_run) + len(finish_Analysis_run)
     finish_num = 0
     print("len(finish_run)+len(need_run) = {}".format(sra_num_))
-    num = len(finish_run)
+    num = len(finish_Analysis_run)
     progress_list = []
     prog_num = 0
 
-    finish_num = len(finish_run)
-    finish_num_ = len(finish_run)
+    finish_num = len(finish_Analysis_run)
+    finish_num_ = len(finish_Analysis_run)
     print("finish_num = {}".format(finish_num))
     pool_list = []
     with open(needList, "w+") as f:
@@ -258,11 +268,11 @@ def main(yy,mon,d):
     sraList = os.path.join(new_outdir, "sraList.txt")
     myfile2 = Path(sraList)
     myfile2.touch(exist_ok=True)
+
     f = open(sraList, 'r')
     line = f.readlines()
     print("check log :{}\n".format(line))
     f.close()
-
 
     for s in line:
         print("{}\n".format(s))
