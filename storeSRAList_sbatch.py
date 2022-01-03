@@ -149,9 +149,9 @@ def sbatch_job(outdir,pdat):
     f.close()
     for s in line_Analysis:
         print("{}\n".format(s))
-    finish_Analysis = list(filter(lambda x: len(x.split(" ")) >= 4, line))
+    finish_Analysis = list(filter(lambda x: len(x.split(" ")) >= 4, line_Analysis))
     finish_Analysis_run = list(map(lambda x: x.split(" ")[1], finish_Analysis))
-    need_run = list(filter(lambda x: x not in run_list,finish_Analysis_run))
+    need_run = list(filter(lambda x: x not in finish_Analysis_run, run_list))
     print("finish: {}\nfinish_run: {}\nneed_run: {}".format(finish_Analysis, finish_Analysis_run, need_run))
     print(
         "finish length: {}\nfinish_run length: {}\nneed_run length: {}".format(len(finish_Analysis), len(finish_Analysis_run),
