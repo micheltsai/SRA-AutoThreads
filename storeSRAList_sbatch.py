@@ -202,6 +202,10 @@ def sbatch_job(outdir,pdat):
             f.write("/home/linsslab01/miniconda3/bin/python3 one_Analysis.py {} {} {}\n".format(pdat,
                                                                                                 sra_num_,
                                                                                                 "$SLURM_ARRAY_TASK_ID"))
+        ###
+        print("sbatch before du-sh\n")
+        utils_.run_cmd("du ./SRAtest -sh")
+        ###
         print("sbatch {}".format(job_file))
         utils_.run_cmd("sbatch {}".format(job_file))
     except KeyboardInterrupt:
