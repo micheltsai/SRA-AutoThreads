@@ -201,11 +201,6 @@ def QualityCheck(sra_id,_outdir,genome_Path,thread,gsize,start):
     db = buscoDB
     mode = buscoMode
 
-    with open("./ana_time.csv", "a+") as f:
-        fieldnames = ["func", "time"]
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
-        writer.writeheader()
-        writer.writerow({"func": "Now {} {} read args".format(time.time(),gID), "time": str(time.time() - start)})
 
     ##fastANI-------
     fastANI_time = time.time()
@@ -213,7 +208,9 @@ def QualityCheck(sra_id,_outdir,genome_Path,thread,gsize,start):
     print("current_path: ", current_path, "\n")
     replace_path = outdir.replace(current_path, ".")
     fastani_outdir = os.path.join(replace_path, '{}_ani.txt'.format(gID))
-
+    ###
+    run_cmd("du ./SRAtest -sh")
+    ###
     print("-------------------------------fastANI start.-------------------------------")
     print("reseq: {}\n qen: {}\n outdir: {}\nout_txt: {}\n{}\n".format(refPath, genome_Path, outdir, outfile,
                                                                        os.path.join(outdir_ani, outfile_)))
@@ -225,20 +222,17 @@ def QualityCheck(sra_id,_outdir,genome_Path,thread,gsize,start):
         print(outfile, " is exist.\n")
         print("fastANI was done.\n")
     else:
-        try:
-            utils_.run_cmd(fastani_)
-            print("fastANI done.\n")
-        except Exception as e:
-            utils_.run_cmd("free -h > ./checkmem.txt")
+        utils_.run_cmd(fastani_)
+        print("fastANI done.\n")
+
 
     # ANI>=95------
     print(
         "-------------------------------fastANI end.-------------------------------\ncompare and calculate ANI\nget ANIoutPath\n")
-    with open("./ana_time.csv", "a+") as f:
-        fieldnames = ["func", "time"]
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
-        writer.writeheader()
-        writer.writerow({"func": "Now {} {} fastANI".format(time.time(), gID), "time": str(time.time() - start)})
+    ###
+    run_cmd("du ./SRAtest -sh")
+    ###
+
 
     # open fastANI output
     f = open(outfile, 'r')
@@ -280,13 +274,11 @@ def QualityCheck(sra_id,_outdir,genome_Path,thread,gsize,start):
             f.write("{} is ANI<95.\n".format(gID))
         return 0
 
-    with open("./ana_time.csv", "a+") as f:
-        fieldnames = ["func", "time"]
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
-        writer.writeheader()
-        writer.writerow({"func": "Now {} {} fastANI".format(time.time(),gID), "time": str(time.time() - fastANI_time)})
 
     # BUSCO------
+    ###
+    run_cmd("du ./SRAtest -sh")
+    ###
     print("-------------------------------ANI>=95 continue, BUSCO start-------------------------------\n")
     # use conda enterring the busco VM(vm name is "busco")
     busco_time = time.time()
@@ -303,6 +295,9 @@ def QualityCheck(sra_id,_outdir,genome_Path,thread,gsize,start):
         thread,targetPath, gID, outdir, db, mode, busco_db)
     print(cmd_bus, "\n")
     utils_.run_cmd(cmd_bus)
+    ###
+    run_cmd("du ./SRAtest -sh")
+    ###
     # get BUSCO complete>=95 & duplicate>=3 ,or exit
     buscopath = os.path.join(outdir, "{}".format(gID))
     buscopath = os.path.join(buscopath, "run_{}".format(db))
@@ -416,6 +411,9 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
     if step < 1:
         step1_time = time.time()
         print("STEP{}\n".format(step + 1))
+        ###
+        run_cmd("du ./SRAtest -sh")
+        ###
         print("********** Now MLST analysis running. **********\n")
         #MLST_DB = "/home/linsslab01/mlst_db"
         mlst_outdir = os.path.join(logpath_, "mlst")
@@ -445,10 +443,16 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
                 else:
                     f.write("mlst is ok\n")
             step += 1
+            ###
+            run_cmd("du ./SRAtest -sh")
+            ###
 
             rmTMP_cmd="rm -rf {}\n".format(mlst_tmp)
             print(rmTMP_cmd)
             run_cmd(rmTMP_cmd)
+            ###
+            run_cmd("du ./SRAtest -sh")
+            ###
         except Exception as e:
             error_class = e.__class__.__name__  # 取得錯誤類型
             detail = e.args[0]  # 取得詳細內容
@@ -478,6 +482,9 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
     if step < 2:
         step2_time = time.time()
         print("STEP{}\n".format(step + 1))
+        ###
+        run_cmd("du ./SRAtest -sh")
+        ###
         print("********** Now plasmidfinder analysis running. **********\n")
         #PLASMID_DB = "/home/linsslab01/plasmidfinder_db"
         utils_.mkdir_join(logpath_)
@@ -489,6 +496,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
 
         print(plas_cmd, "\n")
         plas = utils_.run_cmd(plas_cmd)
+
         with open(logpath, "a+") as f:
             if plas.returncode != 0:
                 # print(mlst.stdout.readline())
@@ -498,19 +506,21 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
                 f.write("plasmidfinder is ok\n")
         step += 1
         # time
-        with open("./ana_time.csv", "a+") as f:
-            fieldnames = ["func", "time"]
-            writer = csv.DictWriter(f, fieldnames=fieldnames)
-            writer.writeheader()
-            writer.writerow({"func": "Now {} {} plasmidfinder".format(time.time(),inId), "time": str(time.time() - step2_time)})
     else:
         print("********** plasmidfinder was running. **********\n next step\n")
     time.sleep(1)
     # run amrfinder
     print("**********       plasmidfinder end.      **********\n next step\n")
+    ###
+    run_cmd("du ./SRAtest -sh")
+    ###
+
     if step < 3:
         step3_time = time.time()
         print("STEP{}\n".format(step + 1))
+        ###
+        run_cmd("du ./SRAtest -sh")
+        ###
         print("********** Now amrfinder analysis running. **********\n")
         amr_outdir = os.path.join(relative_path_o2, "amrfinder")
         utils_.mkdir_join(amr_outdir)
@@ -532,12 +542,17 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
             writer.writerow({"func": "Now {} {} amr".format(time.time(),inId), "time": str(time.time() - step3_time)})
     else:
         print("**********   amrfinder was running.   **********\n next step\n")
-
+    ###
+    run_cmd("du ./SRAtest -sh")
+    ###
     print("**********       amrfinder end.      **********\n next step\n")
     # run sistr
     if step < 4:
         step4_time = time.time()
         print("STEP{}\n".format(step + 1))
+        ###
+        run_cmd("du ./SRAtest -sh")
+        ###
         print("********** Now sistr analysis running. **********")
         sistr_outdir = os.path.join(relative_path_o2, "sistr")
         utils_.mkdir_join(sistr_outdir)
@@ -556,13 +571,11 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
                 f.write("sistr is ok\n")
         step += 1
         # time
-        with open("./ana_time.csv", "a+") as f:
-            fieldnames = ["func", "time"]
-            writer = csv.DictWriter(f, fieldnames=fieldnames)
-            writer.writeheader()
-            writer.writerow({"func": "Now {} {} sistr".format(time.time(),inId), "time": str(time.time() - step4_time)})
     else:
         print("********** sistr was running. **********\n next step\n")
+    ###
+    run_cmd("du ./SRAtest -sh")
+    ###
 
     print("**********       sistr end.      **********\n next step\n")
     ########################
@@ -689,8 +702,14 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
     finaldf = pd.DataFrame(dict)
     print(finaldf)
     finalfile = os.path.join(outdir, "analysis_final.csv")
-
+    ###
+    run_cmd("du ./SRAtest -sh")
+    ###
+    print("finaldf.to_csv(finalfile, mode='a+', header=False)\n")
     finaldf.to_csv(finalfile, mode='a+', header=False)
+    ###
+    run_cmd("du ./SRAtest -sh")
+    ###
     # after run all state, save ID in "Anackeck.log" and remove ./analysis
     with open(check, "a+") as f:
         f.write("Run {} is ok.\n".format(inId))

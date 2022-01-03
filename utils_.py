@@ -486,16 +486,19 @@ def run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,sta
 
     dump_time=time.time()
     # 解壓縮成fastq
-    print('Dump fastq.')
+    ###
+    run_cmd("du ./SRAtest -sh")
+    ###
+
+    print('Dump fastq.\n')
     # run_cmd
     dump_fastq_from_sra(path_, fastq_dir_)
     # os.listdir(fastq_dir) list files in dir
     print (fastq_dir_)
-    with open("./ana_time.csv", "a+") as f:
-        fieldnames = ["func", "time"]
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
-        writer.writeheader()
-        writer.writerow({"func": "dump_fastq_from_sra", "time": str(time.time() - dump_time)})
+
+    ###
+    run_cmd("du ./SRAtest -sh")
+    ###
 
     reverse_time=time.time()
     try:
@@ -506,10 +509,10 @@ def run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,sta
             return 0
         else:
             #run_cmd("rm {}/R1.fq {}/R2.fq".format(fastq_dir,fastq_dir))
-            run_cmd("rm -r {}".format(fastq_dir_))
-            #agian
-            #print("again")
+
             print("rm -r {}\n".format(fastq_dir_))
+            run_cmd("rm -r {}".format(fastq_dir_))
+
             print("and return run_for_114v2({},{},{},{},{},{},{},{},{})\n".format(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start,check_log))
             with open("./run_for_err.txt","a+")as f:
                 f.write(sra_id)
@@ -526,8 +529,14 @@ def run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,sta
 
     #print('Trim sequences.')
     trim_time=time.time()
+    ###
+    run_cmd("du ./SRAtest -sh")
+    ###
     r1, r2 = trimmingv2(forward_reads, reverse_reads, fastq_dir_, threads)
     print ("r1= {}, r2={}".format(r1,r2))
+    ###
+    run_cmd("du ./SRAtest -sh")
+    ###
     # Q30>=90
 
     #bases_percentage_time=time.time()
@@ -549,27 +558,52 @@ def run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,sta
     # depth >= 80
 
     shovill_time=time.time()
+
+    ###
+    run_cmd("du ./SRAtest -sh")
+    ###
     #cmd = f"shovill --R1 {r1} --R2 {r2} --outdir {assemble_dir_} --depth 100 --tmpdir . --cpus {threads} --ram 3 --force"
     cmd = f"shovill --R1 {r1} --R2 {r2} --outdir {assemble_dir_} --depth 80 --tmpdir . --cpus {threads} --ram {shovill_RAM} --force"
     if gsize:
         cmd += f" --gsize {gsize}"
     print(cmd)
     run_cmd(cmd)
-    print(run_cmd())
-    with open("./ana_time.csv", "a+") as f:
-        fieldnames = ["func", "time"]
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
-        writer.writeheader()
-        writer.writerow({"func": "shovill", "time": str(time.time() - shovill_time)})
 
+    ###
+    run_cmd("du ./SRAtest -sh")
+    ###
 
+    print("rm -r {}\n".format(path_1))
+    run_cmd("rm -r {}".format(path_1))
     #cmd2 = "mv " + contig_tmp + " " + assemble_dir + "/" + sra_id + "_contig.fa && mv " + assemble_dir + "/" + sra_id + "_contig.fa " + outdir
 
+
+    ###
+    run_cmd("du ./SRAtest -sh")
+    ###
     cmd2="cp {} {}".format(contig_tmp,final_dir)
     print("contig_tmp: {}\nfinal_dir: {}\ncmd2={}\n".format(contig_tmp,final_dir,cmd2))
     run_cmd(cmd2)
-    #cmd3 = "rm -rf {}".format(assemble_dir)
-    #run_cmd(cmd3)
+    ###
+    run_cmd("du ./SRAtest -sh")
+    ###
+    cmd3 = "rm -rf {}".format(assemble_dir)
+    print(cmd3)
+    run_cmd(cmd3)
+
+    ###
+    run_cmd("du ./SRAtest -sh")
+    ###
+
+    print("rm -r {}\n".format(fastq_dir_))
+    run_cmd("rm -r {}".format(fastq_dir_))
+
+
+    ###
+    run_cmd("du ./SRAtest -sh")
+    ###
+
+
     #f=open(check_log,"a")
     #f.write("Run {} is ok\n".format(sra_id))
     #f.close()
