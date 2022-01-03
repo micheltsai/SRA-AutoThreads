@@ -265,18 +265,17 @@ def main(yy,mon,d):
     run_list = list(runinfo['Run'])  # get SRAfile nameList stored in run_list
     print("runinfo: {}\n run_list: {}\n".format(runinfo, run_list))
 
+    ############
     sraList = os.path.join(new_outdir, "sraList.txt")
     myfile2 = Path(sraList)
     myfile2.touch(exist_ok=True)
-
     f = open(sraList, 'r')
     line = f.readlines()
     print("check log :{}\n".format(line))
     f.close()
-
     for s in line:
         print("{}\n".format(s))
-    finish = list(filter(lambda x: len(x.split(",")) >= 4, line))
+    finish = list(filter(lambda x: len(x.split(" ")) >= 4, line))
     finish_run = list(map(lambda x: x.split(" ")[1], finish))
     need_run = list(filter(lambda x: x not in finish_run, run_list))
     print("finish: {}\nfinish_run: {}\nneed_run".format(finish, finish_run, need_run))
