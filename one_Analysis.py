@@ -196,6 +196,7 @@ def QualityCheck(sra_id,_outdir,genome_Path,thread,gsize,start):
     gID = gID.split(".")[0]
     print("gID: {}\n".format(gID))
     refDIR=os.path.join(_outdir,gID)
+    utils_.mkdir_join(refDIR)
     refPath = utils_.getRefListPath(ref_dir, refDIR)
     # refPath=args.ref
 
