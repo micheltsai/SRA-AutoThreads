@@ -124,16 +124,16 @@ def sbatch_job(outdir,pdat):
     sraList = os.path.join(new_outdir, "sraList.txt")
     needList = os.path.join(new_outdir, "need_run.txt")
 
-    with open(sraList, "r") as f:
-        run_list = f.readlines()
-    print("run_list: ", run_list)
+    #with open(sraList, "r") as f:
+    #    run_list = f.readlines()
+   # print("run_list: ", run_list)
 
     # run_list = run_list[0].split("\n")
     # print("run_list: ",run_list)
-    run_list = [rr.strip() for rr in run_list if rr.strip() != '']
+    #run_list = [rr.strip() for rr in run_list if rr.strip() != '']
 
     # print(run_list)
-    f = open(check_log, 'r')
+    f = open(sraList, 'r')
     line = f.readlines()
     print("check log :{}\n".format(line))
     f.close()
