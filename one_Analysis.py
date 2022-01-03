@@ -453,7 +453,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         ###
         print("mlst du-sh\n")
         run_cmd("du ./SRAtest -sh")
-        time.sleep(1)
+        time.sleep(2)
         ###
         print("********** Now MLST analysis running. **********\n")
         #MLST_DB = "/home/linsslab01/mlst_db"
@@ -524,7 +524,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
     ###
     print("mlst du-sh\n")
     run_cmd("du ./SRAtest -sh")
-    time.sleep(1)
+    time.sleep(2)
     ###
     # run plasmidfinder
     print("**********       mlst end.      **********\n next step\n")
@@ -534,7 +534,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         ###
         print("plas du-sh\n")
         run_cmd("du ./SRAtest -sh")
-        time.sleep(1)
+        time.sleep(2)
         ###
         print("********** Now plasmidfinder analysis running. **********\n")
         #PLASMID_DB = "/home/linsslab01/plasmidfinder_db"
@@ -565,7 +565,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
     ###
     print("plas du-sh\n")
     run_cmd("du ./SRAtest -sh")
-    time.sleep(1)
+    time.sleep(2)
     ###
 
     if step < 3:
@@ -574,7 +574,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         ###
         print("amr du-sh\n")
         run_cmd("du ./SRAtest -sh")
-        time.sleep(1)
+        time.sleep(2)
         ###
         print("********** Now amrfinder analysis running. **********\n")
         amr_outdir = os.path.join(relative_path_o2, "amrfinder")
@@ -595,7 +595,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
     ###
     print("amr du-sh\n")
     run_cmd("du ./SRAtest -sh")
-    time.sleep(1)
+    time.sleep(2)
     ###
     print("**********       amrfinder end.      **********\n next step\n")
     # run sistr
@@ -605,7 +605,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         ###
         print("sistr du-sh\n")
         run_cmd("du ./SRAtest -sh")
-        time.sleep(1)
+        time.sleep(2)
         ###
         print("********** Now sistr analysis running. **********")
         sistr_outdir = os.path.join(relative_path_o2, "sistr")
@@ -630,7 +630,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
     ###
     print("sistr du-sh\n")
     run_cmd("du ./SRAtest -sh")
-    time.sleep(1)
+    time.sleep(2)
     ###
 
     print("**********       sistr end.      **********\n next step\n")
@@ -761,12 +761,14 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
     ###
     print("finalfile du-sh\n")
     run_cmd("du ./SRAtest -sh")
+    time.sleep(1)
     ###
     print("finaldf.to_csv(finalfile, mode='a+', header=False)\n")
     finaldf.to_csv(finalfile, mode='a+', header=False)
     ###
     print("finalfile du-sh\n")
     run_cmd("du ./SRAtest -sh")
+    time.sleep(1)
     ###
     # after run all state, save ID in "Anackeck.log" and remove ./analysis
     with open(check, "a+") as f:
