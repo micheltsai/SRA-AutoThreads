@@ -204,7 +204,7 @@ def sbatch_job(outdir,pdat):
                                                                                                 "$SLURM_ARRAY_TASK_ID"))
         ###
         print("sbatch before du-sh\n")
-        utils_.run_cmd("du ./SRAtest -sh")
+        print(utils_.run_cmd("du ./SRAtest -sh"))
         ###
         print("sbatch {}".format(job_file))
         utils_.run_cmd("sbatch {}".format(job_file))
