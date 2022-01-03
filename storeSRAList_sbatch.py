@@ -205,6 +205,7 @@ def sbatch_job(outdir,pdat):
         ###
         print("sbatch before du-sh\n")
         print(utils_.run_cmd("du ./SRAtest -sh"))
+        time.sleep(1)
         ###
         print("sbatch {}".format(job_file))
         utils_.run_cmd("sbatch {}".format(job_file))
