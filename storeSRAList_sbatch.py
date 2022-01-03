@@ -203,7 +203,7 @@ def sbatch_job(outdir,pdat):
                                                                                                 sra_num_,
                                                                                                 "$SLURM_ARRAY_TASK_ID"))
         print("sbatch {}".format(job_file))
-        #utils_.run_cmd("sbatch {}".format(job_file))
+        utils_.run_cmd("sbatch {}".format(job_file))
     except KeyboardInterrupt:
         print("Catch keyboardinterdinterupterror\n")
         print("srart : {}\n".format(start))
