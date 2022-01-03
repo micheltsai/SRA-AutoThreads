@@ -595,7 +595,7 @@ def run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,sta
     print("cp_assembled_dir du-sh\n")
     run_cmd("du ./SRAtest -sh")
     ###
-    cmd3 = "rm -rf {}".format(assemble_dir)
+    cmd3 = "rm -rf {}".format(assemble_dir_)
     print(cmd3)
     run_cmd(cmd3)
 
