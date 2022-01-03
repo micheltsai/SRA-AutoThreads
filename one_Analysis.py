@@ -563,7 +563,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
             writer.writerow({"func": "Now {} {} sistr".format(time.time(),inId), "time": str(time.time() - step4_time)})
     else:
         print("********** sistr was running. **********\n next step\n")
-        
+
     print("**********       sistr end.      **********\n next step\n")
     ########################
     ########################
