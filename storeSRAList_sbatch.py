@@ -368,6 +368,8 @@ def main(yy,mon,d):
     print("runinfo: {}\n run_list: {}\n".format(runinfo, run_list))
     ############
     nopairList=os.path.join(new_outdir,"nofillQC.txt")
+    myfile4 = Path(nopairList)
+    myfile4.touch(exist_ok=True)
     with open(nopairList,"r") as f:
         no_lines=f.readlines()
     print(no_lines)
@@ -376,6 +378,7 @@ def main(yy,mon,d):
     run_list_=list(filter(lambda x: x not in noPair, run_list))
     print("run_list length: {}\nrun_list - noPair length: {}\n".format(len(run_list),len(run_list_)))
     ############
+
     sraList = os.path.join(new_outdir, "sraList.txt")
     myfile2 = Path(sraList)
     myfile2.touch(exist_ok=True)
