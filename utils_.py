@@ -488,7 +488,7 @@ def run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,sta
     # 解壓縮成fastq
     ###
     print("dump du-sh\n")
-    run_cmd2("du ./SRAtest -sh")
+    run_cmd("du ./SRAtest -sh")
     time.sleep(1)
     ###
 
@@ -500,7 +500,7 @@ def run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,sta
 
     ###
     print("dump du-sh\n")
-    run_cmd2("du ./SRAtest -sh")
+    run_cmd("du ./SRAtest -sh")
     time.sleep(1)
     ###
 
@@ -535,14 +535,14 @@ def run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,sta
     trim_time=time.time()
     ###
     print("trim du-sh\n")
-    run_cmd2("du ./SRAtest -sh")
+    run_cmd("du ./SRAtest -sh")
     time.sleep(1)
     ###
     r1, r2 = trimmingv2(forward_reads, reverse_reads, fastq_dir_, threads)
     print ("r1= {}, r2={}".format(r1,r2))
     ###
     print("trim du-sh\n")
-    run_cmd2("du ./SRAtest -sh")
+    run_cmd("du ./SRAtest -sh")
     time.sleep(1)
     ###
     # Q30>=90
@@ -569,7 +569,7 @@ def run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,sta
 
     ###
     print("shovill du-sh\n")
-    run_cmd2("du ./SRAtest -sh")
+    run_cmd("du ./SRAtest -sh")
     time.sleep(1)
     ###
     #cmd = f"shovill --R1 {r1} --R2 {r2} --outdir {assemble_dir_} --depth 100 --tmpdir . --cpus {threads} --ram 3 --force"
@@ -581,7 +581,7 @@ def run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,sta
 
     ###
     print("shovill du-sh\n")
-    run_cmd2("du ./SRAtest -sh")
+    run_cmd("du ./SRAtest -sh")
     time.sleep(1)
     ###
 
@@ -592,7 +592,7 @@ def run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,sta
 
     ###
     print("rm_sradir du-sh\n")
-    run_cmd2("du ./SRAtest -sh")
+    run_cmd("du ./SRAtest -sh")
     time.sleep(1)
     ###
     cmd2="cp {} {}".format(contig_tmp,final_dir)
@@ -600,7 +600,7 @@ def run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,sta
     run_cmd(cmd2)
     ###
     print("cp_assembled_dir du-sh\n")
-    run_cmd2("du ./SRAtest -sh")
+    run_cmd("du ./SRAtest -sh")
     time.sleep(1)
     ###
     cmd3 = "rm -rf {}".format(assemble_dir_)
@@ -619,7 +619,7 @@ def run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,sta
 
     ###
     print("rm_fastqdir du-sh\n")
-    run_cmd2("du ./SRAtest -sh")
+    run_cmd("du ./SRAtest -sh")
     time.sleep(1)
     ###
 
