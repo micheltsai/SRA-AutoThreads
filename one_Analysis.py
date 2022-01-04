@@ -133,7 +133,7 @@ def Download(x,_outdir,sra_dir):
 def Assembled(x,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir,thread,gsize,start):
     ###
     print("Assemble du-sh\n")
-    run_cmd("du ./SRAtest -sh")
+    utils_.run_cmd2("du ./SRAtest -sh")
     time.sleep(1)
     ###
     final_dir = os.path.join(ass_dir, "{}_contig.fa".format(x))
@@ -169,7 +169,7 @@ def Assembled(x,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir,thread,gsize,star
 def QualityCheck(sra_id,_outdir,genome_Path,thread,gsize,start):
     ###
     print("Qualitycheck_start du-sh\n")
-    run_cmd("du ./SRAtest -sh")
+    utils_.run_cmd2("du ./SRAtest -sh")
     time.sleep(1)
     ###
     print("#####################  QualityCheck  #####################\n")
@@ -223,7 +223,7 @@ def QualityCheck(sra_id,_outdir,genome_Path,thread,gsize,start):
     fastani_outdir = os.path.join(replace_path, '{}_ani.txt'.format(gID))
     ###
     print("fastANI du-sh\n")
-    run_cmd("du ./SRAtest -sh")
+    utils_.run_cmd2("du ./SRAtest -sh")
     time.sleep(1)
     ###
     print("-------------------------------fastANI start.-------------------------------")
@@ -246,13 +246,13 @@ def QualityCheck(sra_id,_outdir,genome_Path,thread,gsize,start):
         "-------------------------------fastANI end.-------------------------------\ncompare and calculate ANI\nget ANIoutPath\n")
     ###
     print("fastANI du-sh\n")
-    run_cmd("du ./SRAtest -sh")
+    utils_.run_cmd2("du ./SRAtest -sh")
     time.sleep(1)
     ###
 
     ###
     print("rm_ref_cmd du-sh\n")
-    run_cmd("du ./SRAtest -sh")
+    utils_.run_cmd2("du ./SRAtest -sh")
     time.sleep(1)
     ###
     rm_ref_cmd="rm -rf {}".format(refDIR)
@@ -260,7 +260,7 @@ def QualityCheck(sra_id,_outdir,genome_Path,thread,gsize,start):
     utils_.run_cmd(rm_ref_cmd)
     ###
     print("rm_ref_cmd du-sh\n")
-    run_cmd("du ./SRAtest -sh")
+    utils_.run_cmd2("du ./SRAtest -sh")
     time.sleep(1)
     ###
 
@@ -308,7 +308,7 @@ def QualityCheck(sra_id,_outdir,genome_Path,thread,gsize,start):
     # BUSCO------
     ###
     print("busco du-sh\n")
-    run_cmd("du ./SRAtest -sh")
+    utils_.run_cmd2("du ./SRAtest -sh")
     time.sleep(1)
     ###
     print("-------------------------------ANI>=95 continue, BUSCO start-------------------------------\n")
@@ -329,7 +329,7 @@ def QualityCheck(sra_id,_outdir,genome_Path,thread,gsize,start):
     utils_.run_cmd(cmd_bus)
     ###
     print("busco du-sh\n")
-    run_cmd("du ./SRAtest -sh")
+    utils_.run_cmd2("du ./SRAtest -sh")
     time.sleep(1)
     ###
     # get BUSCO complete>=95 & duplicate>=3 ,or exit
@@ -376,7 +376,7 @@ def QualityCheck(sra_id,_outdir,genome_Path,thread,gsize,start):
 def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
     ###
     print("Analysis du-sh\n")
-    run_cmd("du ./SRAtest -sh")
+    utils_.run_cmd2("du ./SRAtest -sh")
     time.sleep(1)
     ###
     print("#####################  Analysis  #####################\n")
@@ -452,7 +452,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         print("STEP{}\n".format(step + 1))
         ###
         print("mlst du-sh\n")
-        run_cmd("du ./SRAtest -sh")
+        utils_.run_cmd2("du ./SRAtest -sh")
         time.sleep(2)
         ###
         print("********** Now MLST analysis running. **********\n")
@@ -486,7 +486,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
             step += 1
             ###
             print("mlst du-sh\n")
-            run_cmd("du ./SRAtest -sh")
+            utils_.run_cmd2("du ./SRAtest -sh")
             time.sleep(1)
             ###
 
@@ -496,7 +496,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
             time.sleep(1)
             ###
             print("rm_mlstTMP du-sh\n")
-            run_cmd("du ./SRAtest -sh")
+            utils_.run_cmd2("du ./SRAtest -sh")
             ###
         except Exception as e:
             error_class = e.__class__.__name__  # 取得錯誤類型
@@ -523,7 +523,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         print("**********       mlst was running.      **********\n next step\n")
     ###
     print("mlst du-sh\n")
-    run_cmd("du ./SRAtest -sh")
+    utils_.run_cmd2("du ./SRAtest -sh")
     time.sleep(2)
     ###
     # run plasmidfinder
@@ -533,7 +533,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         print("STEP{}\n".format(step + 1))
         ###
         print("plas du-sh\n")
-        run_cmd("du ./SRAtest -sh")
+        utils_.run_cmd2("du ./SRAtest -sh")
         time.sleep(2)
         ###
         print("********** Now plasmidfinder analysis running. **********\n")
@@ -564,7 +564,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
     print("**********       plasmidfinder end.      **********\n next step\n")
     ###
     print("plas du-sh\n")
-    run_cmd("du ./SRAtest -sh")
+    utils_.run_cmd2("du ./SRAtest -sh")
     time.sleep(2)
     ###
 
@@ -573,7 +573,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         print("STEP{}\n".format(step + 1))
         ###
         print("amr du-sh\n")
-        run_cmd("du ./SRAtest -sh")
+        utils_.run_cmd2("du ./SRAtest -sh")
         time.sleep(2)
         ###
         print("********** Now amrfinder analysis running. **********\n")
@@ -594,7 +594,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         print("**********   amrfinder was running.   **********\n next step\n")
     ###
     print("amr du-sh\n")
-    run_cmd("du ./SRAtest -sh")
+    utils_.run_cmd2("du ./SRAtest -sh")
     time.sleep(2)
     ###
     print("**********       amrfinder end.      **********\n next step\n")
@@ -604,7 +604,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         print("STEP{}\n".format(step + 1))
         ###
         print("sistr du-sh\n")
-        run_cmd("du ./SRAtest -sh")
+        utils_.run_cmd2("du ./SRAtest -sh")
         time.sleep(2)
         ###
         print("********** Now sistr analysis running. **********")
@@ -629,7 +629,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         print("********** sistr was running. **********\n next step\n")
     ###
     print("sistr du-sh\n")
-    run_cmd("du ./SRAtest -sh")
+    utils_.run_cmd2("du ./SRAtest -sh")
     time.sleep(2)
     ###
 
@@ -760,14 +760,14 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
     finalfile = os.path.join(outdir, "analysis_final.csv")
     ###
     print("finalfile du-sh\n")
-    run_cmd("du ./SRAtest -sh")
+    utils_.run_cmd2("du ./SRAtest -sh")
     time.sleep(1)
     ###
     print("finaldf.to_csv(finalfile, mode='a+', header=False)\n")
     finaldf.to_csv(finalfile, mode='a+', header=False)
     ###
     print("finalfile du-sh\n")
-    run_cmd("du ./SRAtest -sh")
+    utils_.run_cmd2("du ./SRAtest -sh")
     time.sleep(1)
     ###
     # after run all state, save ID in "Anackeck.log" and remove ./analysis
