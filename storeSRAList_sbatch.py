@@ -403,7 +403,7 @@ def main(yy,mon,d):
                 print("#########################\nhello {}\n".format(aa))
                 aa_index += 1
                 threads_list.append(threading.Thread(target=sra_stat,args=(aa, new_outdir, sra_dir,sra_num_,len(need_run),date,)))
-                threads_list[].start()
+                threads_list[aa_index].start()
                 #pool_list.append(pool.apply_async(sra_stat, (aa, new_outdir, sra_dir,sra_num_,len(need_run),date)))
                 # pool.apply_async(test, (k,new_outdir,))
                 # sra_stat(aa, new_outdir, sra_dir)
