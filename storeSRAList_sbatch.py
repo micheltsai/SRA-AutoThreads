@@ -176,7 +176,7 @@ def sbatch_job(outdir,pdat):
             print("########### hello %d ############\n" % prog_num)
             print(k)
             print(need_run.index(k))
-            print("########## {}/{} ###########".format(finish_num, sra_num_))
+            print("########## {}/{} ###########".format(finish_num+1, sra_num_))
             # utils_.run_cmd("sbatch -A MST109178 -J Job_test -p ngs48G -c 14 --mem=46g -o ./out/{}_array_out.log -e ./out/{}_array_out.log "
             #               "--mail-user=sj985517@gmail.com --mail-type=BEGIN,END --wrap='/home/linsslab01/miniconda/bin/python3 one_Analysis.py'--array=1-4")
             with open(needList, "a+") as f:
@@ -366,7 +366,15 @@ def main(yy,mon,d):
     runinfo = utils_.Get_RunInfo(idlist)
     run_list = list(runinfo['Run'])  # get SRAfile nameList stored in run_list
     print("runinfo: {}\n run_list: {}\n".format(runinfo, run_list))
-
+    ############
+    nopairList=os.path.join(new_outdir,"nofillQC.txt")
+    with open(nopairList,"r") as f:
+        no_lines=f.readlines()
+    print(no_lines)
+    finish = list(filter(lambda x: len(x.split(" ")) >= 3, no_lines))
+    noPair=list(map(lambda x: x.split(":")[0], no_lines))
+    run_list_=list(filter(lambda x: x not in noPair, run_list))
+    print("run_list length: {}\nrun_list - noPair length: {}\n".format(len(run_list),len(run_list_)))
     ############
     sraList = os.path.join(new_outdir, "sraList.txt")
     myfile2 = Path(sraList)
@@ -379,7 +387,8 @@ def main(yy,mon,d):
         print("{}\n".format(s))
     finish = list(filter(lambda x: len(x.split(" ")) >= 4, line))
     finish_run = list(map(lambda x: x.split(" ")[1], finish))
-    need_run = list(filter(lambda x: x not in finish_run, run_list))
+    need_run = list(filter(lambda x: x not in finish_run, run_list_))
+    #########
     print("finish: {}\nfinish_run: {}\nneed_run".format(finish, finish_run, need_run))
     print(
         "finish length: {}\nfinish_run length: {}\nneed_run length: {}".format(len(finish), len(finish_run),
