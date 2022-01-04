@@ -401,9 +401,9 @@ def main(yy,mon,d):
                 sbatch_job(outdir,pdat)
             else:
                 print("#########################\nhello {}\n".format(aa))
-                aa_index += 1
                 threads_list.append(threading.Thread(target=sra_stat,args=(aa, new_outdir, sra_dir,sra_num_,len(need_run),date,)))
                 threads_list[aa_index].start()
+                aa_index += 1
                 #pool_list.append(pool.apply_async(sra_stat, (aa, new_outdir, sra_dir,sra_num_,len(need_run),date)))
                 # pool.apply_async(test, (k,new_outdir,))
                 # sra_stat(aa, new_outdir, sra_dir)
