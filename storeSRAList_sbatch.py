@@ -392,6 +392,7 @@ def main(yy,mon,d):
     global fin_number
     fin_number=len(finish)
     threads_list=[]
+    aa_index=0
     for aa in need_run:
         try:
             if fin_num>0 and fin_num%200==0: ##if download 200 to sbatch ,and next sbatch has n-200
@@ -400,8 +401,9 @@ def main(yy,mon,d):
                 sbatch_job(outdir,pdat)
             else:
                 print("#########################\nhello {}\n".format(aa))
+                aa_index += 1
                 threads_list.append(threading.Thread(target=sra_stat,args=(aa, new_outdir, sra_dir,sra_num_,len(need_run),date,)))
-                threads_list[threads_list.index(aa)].start()
+                threads_list[].start()
                 #pool_list.append(pool.apply_async(sra_stat, (aa, new_outdir, sra_dir,sra_num_,len(need_run),date)))
                 # pool.apply_async(test, (k,new_outdir,))
                 # sra_stat(aa, new_outdir, sra_dir)
