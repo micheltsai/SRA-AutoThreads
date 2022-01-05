@@ -71,44 +71,7 @@ def sra_stat(sra_id,outdir,sra_dir,sraNUM,needNUM,date):
     #if needNUM == finish_num:
     #    print("{} store SRAList End.\n".format(date))
         #sys.exit("{} store SRAList End.\n".format(date))
-    return "{}:Run {} is ok.\n".format(date,sra_id)
-
-def sra_stat(sra_id):
-    print("sra_stat\n")
-    global finish_num
-    QC_error = os.path.join("./SRAtest", "nofillQC.txt")
-
-    print("SequenceReadArchive\n")
-    sra = utils_.SequenceReadArchivev3(sra_id)
-    _base_ = sra.base_percentage() * 100
-    print("base percentage: ", _base_, "\n")
-    #######Q30 base>=80%
-    if _base_ < 80:
-        # shutil.rmtree(outdir)
-        with open(QC_error, "a+") as f:
-            f.write("{}: Reads quality is too low\n".format(sra_id))
-        finish_num+=1
-        sys.exit('Reads quality is too low.\n')
-    ###### layout = 2
-
-    if sra.layout != '2':
-        with open(QC_error, "a+") as f:
-            f.write("{}: File layout is not pair-end\n".format(sra_id))
-        finish_num+=1
-        sys.exit(f'File layout is not pair-end\n')
-
-    print("layout=2\n")
-    # if sra_layout==2 continue
-    Download(sra_id, "./SRAtest""./SRAtest/test")
-    #with open(sraList, "r") as f:
-    #    sraL=f.readlines()
-    #    print("{}/{}: {}\n".format(finish_num,sraNUM,sraL))
-    finish_num += 1
-    print("finish_num: {}\n".format(finish_num))
-    #if needNUM == finish_num:
-    #    print("{} store SRAList End.\n".format(date))
-        #sys.exit("{} store SRAList End.\n".format(date))
-    return "{}:Run {} is ok.\n".format(date,sra_id)
+    mycallback_write("{}:Run {} is ok.\n".format(date,sra_id))
 
 def mycallback_write(str):
     print("mycallback_write\n")
@@ -299,7 +262,7 @@ if __name__ == '__main__':
                         isFinal=True
                     try:
                         print("#########################\nhello {}\n".format(aa))
-                        pool.apply_async(sra_stat,args=(aa,),callback=mycallback_write)
+                        pool_list.append(pool.apply_async(sra_stat,args=(aa,new_outdir,sra_dir,sra_num_,len(need_run),date,)))
                         # pool.apply_async(test, (k,new_outdir,))
                         #sra_stat(aa, new_outdir, sra_dir)
                     except KeyboardInterrupt:
