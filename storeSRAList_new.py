@@ -52,7 +52,7 @@ def sra_stat(sra_id,outdir,sra_dir,sraNUM,needNUM,date):
             f.write("{}: Reads quality is too low\n".format(sra_id))
         #finish_num+=1
         #sys.exit('Reads quality is too low.\n')
-        return 0
+        return "0"
     ###### layout = 2
 
     if sra.layout != '2':
@@ -133,7 +133,7 @@ def sra_stat_old(sra_id, outdir, sra_dir, isfinal):
 
 
 if __name__ == '__main__':
-    pool = multiprocessing.Pool(processes=50)
+    pool = multiprocessing.Pool(processes=20)
     start = time.time()
     current_path = os.path.abspath(os.getcwd())
     print("current_path: ", current_path, "\n")
