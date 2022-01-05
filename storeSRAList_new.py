@@ -38,7 +38,7 @@ def Download(x,_outdir,sra_dir):
 
 def sra_stat(sra_id,outdir,sra_dir,sraNUM,needNUM,date):
     print("sra_stat\n")
-    global finish_num
+    #global finish_num
     QC_error = os.path.join(outdir, "nofillQC.txt")
 
     print("SequenceReadArchive\n")
@@ -50,14 +50,14 @@ def sra_stat(sra_id,outdir,sra_dir,sraNUM,needNUM,date):
         # shutil.rmtree(outdir)
         with open(QC_error, "a+") as f:
             f.write("{}: Reads quality is too low\n".format(sra_id))
-        finish_num+=1
+        #finish_num+=1
         sys.exit('Reads quality is too low.\n')
     ###### layout = 2
 
     if sra.layout != '2':
         with open(QC_error, "a+") as f:
             f.write("{}: File layout is not pair-end\n".format(sra_id))
-        finish_num+=1
+        #finish_num+=1
         sys.exit(f'File layout is not pair-end\n')
 
     print("layout=2\n")
@@ -71,8 +71,7 @@ def sra_stat(sra_id,outdir,sra_dir,sraNUM,needNUM,date):
     #if needNUM == finish_num:
     #    print("{} store SRAList End.\n".format(date))
         #sys.exit("{} store SRAList End.\n".format(date))
-    mycallback_write("{}:Run {} is ok.\n".format(date,sra_id))
-    print("callback\n")
+    return "{}:Run {} is ok.\n".format(date,sra_id)
 
 def mycallback_write(str):
     print("mycallback_write\n")
@@ -263,7 +262,7 @@ if __name__ == '__main__':
                         isFinal=True
                     try:
                         print("#########################\nhello {}\n".format(aa))
-                        pool_list.append(pool.apply_async(sra_stat,args=(aa,new_outdir,sra_dir,sra_num_,len(need_run),date,)))
+                        pool_list.append(pool.apply_async(sra_stat,args=(aa,new_outdir,sra_dir,sra_num_,len(need_run),date,),callback=mycallback_write))
                         # pool.apply_async(test, (k,new_outdir,))
                         #sra_stat(aa, new_outdir, sra_dir)
                     except KeyboardInterrupt:
