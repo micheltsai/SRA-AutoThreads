@@ -45,7 +45,7 @@ def prefetch_srav2(sralist,outdir):
     try:
         cmd = "singularity exec --containall --bind /work/linsslab01/:/home/linsslab01/ /work/linsslab01/sra-tools_latest.sif prefetch "+sralist+" --output-directory "+outdir.replace("work","home")
         print (cmd,"\n")
-        run_cmd3(cmd)
+        run_cmd(cmd)
         time.sleep(1)
     except Exception as e:
 
