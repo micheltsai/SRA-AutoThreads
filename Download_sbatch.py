@@ -1,3 +1,4 @@
+import multiprocessing
 import os
 import time
 from pathlib import Path
@@ -34,6 +35,7 @@ def Download(x,_outdir,sra_dir):
     print("###########################################################")
 
 def main():
+    pool = multiprocessing.Pool(processes=50)
     start = time.time()
     current_path = os.path.abspath(os.getcwd())
     print("current_path: ", current_path, "\n")
@@ -90,11 +92,17 @@ def main():
     sralist = list(filter(lambda x: len(x.split(" ")) >= 4, lines))
     sra_run = list(map(lambda x: x.split(" ")[1], sralist))
     print(sra_run)
+    pool_list=[]
     for x in sra_run:
         print("###################\n")
         print(x)
         sraid_outdir=os.path.join(outdir,x)
         utils_.mkdir_join(sraid_outdir)
         Download(x,outdir,sraid_outdir)
+        pool_list.append(pool.apply_async(Download, (x,outdir,sraid_outdir,)))
+    pool.close()
+    print("pool.close()")
+    pool.join()
+    print("pool.join()")
 if __name__ == '__main__':
     main()
