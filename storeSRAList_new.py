@@ -71,18 +71,18 @@ def sra_stat(sra_id,outdir,sra_dir,sraNUM,needNUM,date):
     #if needNUM == finish_num:
     #    print("{} store SRAList End.\n".format(date))
         #sys.exit("{} store SRAList End.\n".format(date))
-    return date,outdir,sra_id
+    return "{}:Run {} is ok.\n".format(date,sra_id)
 
-def mycallback_write(date,outdir,sra_id):
+def mycallback_write(str):
     print("mycallback_write\n")
-    sraList = os.path.join(outdir, "sraList_test.txt")
+    sraList = os.path.join("./SRAtest","sraList_test.txt")
     print("sraList: {}\n".format(sraList))
     with open(sraList, "a+") as f:
         # sra_id_=sra_id + "\n"
         # print(sra_id_)
-        f.write("{}:Run {} is ok.\n".format(date,sra_id))
+        f.write(str)
         # time.sleep(1)
-    return date,outdir,sra_id
+
 
 
 def sra_stat_old(sra_id, outdir, sra_dir, isfinal):
