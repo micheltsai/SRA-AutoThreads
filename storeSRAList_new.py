@@ -37,6 +37,7 @@ def Download(x,_outdir,sra_dir):
     print("###########################################################")
 
 def sra_stat(sra_id,outdir,sra_dir,sraNUM,needNUM,date):
+    print("sra_stat\n")
     global finish_num
     QC_error = os.path.join(outdir, "nofillQC.txt")
 
@@ -60,20 +61,11 @@ def sra_stat(sra_id,outdir,sra_dir,sraNUM,needNUM,date):
         sys.exit(f'File layout is not pair-end\n')
 
     print("layout=2\n")
-
     # if sra_layout==2 continue
     Download(sra_id, outdir, sra_dir)
-    sraList = os.path.join(outdir, "sraList.txt")
-    #with open(sraList, "a+") as f:
-        #sra_id_=sra_id + "\n"
-        #print(sra_id_)
-    #    f.write("Run {} is ok.\n".format(sra_id))
-        #time.sleep(1)
-
     #with open(sraList, "r") as f:
     #    sraL=f.readlines()
     #    print("{}/{}: {}\n".format(finish_num,sraNUM,sraL))
-
     finish_num += 1
     print("finish_num: {}\n".format(finish_num))
     #if needNUM == finish_num:
@@ -82,14 +74,15 @@ def sra_stat(sra_id,outdir,sra_dir,sraNUM,needNUM,date):
     return date,outdir,sra_id
 
 def mycallback_write(date,outdir,sra_id):
-    print("kk")
+    print("mycallback_write\n")
     sraList = os.path.join(outdir, "sraList_test.txt")
+    print("sraList: {}\n".format(sraList))
     with open(sraList, "a+") as f:
         # sra_id_=sra_id + "\n"
         # print(sra_id_)
         f.write("{}:Run {} is ok.\n".format(date,sra_id))
         # time.sleep(1)
-
+    return date,outdir,sra_id
 
 
 def sra_stat_old(sra_id, outdir, sra_dir, isfinal):
