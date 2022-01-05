@@ -243,7 +243,7 @@ if __name__ == '__main__':
                 run_list = list(runinfo['Run'])  # get SRAfile nameList stored in run_list
                 print("runinfo: {}\n run_list: {}\n".format(runinfo, run_list))
 
-                sraList = os.path.join(new_outdir, "sraList.txt")
+                sraList = os.path.join(new_outdir, "sraList_test.txt")
                 myfile2 = Path(sraList)
                 myfile2.touch(exist_ok=True)
                 f = open(sraList, 'r')
