@@ -262,7 +262,7 @@ if __name__ == '__main__':
                         isFinal=True
                     try:
                         print("#########################\nhello {}\n".format(aa))
-                        pool_list.append(pool.apply_async(sra_stat,(aa,new_outdir,sra_dir,sra_num_,len(need_run),date,),callback=mycallback_write))
+                        pool_list.append(pool.apply_async(sra_stat,args=(aa,new_outdir,sra_dir,sra_num_,len(need_run),date,),callback=mycallback_write))
                         # pool.apply_async(test, (k,new_outdir,))
                         #sra_stat(aa, new_outdir, sra_dir)
                     except KeyboardInterrupt:
