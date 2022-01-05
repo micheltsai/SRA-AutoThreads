@@ -51,14 +51,16 @@ def sra_stat(sra_id,outdir,sra_dir,sraNUM,needNUM,date):
         with open(QC_error, "a+") as f:
             f.write("{}: Reads quality is too low\n".format(sra_id))
         #finish_num+=1
-        sys.exit('Reads quality is too low.\n')
+        #sys.exit('Reads quality is too low.\n')
+        return 0
     ###### layout = 2
 
     if sra.layout != '2':
         with open(QC_error, "a+") as f:
             f.write("{}: File layout is not pair-end\n".format(sra_id))
         #finish_num+=1
-        sys.exit(f'File layout is not pair-end\n')
+        #sys.exit(f'File layout is not pair-end\n')
+        return "1"
 
     print("layout=2\n")
     # if sra_layout==2 continue
@@ -75,13 +77,24 @@ def sra_stat(sra_id,outdir,sra_dir,sraNUM,needNUM,date):
 
 def mycallback_write(str):
     print("mycallback_write\n")
-    sraList = os.path.join("./SRAtest","sraList_test.txt")
-    print("sraList: {}\n".format(sraList))
-    with open(sraList, "a+") as f:
-        # sra_id_=sra_id + "\n"
-        # print(sra_id_)
-        f.write(str)
-        # time.sleep(1)
+    QC_error = os.path.join("./SRAtest", "nofillQC.txt")
+
+    if str=="0":
+        print("Reads quality is too low\n")
+        #with open(QC_error, "a+") as f:
+        #    f.write("{}: Reads quality is too low\n".format(sra_id))
+    elif str=="1":
+        print("File layout is not pair-end\n")
+        #with open(QC_error, "a+") as f:
+        #    f.write("{}: File layout is not pair-end\n".format(sra_id))
+    else:
+        sraList = os.path.join("./SRAtest","sraList_test.txt")
+        print("sraList: {}\n".format(sraList))
+        with open(sraList, "a+") as f:
+            # sra_id_=sra_id + "\n"
+            # print(sra_id_)
+            f.write(str)
+            # time.sleep(1)
 
 
 
