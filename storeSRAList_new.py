@@ -66,12 +66,13 @@ def sra_stat(sra_id,outdir,sra_dir,sraNUM,needNUM,date):
     #with open(sraList, "r") as f:
     #    sraL=f.readlines()
     #    print("{}/{}: {}\n".format(finish_num,sraNUM,sraL))
-    finish_num += 1
-    print("finish_num: {}\n".format(finish_num))
+    #finish_num += 1
+    #print("finish_num: {}\n".format(finish_num))
     #if needNUM == finish_num:
     #    print("{} store SRAList End.\n".format(date))
         #sys.exit("{} store SRAList End.\n".format(date))
     mycallback_write("{}:Run {} is ok.\n".format(date,sra_id))
+    print("callback\n")
 
 def mycallback_write(str):
     print("mycallback_write\n")
