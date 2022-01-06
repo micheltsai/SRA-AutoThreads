@@ -37,7 +37,7 @@ def Download(x,_outdir,sra_dir):
     print('Done,total cost',dltime, 'secs')
     print("###########################################################")
 
-def sbatch_job(outdir,start):
+def sbatch_job(outdir,pdat,start):
     print("outdir:{}\nnew_outdir:{}\n".format(outdir, outdir))
     job_dir = os.path.join(outdir, "job")
     utils_.mkdir_join(job_dir)
@@ -129,7 +129,7 @@ def sbatch_job(outdir,start):
             f.write("#SBATCH --mail-user=sj985517@gmail.com\n")
             f.write("#SBATCH --mail-type=BEGIN,END\n")
             f.write("echo $SLURM_ARRAY_TASK_ID\n")
-            f.write("/home/linsslab01/miniconda3/bin/python3 one_Analysis.py {} {} {}\n".format(
+            f.write("/home/linsslab01/miniconda3/bin/python3 one_Analysis.py {} {} {}\n".format(pdat
                                                                                                 sra_num_,
                                                                                                 "$SLURM_ARRAY_TASK_ID"))
         ###
@@ -233,17 +233,20 @@ def main():
         lines=f.readlines()
     sralist = list(filter(lambda x: len(x.split(" ")) >= 4, lines))
     sra_run = list(map(lambda x: x.split(" ")[1], sralist))
+    pdat_run=list(map(lambda x: x.split(" ")[0].split(":")[0], sralist))
     print(sra_run)
     pool_list=[]
-    for x in sra_run:
+    pdat=""
+    for x in range(0,len(sra_run)):
         print("###################\n")
         print(x)
-        sraid_outdir=os.path.join(outdir,x)
+        print(sra_run[x])
+        sraid_outdir=os.path.join(outdir,sra_run[x])
         utils_.mkdir_join(sraid_outdir)
         #Download(x,outdir,sraid_outdir)
-        pool_list.append(pool.apply_async(Download, (x,outdir,sraid_outdir,)))
-
-    sbatch_job(outdir, start)
+        pool_list.append(pool.apply_async(Download, (sra_run[x],outdir,sraid_outdir,)))
+        pdat=pdat_run[x]
+    sbatch_job(outdir,pdat,start)
 
 
     pool.close()
