@@ -64,7 +64,7 @@ def sra_stat(sra_id,outdir,sra_dir,sraNUM,needNUM,date):
 
     print("layout=2\n")
     # if sra_layout==2 continue
-    Download(sra_id, outdir, sra_dir)
+    #Download(sra_id, outdir, sra_dir)
     #with open(sraList, "r") as f:
     #    sraL=f.readlines()
     #    print("{}/{}: {}\n".format(finish_num,sraNUM,sraL))
