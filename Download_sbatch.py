@@ -18,7 +18,7 @@ def Download(x,_outdir,sra_dir):
     #num += 1
     print("x = {}".format(x))
     # outdir__ = os.path.join(output, "out")
-    outdir__ = os.path.join(_outdir, "Assembled")
+    outdir__ = os.path.join(sra_dir, "Assembled")
     check_log = os.path.join(_outdir, "Analysischeck.log")
     final_dir = os.path.join(outdir__, "{}_contig.fa".format(x))
 
@@ -243,7 +243,8 @@ def main():
         print("###################\n")
         print(x)
         print(sra_run[x])
-        sraid_outdir=os.path.join(outdir,sra_run[x])
+        new_outdir = os.path.join(outdir, "output")
+        sraid_outdir=os.path.join(new_outdir,sra_run[x])
         utils_.mkdir_join(sraid_outdir)
         #Download(x,outdir,sraid_outdir)
         pool_list.append(pool.apply_async(Download, (sra_run[x],outdir,sraid_outdir,)))

@@ -813,13 +813,14 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
 
         print("finish num={}\n".format(len(finish_num_s)))
         print("{} / {}\n".format(len(finish_num_s),sra_num_))
+        ########
+        utils_.run_cmd2("rm -rf {}".format(fastq_dir))
+        utils_.run_cmd2("rm -rf {}".format(sra_dir))
+        utils_.run_cmd2("rm -rf {}".format(assemble_dir))
+        print("remove fastq dir, sra dir, assembled_result dir\n")
 
         print("Run {} is Done\n".format(sra_id))
-        with open("./threads_time.csv", "a+") as f:
-            fieldnames = ["func", "time"]
-            writer = csv.DictWriter(f, fieldnames=fieldnames)
-            writer.writeheader()
-            writer.writerow({"func": "{}".format(sra_id), "time": str(time.time() - SRA_start)})
+
         #######
         print(str(datetime.datetime.now()),' Done,current total cost', time.time() - start, 'secs\n')
     except Exception as e:
@@ -862,7 +863,7 @@ if __name__ == '__main__':
     need_run = [rr.strip() for rr in need_run if rr.strip()!='']
     print(need_run)
     sra_id=need_run[sra_index].strip("\n")
-
+    new_outdir = os.path.join(outdir, "output")
     new_outdir = os.path.join(outdir, sra_id)
     utils_.mkdir_join(new_outdir)
     print("output: {}\n".format(new_outdir))
