@@ -129,7 +129,7 @@ def sbatch_job(outdir,start):
             f.write("#SBATCH --mail-user=sj985517@gmail.com\n")
             f.write("#SBATCH --mail-type=BEGIN,END\n")
             f.write("echo $SLURM_ARRAY_TASK_ID\n")
-            f.write("/home/linsslab01/miniconda3/bin/python3 one_Analysis.py {} {} {}\n".format(pdat,
+            f.write("/home/linsslab01/miniconda3/bin/python3 one_Analysis.py {} {} {}\n".format(
                                                                                                 sra_num_,
                                                                                                 "$SLURM_ARRAY_TASK_ID"))
         ###
@@ -223,7 +223,9 @@ def main():
     print(sd_Y, sd_M, sd_D)
     print(ed_Y, ed_M, ed_D)
     utils_.mkdir_join(outdir)
-
+    pdat=datetime.datetime.now()[0]
+    
+    print("pdat: {}".format(pdat))
     sraList_txt=os.path.join(outdir,"sraList_test.txt")
     myfile = Path(sraList_txt)
     myfile.touch(exist_ok=True)
