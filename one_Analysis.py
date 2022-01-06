@@ -855,7 +855,8 @@ if __name__ == '__main__':
 
     new_outdir = os.path.join(outdir, pdat)
     utils_.mkdir_join(new_outdir)
-    needList = os.path.join(new_outdir, "need_run.txt")
+    #needList = os.path.join(new_outdir, "need_run.txt")
+    needList = os.path.join(outdir, "need_run.txt")
     print("output: {}\n".format(new_outdir))
     check_log = os.path.join(new_outdir, "Analysischeck.log")
     sra_dir = os.path.join(new_outdir, "sra")  # .sra file
