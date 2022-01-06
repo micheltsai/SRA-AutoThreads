@@ -853,20 +853,22 @@ if __name__ == '__main__':
     sra_index=int(argvs[3])-1
     #sra_id_test=argvs[5]
 
-    new_outdir = os.path.join(outdir, pdat)
-    utils_.mkdir_join(new_outdir)
+    #new_outdir = os.path.join(outdir, pdat)
+    #utils_.mkdir_join(new_outdir)
     #needList = os.path.join(new_outdir, "need_run.txt")
     needList = os.path.join(outdir, "need_run.txt")
-    print("output: {}\n".format(new_outdir))
-    check_log = os.path.join(new_outdir, "Analysischeck.log")
-    sra_dir = os.path.join(new_outdir, "sra")  # .sra file
-    utils_.mkdir_join(sra_dir)
-    ass_dir = os.path.join(new_outdir, "Assembled")
-    utils_.mkdir_join(ass_dir)
-    fastq_dir = os.path.join(new_outdir, 'fastq')
-    utils_.mkdir_join(fastq_dir)
-    assemble_dir = os.path.join(new_outdir, "assembly_result")
-    utils_.mkdir_join(assemble_dir)
+    #print("output: {}\n".format(new_outdir))
+    #check_log = os.path.join(new_outdir, "Analysischeck.log")
+    #check_log = os.path.join(outdir, "Analysischeck.log")
+    #sra_dir = os.path.join(new_outdir, "sra")  # .sra file
+    #sra_dir = os.path.join(outdir, sra_id)  # .sra file
+    #utils_.mkdir_join(sra_dir)
+    #ass_dir = os.path.join(new_outdir, "Assembled")
+    #utils_.mkdir_join(ass_dir)
+    #fastq_dir = os.path.join(new_outdir, 'fastq')
+    #utils_.mkdir_join(fastq_dir)
+    #assemble_dir = os.path.join(new_outdir, "assembly_result")
+    #utils_.mkdir_join(assemble_dir)
 
     with open(needList,"r") as f:
         needlines=f.readlines()
@@ -875,10 +877,24 @@ if __name__ == '__main__':
     print(need_run)
     sra_id=need_run[sra_index].strip("\n")
 
+    # needList = os.path.join(new_outdir, "need_run.txt")
+
+    print("output: {}\n".format(outdir))
+    check_log = os.path.join(outdir, "Analysischeck.log")
+    sra_dir = os.path.join(outdir, sra_id)  # .sra file
+    utils_.mkdir_join(sra_dir)
+    ass_dir = os.path.join(sra_dir, "Assembled")
+    utils_.mkdir_join(ass_dir)
+    fastq_dir = os.path.join(sra_dir, 'fastq')
+    utils_.mkdir_join(fastq_dir)
+    assemble_dir = os.path.join(sra_dir, "assembly_result")
+    utils_.mkdir_join(assemble_dir)
+
+
     print("sra_dir:{}\nass_dir={}\nfastq_dir={}\nassemble_dir={}\n".format(sra_dir, ass_dir, fastq_dir, assemble_dir))
     #print(need_run)
     #print(need_run.type)
     print(sra_index)
     print(sra_id)
 
-    SRA_Analysis(sra_id, sra_dir, ass_dir, fastq_dir, assemble_dir, new_outdir, thread, gsize, start, sra_num_)
+    SRA_Analysis(sra_id, sra_dir, ass_dir, fastq_dir, assemble_dir, outdir, thread, gsize, start, sra_num_)
