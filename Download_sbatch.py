@@ -91,8 +91,6 @@ def sbatch_job(outdir,pdat,need_list,start):
     finish_num_ = len(finish_Analysis_run)
     print("finish_num = {}".format(finish_num))
     pool_list = []
-    with open(needList, "w+") as f:
-        f.write("")
     try:
         for k in need_run:
             k.strip("\n")
@@ -133,6 +131,7 @@ def sbatch_job(outdir,pdat,need_list,start):
         ###
         print("sbatch {}".format(job_file))
         utils_.run_cmd("sbatch {}".format(job_file))
+
     except KeyboardInterrupt:
         print("Catch keyboardinterdinterupterror\n")
         print("srart : {}\n".format(start))
@@ -250,6 +249,11 @@ def main():
             pool_list.append(pool.apply_async(Download, (x,outdir,sraid_outdir,)))
             pdat=pdat_run[sra_run.index(x)]
         sbatch_job(outdir,pdat,need_list,start)
+        needList = os.path.join(outdir, "need_run.txt")
+        old_needlist=os.path.join(outdir, "{}_run.txt".format(ll))
+        need_file = Path(needList)
+        need_file.touch(exist_ok=True)
+        utils_.run_cmd2("mv {} {}".format(needList,old_needlist))
 
 
 
