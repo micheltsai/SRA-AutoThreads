@@ -6,6 +6,7 @@ import time
 import traceback
 from pathlib import Path
 
+import numpy
 import pandas as pd
 
 import utils_
@@ -233,11 +234,11 @@ def main():
     pdat=""
 
     limit_list=list(range(0, len(sra_run), limit_num))
-
+    
 
 
     for ll in limit_list:
-        need_list=sra_run[ll,ll+limit_num]
+        need_list=sra_run[ll:ll+limit_num]
         print("###############\n{} -> {}\n".format(ll,ll+limit_num))
         for x in need_list:
             print("###################\n")
