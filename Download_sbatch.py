@@ -48,7 +48,7 @@ def sbatch_job(outdir,start):
 
     check_log = os.path.join(outdir, "Analysischeck.log")
 
-    sraList = os.path.join(outdir, "sraList.txt")
+    sraList = os.path.join(outdir, "sraList_test.txt")
     needList = os.path.join(outdir, "need_run.txt")
 
     #with open(sraList, "r") as f:
@@ -240,7 +240,7 @@ def main():
 
     sbatch_job(outdir, start)
 
-        
+
     pool.close()
     print("pool.close()")
     pool.join()
