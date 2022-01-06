@@ -39,7 +39,7 @@ def Download(x,_outdir,sra_dir):
     print('Done,total cost',dltime, 'secs')
     print("###########################################################")
 
-def sbatch_job(outdir,pdat,start):
+def sbatch_job(outdir,pdat,need_list,start):
     print("outdir:{}\nnew_outdir:{}\n".format(outdir, outdir))
     job_dir = os.path.join(outdir, "job")
     utils_.mkdir_join(job_dir)
@@ -53,7 +53,7 @@ def sbatch_job(outdir,pdat,start):
     check_file.touch(exist_ok=True)
     sraList = os.path.join(outdir, "sraList_test.txt")
     needList = os.path.join(outdir, "need_run.txt")
-    need_file = Path(check_log)
+    need_file = Path(needList)
     need_file.touch(exist_ok=True)
 
     #with open(sraList, "r") as f:
@@ -63,15 +63,6 @@ def sbatch_job(outdir,pdat,start):
     # run_list = run_list[0].split("\n")
     # print("run_list: ",run_list)
     #run_list = [rr.strip() for rr in run_list if rr.strip() != '']
-
-    f = open(sraList, 'r')
-    line = f.readlines()
-    print("check log :{}\n".format(line))
-    f.close()
-    for s in line:
-        print("{}\n".format(s))
-    need_list = list(filter(lambda x: len(x.split(" ")) >= 4, line))
-    run_list = list(map(lambda x: x.split(" ")[1], need_list))
 
 
     # print(run_list)
@@ -83,7 +74,7 @@ def sbatch_job(outdir,pdat,start):
         print("{}\n".format(s))
     finish_Analysis = list(filter(lambda x: len(x.split(" ")) >= 4, line_Analysis))
     finish_Analysis_run = list(map(lambda x: x.split(" ")[1], finish_Analysis))
-    need_run = list(filter(lambda x: x not in finish_Analysis_run, run_list))
+    need_run = list(filter(lambda x: x not in finish_Analysis_run, need_list))
     print("finish: {}\nfinish_run: {}\nneed_run: {}".format(finish_Analysis, finish_Analysis_run, need_run))
     print(
         "finish length: {}\nfinish_run length: {}\nneed_run length: {}".format(len(finish_Analysis), len(finish_Analysis_run),
@@ -215,6 +206,7 @@ def main():
     mlstS = str(setting_df['MLST_organism'][0])
     amrS = str(setting_df['AMR_organism'][0])
     shovill_RAM = str(setting_df['shovill_RAM'][0])
+    limit_num=str(setting_df['limit_number'][0])
     # get (Date) to (Date)
     sd_Y = int(start_date.split("/")[0])
     sd_M = int(start_date.split("/")[1])
@@ -239,17 +231,26 @@ def main():
     print(sra_run)
     pool_list=[]
     pdat=""
-    for x in range(0,len(sra_run)):
-        print("###################\n")
-        print(x)
-        print(sra_run[x])
-        new_outdir = os.path.join(outdir, "output")
-        sraid_outdir=os.path.join(new_outdir,sra_run[x])
-        utils_.mkdir_join(sraid_outdir)
-        #Download(x,outdir,sraid_outdir)
-        pool_list.append(pool.apply_async(Download, (sra_run[x],outdir,sraid_outdir,)))
-        pdat=pdat_run[x]
-    sbatch_job(outdir,pdat,start)
+
+    limit_list=list(range(0, len(sra_run), limit_num))
+
+
+
+    for ll in limit_list:
+        need_list=sra_run[ll,ll+limit_num]
+        print("###############\n{} -> {}\n".format(ll,ll+limit_num))
+        for x in need_list:
+            print("###################\n")
+            print(x)
+            print(sra_run[x])
+            new_outdir = os.path.join(outdir, "output")
+            sraid_outdir=os.path.join(new_outdir,sra_run[x])
+            utils_.mkdir_join(sraid_outdir)
+            #Download(x,outdir,sraid_outdir)
+            pool_list.append(pool.apply_async(Download, (sra_run[x],outdir,sraid_outdir,)))
+            pdat=pdat_run[x]
+        #sbatch_job(outdir,pdat,need_list,start)
+
 
 
     pool.close()

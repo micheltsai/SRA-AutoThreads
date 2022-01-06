@@ -803,16 +803,9 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
         #global finish_num_
         #finish_num_ += 1
         check_log = os.path.join(_outdir, "Analysischeck.log")
-        with open(check_log, "a+") as f:
-            f.write("Run {} is ok.\n".format(sra_id))
+        #with open(check_log, "a+") as f:
+        #    f.write("Run {} is ok.\n".format(sra_id))
 
-        with open(check_log,"r") as f:
-            check_lines=f.readlines()
-        finish = list(filter(lambda x: len(x.split(" ")) >= 4, check_lines))
-        finish_num_s = list(map(lambda x: x.split(" ")[1], finish))
-
-        print("finish num={}\n".format(len(finish_num_s)))
-        print("{} / {}\n".format(len(finish_num_s),sra_num_))
         ########
         utils_.run_cmd2("rm -rf {}".format(fastq_dir))
         utils_.run_cmd2("rm -rf {}".format(sra_dir))
@@ -840,9 +833,21 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
         ####
         with open("./SRA_run_error.txt", "a+") as f:
             f.write("{} :\n{}\n".format(sra_id, errMsg))
+
         sys.exit(e)
     #sys.exit("subpreocess End\n")
-    return 0
+    return sra_id
+
+def mycallback_write_Finish(sra_id):
+    print("mycallback_write\n")
+    check_log = os.path.join("./SRAtest", "Analysischeck.log")
+    with open(check_log, "a+") as f:
+        f.write("Run {} is ok.\n".format(sra_id))
+        check_lines = f.readlines()
+    finish = list(filter(lambda x: len(x.split(" ")) >= 4, check_lines))
+    finish_num_s = list(map(lambda x: x.split(" ")[1], finish))
+    print("finish num={}\n".format(len(finish_num_s)))
+    print("{} / {}\n".format(len(finish_num_s), sra_num_))
 
 if __name__ == '__main__':
     start = time.time()
