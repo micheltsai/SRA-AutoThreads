@@ -234,7 +234,7 @@ def main():
     pdat=""
 
     limit_list=list(range(0, len(sra_run), limit_num))
-    
+
 
 
     for ll in limit_list:
@@ -243,13 +243,12 @@ def main():
         for x in need_list:
             print("###################\n")
             print(x)
-            print(sra_run[x])
             new_outdir = os.path.join(outdir, "output")
-            sraid_outdir=os.path.join(new_outdir,sra_run[x])
+            sraid_outdir=os.path.join(new_outdir,x)
             utils_.mkdir_join(sraid_outdir)
             #Download(x,outdir,sraid_outdir)
-            pool_list.append(pool.apply_async(Download, (sra_run[x],outdir,sraid_outdir,)))
-            pdat=pdat_run[x]
+            pool_list.append(pool.apply_async(Download, (x,outdir,sraid_outdir,)))
+            pdat=pdat_run[sra_run.index(x)]
         #sbatch_job(outdir,pdat,need_list,start)
 
 
