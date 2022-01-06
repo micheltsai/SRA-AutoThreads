@@ -223,8 +223,8 @@ def main():
     print(sd_Y, sd_M, sd_D)
     print(ed_Y, ed_M, ed_D)
     utils_.mkdir_join(outdir)
-    pdat=datetime.datetime.now()[0]
-    
+    pdat=str(datetime.datetime.now())
+
     print("pdat: {}".format(pdat))
     sraList_txt=os.path.join(outdir,"sraList_test.txt")
     myfile = Path(sraList_txt)
