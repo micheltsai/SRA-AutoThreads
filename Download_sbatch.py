@@ -21,6 +21,7 @@ def Download(x,_outdir,sra_dir):
     outdir__ = os.path.join(_outdir, "Assembled")
     check_log = os.path.join(_outdir, "Analysischeck.log")
     final_dir = os.path.join(outdir__, "{}_contig.fa".format(x))
+
     sra_file=os.path.join(sra_dir,"{}/{}.sra".format(x,x))
     print(final_dir)
     print(sra_file)
@@ -29,6 +30,7 @@ def Download(x,_outdir,sra_dir):
     elif os.path.isfile(sra_file):
         print("was ran download ,sra is exist\n------------------------------\n\n")
     else:
+        sra_dir = os.path.join(sra_dir, "sra")
         utils_.prefetch_srav2(x, sra_dir)
         print("Download {}\n.".format(x))
         #with open(Downloadcheck_log, "a+") as f:
