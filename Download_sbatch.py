@@ -98,7 +98,7 @@ def main():
         print(x)
         sraid_outdir=os.path.join(outdir,x)
         utils_.mkdir_join(sraid_outdir)
-        Download(x,outdir,sraid_outdir)
+        #Download(x,outdir,sraid_outdir)
         pool_list.append(pool.apply_async(Download, (x,outdir,sraid_outdir,)))
     pool.close()
     print("pool.close()")
