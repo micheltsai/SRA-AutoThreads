@@ -47,9 +47,12 @@ def sbatch_job(outdir,start):
     utils_.mkdir_join(job_out)
 
     check_log = os.path.join(outdir, "Analysischeck.log")
-
+    check_file = Path(check_log)
+    check_file.touch(exist_ok=True)
     sraList = os.path.join(outdir, "sraList_test.txt")
     needList = os.path.join(outdir, "need_run.txt")
+    need_file = Path(check_log)
+    need_file.touch(exist_ok=True)
 
     #with open(sraList, "r") as f:
     #    run_list = f.readlines()
