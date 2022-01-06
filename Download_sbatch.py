@@ -249,7 +249,7 @@ def main():
             #Download(x,outdir,sraid_outdir)
             pool_list.append(pool.apply_async(Download, (x,outdir,sraid_outdir,)))
             pdat=pdat_run[sra_run.index(x)]
-        #sbatch_job(outdir,pdat,need_list,start)
+        sbatch_job(outdir,pdat,need_list,start)
 
 
 
