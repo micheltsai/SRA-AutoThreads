@@ -869,9 +869,11 @@ if __name__ == '__main__':
     print(need_run)
     sra_id=need_run[sra_index].strip("\n")
     new_outdir = os.path.join(outdir, "output")
+    utils_.mkdir_join(new_outdir)
     new_outdir = os.path.join(outdir, sra_id)
     utils_.mkdir_join(new_outdir)
     print("output: {}\n".format(new_outdir))
+
     check_log = os.path.join(new_outdir, "Analysischeck.log")
     sra_dir = os.path.join(new_outdir, "sra")  # .sra file
     utils_.mkdir_join(sra_dir)

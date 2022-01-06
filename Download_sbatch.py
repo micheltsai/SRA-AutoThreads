@@ -131,6 +131,8 @@ def sbatch_job(outdir,pdat,need_list,start):
         ###
         print("sbatch {}".format(job_file))
         utils_.run_cmd("sbatch {}".format(job_file))
+        time.sleep(2)
+        utils_.run_cmd("squeue -u linsslab01")
 
     except KeyboardInterrupt:
         print("Catch keyboardinterdinterupterror\n")
@@ -243,6 +245,7 @@ def main():
             print("###################\n")
             print(x)
             new_outdir = os.path.join(outdir, "output")
+            utils_.mkdir_join(new_outdir)
             sraid_outdir=os.path.join(new_outdir,x)
             utils_.mkdir_join(sraid_outdir)
             #Download(x,outdir,sraid_outdir)
