@@ -40,7 +40,7 @@ def Download(x,_outdir,sra_dir):
     print('Done,total cost',dltime, 'secs')
     print("###########################################################")
 
-def sbatch_job(outdir,pdat,need_list,start):
+def sbatch_job(outdir,pdat,need_list,ll,tart):
     print("outdir:{}\nnew_outdir:{}\n".format(outdir, outdir))
     job_dir = os.path.join(outdir, "job")
     utils_.mkdir_join(job_dir)
@@ -53,7 +53,7 @@ def sbatch_job(outdir,pdat,need_list,start):
     check_file = Path(check_log)
     check_file.touch(exist_ok=True)
     sraList = os.path.join(outdir, "sraList_test.txt")
-    needList = os.path.join(outdir, "need_run.txt")
+    needList = os.path.join(outdir, "need_run_{}.txt".format(ll))
     need_file = Path(needList)
     need_file.touch(exist_ok=True)
 
@@ -121,9 +121,10 @@ def sbatch_job(outdir,pdat,need_list,start):
             f.write("#SBATCH --mail-user=sj985517@gmail.com\n")
             f.write("#SBATCH --mail-type=BEGIN,END\n")
             f.write("echo $SLURM_ARRAY_TASK_ID\n")
-            f.write("/home/linsslab01/miniconda3/bin/python3 one_Analysis_new.py {} {} {}\n".format(pdat,
+            f.write("/home/linsslab01/miniconda3/bin/python3 one_Analysis_new.py {} {} {} {}\n".format(pdat,
                                                                                                 sra_num_,
-                                                                                                "$SLURM_ARRAY_TASK_ID"))
+                                                                                                "$SLURM_ARRAY_TASK_ID",
+                                                                                                       ll))
         ###
         print("sbatch before du-sh\n")
         print(utils_.run_cmd("du ./SRAtest -sh"))
@@ -251,12 +252,12 @@ def main():
             #Download(x,outdir,sraid_outdir)
             pool_list.append(pool.apply_async(Download, (x,outdir,sraid_outdir,)))
             pdat=pdat_run[sra_run.index(x)]
-        sbatch_job(outdir,pdat,need_list,start)
-        needList = os.path.join(outdir, "need_run.txt")
-        old_needlist=os.path.join(outdir, "{}_run.txt".format(ll))
-        need_file = Path(needList)
-        need_file.touch(exist_ok=True)
-        utils_.run_cmd2("mv {} {}".format(needList,old_needlist))
+        sbatch_job(outdir,pdat,need_list,ll,start)
+        #needList = os.path.join(outdir, "need_run.txt")
+        #old_needlist=os.path.join(outdir, "{}_run.txt".format(ll))
+        #need_file = Path(needList)
+        #need_file.touch(exist_ok=True)
+        #utils_.run_cmd2("mv {} {}".format(needList,old_needlist))
 
 
 

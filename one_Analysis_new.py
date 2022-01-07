@@ -857,10 +857,11 @@ if __name__ == '__main__':
     #need_run=argvs[2]
     sra_num_ = argvs[2]
     sra_index=int(argvs[3])-1
+    txt_index=argvs[4]
     #sra_id_test=argvs[5]
 
 
-    needList = os.path.join(outdir, "need_run.txt")
+    needList = os.path.join(outdir, "need_run_{}.txt".format(txt_index))
 
     with open(needList,"r") as f:
         needlines=f.readlines()
