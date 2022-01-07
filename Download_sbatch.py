@@ -12,7 +12,7 @@ import pandas as pd
 
 import utils_
 def run_cmd2(cmd):
-    p = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, check=True)
+    p = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True, check=True)
     line = p.stdout.readline()
     line = line.strip()
     return line
