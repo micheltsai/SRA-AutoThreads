@@ -13,7 +13,7 @@ import pandas as pd
 import utils_
 def run_cmd2(cmd):
     p = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True, check=True)
-    return p.stdout
+    return p.stdout.decode().strip("\n")
 
 
 def Download(x,_outdir,sra_dir):
@@ -237,15 +237,26 @@ def main():
     sra_run = list(map(lambda x: x.split(" ")[1], sralist))
     pdat_run=list(map(lambda x: x.split(" ")[0].split(":")[0], sralist))
     print(sra_run)
+
+    check_log = os.path.join(outdir, "Analysischeck.log")
+    myfile2 = Path(check_log)
+    myfile2.touch(exist_ok=True)
+    with open(check_log,"r")as f:
+        line=f.readlines()
+    finish = list(filter(lambda x: len(x.split(" ")) >= 4, line))
+    finish_run = list(map(lambda x: x.split(" ")[1], finish))
+    need_run = list(filter(lambda x: x not in finish_run, sra_run))
+
+
     pool_list=[]
     pdat=""
 
-    limit_list=list(range(0, len(sra_run), limit_num))
+    limit_list=list(range(0, len(need_run), limit_num))
 
 
 
     for ll in limit_list:
-        need_list=sra_run[ll:ll+limit_num]
+        need_list=need_run[ll:ll+limit_num]
         print("###############\n{} -> {}\n".format(ll,ll+limit_num))
         for x in need_list:
             print("###################\n")
@@ -256,13 +267,12 @@ def main():
             utils_.mkdir_join(sraid_outdir)
             #Download(x,outdir,sraid_outdir)
             pool_list.append(pool.apply_async(Download, (x,outdir,sraid_outdir,)))
-            pdat=pdat_run[sra_run.index(x)]
+            pdat=pdat_run[need_run.index(x)]
         print("################\nsbatch_job\n")
         sbatch_job(outdir,pdat,need_list,ll,start)
 
         print("sbatch_job {}->{}\n".format(ll,ll+limit_num))
         print(run_cmd2("cat squeue -u linsslab01 |wc -l"))
-        print(int.from_bytes(run_cmd2("cat squeue -u linsslab01 |wc -l")))
         print(type(run_cmd2("cat squeue -u linsslab01 |wc -l")))
 
         num=int.from_bytes(run_cmd2("cat squeue -u linsslab01 |wc -l"))
@@ -270,13 +280,13 @@ def main():
             print("progresses status is PD\n")
             utils_.run_cmd2("squeue -u linsslab01")
             time.sleep(60)
-            num = int.from_bytes(run_cmd2("cat squeue -u linsslab01 |wc -l"))
+            num = int(run_cmd2("squeue -u linsslab01 |wc -l"))
 
         while num>1:
             print("progresses is running\n")
             run_cmd2("squeue -u linsslab01")
             time.sleep(60)
-            num=int.from_bytes(run_cmd2("cat squeue -u linsslab01 |wc -l"))
+            num=int(run_cmd2("squeue -u linsslab01 |wc -l"))
             print("Quantity of running progress  = {}\n".format(num-1))
         needList = os.path.join(outdir, "need_run_{}.txt".format(ll))
         utils_.run_cmd2("rm -rf {}".format(needList))
