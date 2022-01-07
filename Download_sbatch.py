@@ -13,7 +13,9 @@ import pandas as pd
 import utils_
 def run_cmd2(cmd):
     p = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, check=True)
-    return p.stdout.read()
+    line = p.stdout.readline()
+    line = line.strip()
+    return line
 
 
 def Download(x,_outdir,sra_dir):
