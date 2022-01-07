@@ -10,6 +10,10 @@ import numpy
 import pandas as pd
 
 import utils_
+def run_cmd2(cmd):
+    p = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, check=True)
+    return p.stdout
+
 
 def Download(x,_outdir,sra_dir):
     one_ = time.time()
@@ -256,21 +260,21 @@ def main():
         sbatch_job(outdir,pdat,need_list,ll,start)
 
         print("sbatch_job {}->{}\n".format(ll,ll+limit_num))
-        print(utils_.run_cmd2("cat squeue -u linsslab01 |wc -l"))
-        print(type(utils_.run_cmd2("cat squeue -u linsslab01 |wc -l")))
+        print(run_cmd2("cat squeue -u linsslab01 |wc -l"))
+        print(type(run_cmd2("cat squeue -u linsslab01 |wc -l")))
 
-        #num=int(utils_.run_cmd2("cat squeue -u linsslab01 |wc -l")[1])
+        num=int(run_cmd2("cat squeue -u linsslab01 |wc -l"))
         while num ==2:
             print("progresses status is PD\n")
             utils_.run_cmd2("squeue -u linsslab01")
             time.sleep(60)
-            num = int(utils_.run_cmd2("cat squeue -u linsslab01 |wc -l")[1])
+            num = int(run_cmd2("cat squeue -u linsslab01 |wc -l"))
 
         while num>1:
             print("progresses is running\n")
-            utils_.run_cmd2("squeue -u linsslab01")
+            run_cmd2("squeue -u linsslab01")
             time.sleep(60)
-            num=int(utils_.run_cmd2("cat squeue -u linsslab01 |wc -l"))
+            num=int(run_cmd2("cat squeue -u linsslab01 |wc -l"))
             print("Quantity of running progress  = {}\n".format(num-1))
 
         print("mv -r./SRAtest/ /home/linsslab01/SRAdata/{}_{}\n".format(str(ed_M),ll+limit_num))
