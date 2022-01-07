@@ -13,7 +13,7 @@ import pandas as pd
 import utils_
 def run_cmd2(cmd):
     p = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, check=True)
-    return p.stdout
+    return p.stdout.read()
 
 
 def Download(x,_outdir,sra_dir):
@@ -279,7 +279,7 @@ def main():
             print("Quantity of running progress  = {}\n".format(num-1))
 
         print("mv -r./SRAtest/ /home/linsslab01/SRAdata/{}_{}\n".format(str(ed_M),ll+limit_num))
-        utils_.run_cmd2("mv -r./SRAtest/ /home/linsslab01/SRAdata/{}_{}".format(str(ed_M),ll+limit_num))
+        utils_.run_cmd2("mv -r ./SRAtest/ /home/linsslab01/SRAdata/{}_{}".format(str(ed_M),ll+limit_num))
         print("mv end\n")
 
 
