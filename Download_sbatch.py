@@ -254,10 +254,12 @@ def main():
             pdat=pdat_run[sra_run.index(x)]
         print("################\nsbatch_job\n")
         sbatch_job(outdir,pdat,need_list,ll,start)
+
         print("sbatch_job {}->{}\n".format(ll,ll+limit_num))
+        print(utils_.run_cmd2("cat squeue -u linsslab01 |wc -l"))
         print(type(utils_.run_cmd2("cat squeue -u linsslab01 |wc -l")))
 
-        num=int(utils_.run_cmd2("cat squeue -u linsslab01 |wc -l")[1])
+        #num=int(utils_.run_cmd2("cat squeue -u linsslab01 |wc -l")[1])
         while num ==2:
             print("progresses status is PD\n")
             utils_.run_cmd2("squeue -u linsslab01")
