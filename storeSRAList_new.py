@@ -36,7 +36,7 @@ def Download(x,_outdir,sra_dir):
     print('Done,total cost',dltime, 'secs')
     print("###########################################################")
 
-def sra_stat(sra_id,outdir,sra_dir,sraNUM,needNUM,date):
+def sra_stat(sra_id,outdir,sraNUM,needNUM,date):
     print("sra_stat\n")
     #global finish_num
     QC_error = os.path.join(outdir, "nofillQC.txt")
@@ -232,11 +232,11 @@ if __name__ == '__main__':
                 # temp="{}/{}/{}".format(str(2020),str(mon+1),str(d))
                 ######
                 pdat = date.replace("/", "")
-                new_outdir = os.path.join(outdir, pdat)
+                new_outdir = os.path.join(outdir, "output")
                 utils_.mkdir_join(new_outdir)
                 print("output: {}\n".format(new_outdir))
-                sra_dir = os.path.join(new_outdir, "sra")  # .sra file
-                utils_.mkdir_join(sra_dir)
+                #sra_dir = os.path.join(new_outdir, "sra")  # .sra file
+                #utils_.mkdir_join(sra_dir)
 
                 pattern, count = utils_.count_egquery(pattern, date, date)
                 print("pattern: {}\ncount: {}\n".format(pattern, count))
@@ -275,7 +275,7 @@ if __name__ == '__main__':
                         isFinal=True
                     try:
                         print("#########################\nhello {}\n".format(aa))
-                        pool_list.append(pool.apply_async(sra_stat,args=(aa,new_outdir,sra_dir,sra_num_,len(need_run),date,),callback=mycallback_write))
+                        pool_list.append(pool.apply_async(sra_stat,args=(aa,new_outdir,sra_num_,len(need_run),date,),callback=mycallback_write))
                         # pool.apply_async(test, (k,new_outdir,))
                         #sra_stat(aa, new_outdir, sra_dir)
                     except KeyboardInterrupt:

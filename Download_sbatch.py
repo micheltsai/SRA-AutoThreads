@@ -40,7 +40,7 @@ def Download(x,_outdir,sra_dir):
     print('Done,total cost',dltime, 'secs')
     print("###########################################################")
 
-def sbatch_job(outdir,pdat,need_list,ll,tart):
+def sbatch_job(outdir,pdat,need_list,ll,start):
     print("outdir:{}\nnew_outdir:{}\n".format(outdir, outdir))
     job_dir = os.path.join(outdir, "job")
     utils_.mkdir_join(job_dir)
@@ -255,6 +255,33 @@ def main():
         print("################\nsbatch_job\n")
         sbatch_job(outdir,pdat,need_list,ll,start)
         print("sbatch_job {}->{}\n".format(ll,ll+limit_num))
+        num=int(utils_.run_cmd2("cat squeue -u linsslab01 |wc -l"))
+        while num ==2:
+            print("progresses status is PD\n")
+            utils_.run_cmd2("squeue -u linsslab01")
+            time.sleep(60)
+            num = int(utils_.run_cmd2("cat squeue -u linsslab01 |wc -l"))
+
+        while num>1:
+            print("progresses is running\n")
+            utils_.run_cmd2("squeue -u linsslab01")
+            time.sleep(60)
+            num=int(utils_.run_cmd2("cat squeue -u linsslab01 |wc -l"))
+            print("Quantity of running progress  = {}\n".format(num-1))
+
+        print("mv -r./SRAtest/ /home/linsslab01/SRAdata/{}_{}\n".format(str(ed_M),ll+limit_num))
+        utils_.run_cmd2("mv -r./SRAtest/ /home/linsslab01/SRAdata/{}_{}".format(str(ed_M),ll+limit_num))
+        print("mv end\n")
+
+
+
+
+
+
+
+
+
+
         #needList = os.path.join(outdir, "need_run.txt")
         #old_needlist=os.path.join(outdir, "{}_run.txt".format(ll))
         #need_file = Path(needList)
