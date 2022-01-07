@@ -282,7 +282,7 @@ def main():
             time.sleep(60)
             num = int(run_cmd2("squeue -u linsslab01 |wc -l"))
 
-        while num>1:
+        while num!=1:
             print("progresses is running\n")
             run_cmd2("squeue -u linsslab01")
             time.sleep(60)
