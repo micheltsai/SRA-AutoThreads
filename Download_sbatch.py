@@ -275,7 +275,7 @@ def main():
         print(run_cmd2("squeue -u linsslab01 |wc -l"))
         print(type(run_cmd2("csqueue -u linsslab01 |wc -l")))
 
-        num=int.from_bytes(run_cmd2("squeue -u linsslab01 |wc -l"))
+        num=int(run_cmd2("squeue -u linsslab01 |wc -l"))
         while num ==2:
             print("progresses status is PD\n")
             utils_.run_cmd2("squeue -u linsslab01")
