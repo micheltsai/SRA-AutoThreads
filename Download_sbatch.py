@@ -106,8 +106,8 @@ def sbatch_job(outdir,pdat,need_list,start):
             prog_num += 1
             finish_num += 1
             time.sleep(1)
-        job_out_o = os.path.join(job_out, "array_test_%a.log")
-        job_out_err = os.path.join(job_out, "array_err_%a.log")
+        job_out_o = os.path.join(job_out, "%A_test_%a.log")
+        job_out_err = os.path.join(job_out, "%A_err_%a.log")
         with open(job_file, "w+") as f:
             f.write("#!/usr/bin/sh\n")
             f.write("#SBATCH -A MST109178\n")
