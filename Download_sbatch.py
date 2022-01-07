@@ -13,9 +13,7 @@ import pandas as pd
 import utils_
 def run_cmd2(cmd):
     p = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True, check=True)
-    line = p.stdout.readline()
-    line = line.strip()
-    return line
+    return p.stdout
 
 
 def Download(x,_outdir,sra_dir):
@@ -264,20 +262,21 @@ def main():
 
         print("sbatch_job {}->{}\n".format(ll,ll+limit_num))
         print(run_cmd2("cat squeue -u linsslab01 |wc -l"))
+        print(int.from_bytes(run_cmd2("cat squeue -u linsslab01 |wc -l")))
         print(type(run_cmd2("cat squeue -u linsslab01 |wc -l")))
 
-        num=int(run_cmd2("cat squeue -u linsslab01 |wc -l"))
+        num=int.from_bytes(run_cmd2("cat squeue -u linsslab01 |wc -l"))
         while num ==2:
             print("progresses status is PD\n")
             utils_.run_cmd2("squeue -u linsslab01")
             time.sleep(60)
-            num = int(run_cmd2("cat squeue -u linsslab01 |wc -l"))
+            num = int.from_bytes(run_cmd2("cat squeue -u linsslab01 |wc -l"))
 
         while num>1:
             print("progresses is running\n")
             run_cmd2("squeue -u linsslab01")
             time.sleep(60)
-            num=int(run_cmd2("cat squeue -u linsslab01 |wc -l"))
+            num=int.from_bytes(run_cmd2("cat squeue -u linsslab01 |wc -l"))
             print("Quantity of running progress  = {}\n".format(num-1))
         needList = os.path.join(outdir, "need_run_{}.txt".format(ll))
         utils_.run_cmd2("rm -rf {}".format(needList))
