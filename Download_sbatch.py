@@ -260,7 +260,7 @@ def main():
             print("progresses status is PD\n")
             utils_.run_cmd2("squeue -u linsslab01")
             time.sleep(60)
-            num = int(utils_.run_cmd2("cat squeue -u linsslab01 |wc -l"))
+            num = int(utils_.run_cmd2("cat squeue -u linsslab01 |wc -l")[0])
 
         while num>1:
             print("progresses is running\n")
