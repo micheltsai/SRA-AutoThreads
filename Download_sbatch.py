@@ -276,24 +276,30 @@ def main():
         print(type(run_cmd2("csqueue -u linsslab01 |wc -l")))
 
         num=int(run_cmd2("squeue -u linsslab01 |wc -l"))
-        while num ==2:
+        while num == 2:
             print("progresses status is PD\n")
             utils_.run_cmd2("squeue -u linsslab01")
             time.sleep(60)
             num = int(run_cmd2("squeue -u linsslab01 |wc -l"))
 
-        while num!=1:
+        while num != 1:
             print("progresses is running\n")
             run_cmd2("squeue -u linsslab01")
             time.sleep(60)
             num=int(run_cmd2("squeue -u linsslab01 |wc -l"))
             print("Quantity of running progress  = {}\n".format(num-1))
+            if num==1:
+                break
         needList = os.path.join(outdir, "need_run_{}.txt".format(ll))
         utils_.run_cmd2("rm -rf {}".format(needList))
 
-        print("mv -r./SRAtest/ /home/linsslab01/SRAdata/{}_{}\n".format(str(ed_M),ll+limit_num))
-        utils_.run_cmd2("mv -r ./SRAtest/output /home/linsslab01/SRAdata/{}_{}".format(str(ed_M),ll+limit_num))
-        print("mv end\n")
+        print("scp -r ./SRAtest/ /home/linsslab01/SRAdata/{}_{}\n".format(str(ed_M),ll+limit_num))
+        utils_.run_cmd2("scp -r ./SRAtest/output root@140.112.165.124:/data/SRA_data/{}_{}".format(str(ed_M),ll+limit_num))
+        print("scp end\n")
+        utils_.run_cmd2("rm -rf SRAtest/output")
+        utils_.run_cmd2("rm -rf SRAtest/JOBoutput")
+        print("remove end\n")
+
 
 
 
