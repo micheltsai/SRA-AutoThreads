@@ -293,7 +293,7 @@ def main():
         needList = os.path.join(outdir, "need_run_{}.txt".format(ll))
         utils_.run_cmd2("rm -rf {}".format(needList))
 
-        print("scp -r ./SRAtest/ /home/linsslab01/SRAdata/{}_{}\n".format(str(ed_M),ll+limit_num))
+        print("scp -r ./SRAtest/output root@140.112.165.124:/data/SRA_data/{}_{}\n".format(str(ed_M),ll+limit_num))
         utils_.run_cmd2("scp -r ./SRAtest/output root@140.112.165.124:/data/SRA_data/{}_{}".format(str(ed_M),ll+limit_num))
         print("scp end\n")
         utils_.run_cmd2("rm -rf SRAtest/output")
