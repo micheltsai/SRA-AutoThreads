@@ -252,14 +252,14 @@ def main():
             #Download(x,outdir,sraid_outdir)
             pool_list.append(pool.apply_async(Download, (x,outdir,sraid_outdir,)))
             pdat=pdat_run[sra_run.index(x)]
+        print("################\nsbatch_job\n")
         sbatch_job(outdir,pdat,need_list,ll,start)
+        print("sbatch_job {}->{}\n".format(ll,ll+limit_num))
         #needList = os.path.join(outdir, "need_run.txt")
         #old_needlist=os.path.join(outdir, "{}_run.txt".format(ll))
         #need_file = Path(needList)
         #need_file.touch(exist_ok=True)
         #utils_.run_cmd2("mv {} {}".format(needList,old_needlist))
-
-
 
     pool.close()
     print("pool.close()")

@@ -813,7 +813,7 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
         print("remove fastq dir, sra dir, assembled_result dir\n")
 
         print("Run {} is Done\n".format(sra_id))
-
+        mycallback_write_Finish(sra_id)
         #######
         print(str(datetime.datetime.now()),' Done,current total cost', time.time() - start, 'secs\n')
     except Exception as e:
