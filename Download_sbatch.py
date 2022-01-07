@@ -277,25 +277,14 @@ def main():
             time.sleep(60)
             num=int(run_cmd2("cat squeue -u linsslab01 |wc -l"))
             print("Quantity of running progress  = {}\n".format(num-1))
+        needList = os.path.join(outdir, "need_run_{}.txt".format(ll))
+        utils_.run_cmd2("rm -rf {}".format(needList))
 
         print("mv -r./SRAtest/ /home/linsslab01/SRAdata/{}_{}\n".format(str(ed_M),ll+limit_num))
-        utils_.run_cmd2("mv -r ./SRAtest/ /home/linsslab01/SRAdata/{}_{}".format(str(ed_M),ll+limit_num))
+        utils_.run_cmd2("mv -r ./SRAtest/output /home/linsslab01/SRAdata/{}_{}".format(str(ed_M),ll+limit_num))
         print("mv end\n")
 
 
-
-
-
-
-
-
-
-
-        #needList = os.path.join(outdir, "need_run.txt")
-        #old_needlist=os.path.join(outdir, "{}_run.txt".format(ll))
-        #need_file = Path(needList)
-        #need_file.touch(exist_ok=True)
-        #utils_.run_cmd2("mv {} {}".format(needList,old_needlist))
 
     pool.close()
     print("pool.close()")
