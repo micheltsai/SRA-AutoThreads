@@ -265,8 +265,13 @@ def main():
             print(x)
             new_outdir = os.path.join(outdir, "output")
             utils_.mkdir_join(new_outdir)
+            print(new_outdir)
             sraid_outdir=os.path.join(new_outdir,x)
             utils_.mkdir_join(sraid_outdir)
+            print(sraid_outdir)
+            sraid_outdir = os.path.join(sraid_outdir, "sra")
+            utils_.mkdir_join(sraid_outdir)
+            print(sraid_outdir)
             #Download(x,outdir,sraid_outdir)
             pool_list.append(pool.apply_async(Download, (x,outdir,sraid_outdir,)))
             pdat=pdat_run[need_run.index(x)]
@@ -280,7 +285,7 @@ def main():
         num=int(run_cmd2("squeue -u linsslab01 |wc -l"))
         pd_start=time.time()
         while num == 2:
-            print("progresses status is PD\n")
+            print("progresses status is PD, or one progress is running\n")
             utils_.run_cmd2("squeue -u linsslab01")
             time.sleep(60)
             num = int(run_cmd2("squeue -u linsslab01 |wc -l"))

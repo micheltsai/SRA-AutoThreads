@@ -808,8 +808,11 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
 
         ########
         utils_.run_cmd2("rm -rf {}".format(fastq_dir))
+        print(fastq_dir)
         utils_.run_cmd2("rm -rf {}".format(sra_dir))
+        print(sra_dir)
         utils_.run_cmd2("rm -rf {}".format(assemble_dir))
+        print(assemble_dir)
         print("remove fastq dir, sra dir, assembled_result dir\n")
 
         print("Run {} is Done\n".format(sra_id))
