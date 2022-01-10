@@ -63,7 +63,7 @@ def sbatch_job(outdir,pdat,need_list,ll,sra_num_,start):
     need_file = Path(needList)
     need_file.touch(exist_ok=True)
     with open(needList,"w")as f:
-        f.write()
+        f.write("")
     #with open(sraList, "r") as f:
     #    run_list = f.readlines()
    # print("run_list: ", run_list)
