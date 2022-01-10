@@ -455,6 +455,186 @@ def getlayout(path_):
     # if sra_layout==2 continue
 
 
+def run_for_114v3(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start,check_log,shovill_RAM):
+    print ("sra_id = {}\nsra_dir = {}\noutdir= {}\n".format(sra_id,sra_dir,outdir))
+    path_1 = os.path.join(sra_dir,sra_id)
+    path_ = os.path.join(path_1,"{}.sra".format(sra_id))
+    #outdir__=os.path.join(outdir, "Assembled")
+    #mkdir_join(outdir__)
+    #path_= os.path.join(path_,str("{}.sra".format(sra_id)))
+    print ("srafile_path: {}\n".format(path_))
+    # os.path.join(path, *paths)連接路徑
+
+    #outdir = assem_dir + "/" + "".join(sra_id)
+    print ("outdir = {}".format(outdir))
+    #fastq_dir = os.path.join(outdir, 'fastq')
+    #fastq_dir_ = os.path.join(fastq_dir, sra_id)
+    #os.makedirs(fastq_dir_, exist_ok=True)
+    print ("fastq_dir = {}".format(fastq_dir))
+
+    #assemble_dir = os.path.join(outdir, "assembly_result")
+    #assemble_dir_ = os.path.join(assemble_dir, sra_id)
+    #mkdir_join(assemble_dir_)
+    contig_tmp = os.path.join(assemble_dir, "contigs.fa")
+    outdir__ = os.path.join(outdir, "Assembled")
+    mkdir_join(outdir__)
+    final_dir = os.path.join(outdir__, "{}_contig.fa".format(sra_id))
+    #如果做過則下一個
+    if os.path.isfile(final_dir):
+        print("was ran assembly ,contig.fa is exist\n------------------------------\n\n")
+        return 0
+
+    dump_time=time.time()
+    # 解壓縮成fastq
+    ###
+    print("dump du-sh\n")
+    run_cmd("du ./SRAtest -sh")
+    time.sleep(1)
+    ###
+
+    print('Dump fastq.\n')
+    # run_cmd
+    dump_fastq_from_sra(path_, fastq_dir)
+    # os.listdir(fastq_dir) list files in dir
+    print (fastq_dir)
+
+    ###
+    print("dump du-sh\n")
+    run_cmd("du ./SRAtest -sh")
+    time.sleep(1)
+    ###
+
+    reverse_time=time.time()
+    try:
+        forward_reads, reverse_reads = [os.path.join(fastq_dir, fa) for fa in os.listdir(fastq_dir)]
+    except ValueError as e:
+        if os.path.isfile(final_dir):
+            print ("was ran assembly ,r1 and r2 is exist\n------------------------------\n\n")
+            return 0
+        else:
+            #run_cmd("rm {}/R1.fq {}/R2.fq".format(fastq_dir,fastq_dir))
+
+            print("rm -r {}\n".format(fastq_dir))
+            run_cmd("rm -r {}".format(fastq_dir))
+
+            print("and return run_for_114v2({},{},{},{},{},{},{},{},{})\n".format(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start,check_log))
+            with open("./run_for_err.txt","a+")as f:
+                f.write(sra_id)
+                f.write(",")
+            sys.exit(e)
+            #return run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start,check_log)
+            #forward_reads, reverse_reads = [os.path.join(fastq_dir, fa) for fa in os.listdir(fastq_dir)]
+            #sys.exit("{} again and exit\n".format(sra_id))
+
+
+    ## up ok
+    # 資料前處理：刪除爛的序列
+    # Trimming sequence (trimmomatic)------- Q30 base >= 90% -----------> 預測基因組大小與定序深度(KMC & seqtk)
+
+    #print('Trim sequences.')
+    trim_time=time.time()
+    ###
+    print("trim du-sh\n")
+    run_cmd("du ./SRAtest -sh")
+    time.sleep(1)
+    ###
+    r1, r2 = trimmingv2(forward_reads, reverse_reads, fastq_dir, threads)
+    print ("r1= {}, r2={}".format(r1,r2))
+    ###
+    print("trim du-sh\n")
+    run_cmd("du ./SRAtest -sh")
+    time.sleep(1)
+    ###
+    # Q30>=90
+
+    #bases_percentage_time=time.time()
+    #if bases_percentage(r1, 30) < 90 and bases_percentage(r2, 30) < 90:
+    #    #shutil.rmtree(outdir)
+    #    sys.exit('Reads quality is too low.')
+
+    #with open("./ana_time.csv", "a+") as f:
+    #    fieldnames = ["func", "time"]
+    #    writer = csv.DictWriter(f, fieldnames=fieldnames)
+    #    writer.writeheader()
+    #    writer.writerow({"func": "bases_percentage", "time": str(time.time() - bases_percentage_time)})
+
+    # 預測基因組大小與定序深度(KMC & seqtk)--- depth>=80 ----> 抽樣(seqtk) -----------> SPAdes
+    #                                 --- depth<80 ---------> SPAdes
+    # de-novo assembly(SPAdes)------>Polish(pilon)---->Contings(最後成果檔案:conting.fa)
+    #print("Run assembly pipline 'shovill'")
+    #progress_bar("Run assembly pipline 'shovill'")
+    # depth >= 80
+
+    shovill_time=time.time()
+
+    ###
+    print("shovill du-sh\n")
+    run_cmd("du ./SRAtest -sh")
+    time.sleep(1)
+    ###
+    #cmd = f"shovill --R1 {r1} --R2 {r2} --outdir {assemble_dir_} --depth 100 --tmpdir . --cpus {threads} --ram 3 --force"
+    cmd = f"shovill --R1 {r1} --R2 {r2} --outdir {assemble_dir} --depth 80 --tmpdir . --cpus {threads} --ram {shovill_RAM} --force"
+    if gsize:
+        cmd += f" --gsize {gsize}"
+    print(cmd)
+    run_cmd2(cmd)
+
+    ###
+    print("shovill du-sh\n")
+    run_cmd("du ./SRAtest -sh")
+    time.sleep(1)
+    ###
+
+    print("rm -r {}\n".format(path_1))
+    run_cmd("rm -r {}".format(path_1))
+    #cmd2 = "mv " + contig_tmp + " " + assemble_dir + "/" + sra_id + "_contig.fa && mv " + assemble_dir + "/" + sra_id + "_contig.fa " + outdir
+
+
+    ###
+    print("rm_sradir du-sh\n")
+    run_cmd("du ./SRAtest -sh")
+    time.sleep(1)
+    ###
+    cmd2="cp {} {}".format(contig_tmp,final_dir)
+    print("contig_tmp: {}\nfinal_dir: {}\ncmd2={}\n".format(contig_tmp,final_dir,cmd2))
+    run_cmd(cmd2)
+    ###
+    print("cp_assembled_dir du-sh\n")
+    run_cmd("du ./SRAtest -sh")
+    time.sleep(1)
+    ###
+    cmd3 = "rm -rf {}".format(assemble_dir)
+    print(cmd3)
+    run_cmd2(cmd3)
+
+    ###
+    print("rm_assembledir du-sh\n")
+    run_cmd("du ./SRAtest -sh")
+    time.sleep(1)
+    ###
+
+    print("rm -r {}\n".format(fastq_dir))
+    run_cmd("rm -r {}".format(fastq_dir))
+
+
+    ###
+    print("rm_fastqdir du-sh\n")
+    run_cmd("du ./SRAtest -sh")
+    time.sleep(1)
+    ###
+
+
+    #f=open(check_log,"a")
+    #f.write("Run {} is ok\n".format(sra_id))
+    #f.close()
+
+
+    #shutil.rmtree(fastq_dir_)
+    #progress_bar("remove fastq dir")
+    #shutil.rmtree(assemble_dir_)
+    #progress_bar("remove assemble dir")
+    return 0
+
 def run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start,check_log,shovill_RAM):
     print ("sra_id = {}\nsra_dir = {}\noutdir= {}\n".format(sra_id,sra_dir,outdir))
     path_1 = os.path.join(sra_dir,sra_id)
@@ -634,6 +814,9 @@ def run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,sta
     #shutil.rmtree(assemble_dir_)
     #progress_bar("remove assemble dir")
     return 0
+
+
+
 
 #run_for_114(x,sra_dir,output,threads,gsize,start,check_log)
 def run_for_114(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start,check_log):
