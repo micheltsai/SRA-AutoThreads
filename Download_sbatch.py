@@ -37,6 +37,7 @@ def Download(x,_outdir,sra_dir):
         print("was ran download ,sra is exist\n------------------------------\n\n")
     else:
         sra_dir = os.path.join(sra_dir, "sra")
+        print(sra_dir)
         utils_.prefetch_srav2(x, sra_dir)
         print("Download {}\n.".format(x))
         #with open(Downloadcheck_log, "a+") as f:
