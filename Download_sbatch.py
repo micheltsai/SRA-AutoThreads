@@ -46,7 +46,7 @@ def Download(x,_outdir,sra_dir):
     print('Done,total cost',dltime, 'secs')
     print("###########################################################")
 
-def sbatch_job(outdir,pdat,need_list,ll,start):
+def sbatch_job(outdir,pdat,need_list,ll,sra_num_,start):
     print("outdir:{}\nnew_outdir:{}\n".format(outdir, outdir))
     job_dir = os.path.join(outdir, "job")
     utils_.mkdir_join(job_dir)
@@ -77,32 +77,32 @@ def sbatch_job(outdir,pdat,need_list,ll,start):
     line_Analysis = f.readlines()
     print("check log :{}\n".format(line_Analysis))
     f.close()
-    for s in line_Analysis:
-        print("{}\n".format(s))
-    finish_Analysis = list(filter(lambda x: len(x.split(" ")) >= 4, line_Analysis))
-    finish_Analysis_run = list(map(lambda x: x.split(" ")[1], finish_Analysis))
-    need_run = list(filter(lambda x: x not in finish_Analysis_run, need_list))
-    print("finish: {}\nfinish_run: {}\nneed_run: {}".format(finish_Analysis, finish_Analysis_run, need_run))
-    print(
-        "finish length: {}\nfinish_run length: {}\nneed_run length: {}".format(len(finish_Analysis), len(finish_Analysis_run),
-                                                                               len(need_run)))
-    sra_num_ = len(need_run) + len(finish_Analysis_run)
+    #for s in line_Analysis:
+        #print("{}\n".format(s))
+    #finish_Analysis = list(filter(lambda x: len(x.split(" ")) >= 4, line_Analysis))
+    #finish_Analysis_run = list(map(lambda x: x.split(" ")[1], finish_Analysis))
+    #need_run = list(filter(lambda x: x not in finish_Analysis_run, need_list))
+    #print("finish: {}\nfinish_run: {}\nneed_run: {}".format(finish_Analysis, finish_Analysis_run, need_run))
+    #print(
+    #    "finish length: {}\nfinish_run length: {}\nneed_run length: {}".format(len(finish_Analysis), len(finish_Analysis_run),
+    #                                                                           len(need_run)))
+    #sra_num_ = len(need_run) + len(finish_Analysis_run)
     finish_num = 0
-    print("len(finish_run)+len(need_run) = {}".format(sra_num_))
-    num = len(finish_Analysis_run)
+    #print("len(finish_run)+len(need_run) = {}".format(sra_num_))
+    #num = len(finish_Analysis_run)
     progress_list = []
     prog_num = 0
 
-    finish_num = len(finish_Analysis_run)
-    finish_num_ = len(finish_Analysis_run)
+    #finish_num = len(finish_Analysis_run)
+    #finish_num_ = len(finish_Analysis_run)
     print("finish_num = {}".format(finish_num))
     pool_list = []
     try:
-        for k in need_run:
+        for k in need_list:
             k.strip("\n")
             print("########### hello %d ############\n" % prog_num)
             print(k)
-            print(need_run.index(k))
+            print(need_list.index(k))
             print("########## {}/{} ###########".format(finish_num+1, sra_num_))
             # utils_.run_cmd("sbatch -A MST109178 -J Job_test -p ngs48G -c 14 --mem=46g -o ./out/{}_array_out.log -e ./out/{}_array_out.log "
             #               "--mail-user=sj985517@gmail.com --mail-type=BEGIN,END --wrap='/home/linsslab01/miniconda/bin/python3 one_Analysis.py'--array=1-4")
@@ -121,7 +121,7 @@ def sbatch_job(outdir,pdat,need_list,ll,start):
             f.write("#SBATCH -p ngs7G\n")
             f.write("#SBATCH -c 2\n")
             f.write("#SBATCH --mem 7g\n")
-            f.write("#SBATCH --array=1-{}\n".format(len((need_run))))
+            f.write("#SBATCH --array=1-{}\n".format(len((need_list))))
             f.write("#SBATCH -o {}\n".format(job_out_o))
             f.write("#SBATCH -e {}\n".format(job_out_err))
             f.write("#SBATCH --mail-user=sj985517@gmail.com\n")
@@ -277,7 +277,7 @@ def main():
             pool_list.append(pool.apply_async(Download, (x,outdir,sraid_outdir,)))
             pdat=pdat_run[need_run.index(x)]
         print("################\nsbatch_job\n")
-        sbatch_job(outdir,pdat,need_list,ll,start)
+        sbatch_job(outdir,pdat,need_list,ll,len(sra_run),start)
 
         print("sbatch_job {}->{}\n".format(ll,ll+limit_num))
         print(run_cmd2("squeue -u linsslab01 |wc -l"))
