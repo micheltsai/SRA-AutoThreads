@@ -236,8 +236,8 @@ def main():
     sralist = list(filter(lambda x: len(x.split(" ")) >= 4, lines))
     sra_run = list(map(lambda x: x.split(" ")[1], sralist))
     pdat_run=list(map(lambda x: x.split(" ")[0].split(":")[0], sralist))
-    print(sra_run)
 
+    #print(sra_run)
     check_log = os.path.join(outdir, "Analysischeck.log")
     myfile2 = Path(check_log)
     myfile2.touch(exist_ok=True)
@@ -246,7 +246,9 @@ def main():
     finish = list(filter(lambda x: len(x.split(" ")) >= 4, line))
     finish_run = list(map(lambda x: x.split(" ")[1], finish))
     need_run = list(filter(lambda x: x not in finish_run, sra_run))
-
+    print("sra_list length: {}\n".format(len(sra_run)))
+    print("need_run length: {}\n".format(len(need_run)))
+    print("finish_list length: {}\n".format(len(finish_run)))
 
     pool_list=[]
     pdat=""
@@ -291,14 +293,20 @@ def main():
             if num==1:
                 break
         needList = os.path.join(outdir, "need_run_{}.txt".format(ll))
-        utils_.run_cmd2("rm -rf {}".format(needList))
+        #utils_.run_cmd2("rm -rf {}".format(needList))
 
+        ###################
+        scp_start=time.time()
         print("scp -r ./SRAtest/output root@140.112.165.124:/data/SRA_data/{}_{}\n".format(str(ed_M),ll+limit_num))
-        utils_.run_cmd2("scp -r ./SRAtest/output root@140.112.165.124:/data/SRA_data/{}_{}".format(str(ed_M),ll+limit_num))
-        print("scp end\n")
-        utils_.run_cmd2("rm -rf SRAtest/output")
-        utils_.run_cmd2("rm -rf SRAtest/JOBoutput")
-        print("remove end\n")
+        utils_.run_cmd("scp -r ./SRAtest/output root@140.112.165.124:/data/SRA_data/{}_{}".format(str(ed_M),ll+limit_num))
+        print(str(datetime.datetime.now()), 'scp Done,current total cost', time.time() - scp_start, 'secs\n')
+
+        ##################
+        remove_start=time.time()
+        utils_.run_cmd("rm -rf SRAtest/output")
+        utils_.run_cmd("rm -rf SRAtest/JOBoutput")
+        print(str(datetime.datetime.now()), 'scp Done,current total cost', time.time() - remove_start, 'secs\n')
+        ##################
 
 
 
