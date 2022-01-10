@@ -278,20 +278,25 @@ def main():
         print(type(run_cmd2("csqueue -u linsslab01 |wc -l")))
 
         num=int(run_cmd2("squeue -u linsslab01 |wc -l"))
+        pd_start=time.time()
         while num == 2:
             print("progresses status is PD\n")
             utils_.run_cmd2("squeue -u linsslab01")
             time.sleep(60)
             num = int(run_cmd2("squeue -u linsslab01 |wc -l"))
+        print(str(datetime.datetime.now()), 'PD Done,current total cost', time.time() - pd_start, 'secs\n')
 
+        running_start=time.time()
         while num != 1:
             print("progresses is running\n")
             run_cmd2("squeue -u linsslab01")
             time.sleep(60)
             num=int(run_cmd2("squeue -u linsslab01 |wc -l"))
             print("Quantity of running progress  = {}\n".format(num-1))
+            print(str(datetime.datetime.now()), 'Running,current total cost', time.time() - running_start, 'secs\n')
             if num==1:
                 break
+        print(str(datetime.datetime.now()), 'sbatch Done,current total cost', time.time() - running_start, 'secs\n')
         needList = os.path.join(outdir, "need_run_{}.txt".format(ll))
         #utils_.run_cmd2("rm -rf {}".format(needList))
 
@@ -305,7 +310,7 @@ def main():
         remove_start=time.time()
         utils_.run_cmd("rm -rf SRAtest/output")
         utils_.run_cmd("rm -rf SRAtest/JOBoutput")
-        print(str(datetime.datetime.now()), 'scp Done,current total cost', time.time() - remove_start, 'secs\n')
+        print(str(datetime.datetime.now()), 'remove Done,current total cost', time.time() - remove_start, 'secs\n')
         ##################
 
 
