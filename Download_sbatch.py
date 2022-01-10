@@ -309,7 +309,7 @@ def main():
         ##################
         remove_start=time.time()
         utils_.run_cmd("rm -rf SRAtest/output")
-        utils_.run_cmd("rm -rf SRAtest/JOBoutput")
+        #utils_.run_cmd("rm -rf SRAtest/JOBoutput")
         print(str(datetime.datetime.now()), 'remove Done,current total cost', time.time() - remove_start, 'secs\n')
         ##################
 
