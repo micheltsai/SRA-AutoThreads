@@ -106,7 +106,7 @@ def sbatch_job(outdir,pdat,need_list,ll,sra_num_,start):
             print("########### hello %d ############\n" % prog_num)
             print(k)
             print(need_list.index(k))
-            print("########## {}/{} ###########".format(finish_num+1, sra_num_))
+            print("########## {}/{} ###########".format(finish_num+1+ll, sra_num_))
             # utils_.run_cmd("sbatch -A MST109178 -J Job_test -p ngs48G -c 14 --mem=46g -o ./out/{}_array_out.log -e ./out/{}_array_out.log "
             #               "--mail-user=sj985517@gmail.com --mail-type=BEGIN,END --wrap='/home/linsslab01/miniconda/bin/python3 one_Analysis.py'--array=1-4")
             with open(needList, "a+") as f:
