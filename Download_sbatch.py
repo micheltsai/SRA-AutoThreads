@@ -288,6 +288,7 @@ def main():
         print("Download\n")
         pool_append(need_list,outdir)
         print("Download End\n")
+        pdat = pdat_run[need_run.index(need_list[0])]
 
         print("################\nsbatch_job\n")
         sbatch_job(outdir,pdat,need_list,ll,len(sra_run),start)
