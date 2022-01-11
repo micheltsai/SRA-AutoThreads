@@ -1,6 +1,7 @@
 import datetime
 import multiprocessing
 import os
+import shutil
 import subprocess
 import sys
 import time
@@ -175,7 +176,28 @@ def sbatch_job(outdir,pdat,need_list,ll,sra_num_,start):
             f.write("{}\n".format(errMsg))
         sys.exit(errMsg)
 
-
+def pool_append(need_list,outdir):
+    pool = multiprocessing.Pool(processes=50)
+    pool_list=[]
+    for x in need_list:
+        print("###################\n")
+        print(x)
+        new_outdir = os.path.join(outdir, "output")
+        utils_.mkdir_join(new_outdir)
+        print(new_outdir)
+        sraid_outdir = os.path.join(new_outdir, x)
+        utils_.mkdir_join(sraid_outdir)
+        print(sraid_outdir)
+        # sraid_outdir = os.path.join(sraid_outdir, "sra")
+        # utils_.mkdir_join(sraid_outdir)
+        print(sraid_outdir)
+        # Download(x,outdir,sraid_outdir)
+        pool_list.append(pool.apply_async(Download, (x, outdir, sraid_outdir,)))
+        #pdat = pdat_run[need_run.index(x)]
+    pool.close()
+    print("pool.close()")
+    pool.join()
+    print("pool.join()")
 
 
 def main():
@@ -263,21 +285,10 @@ def main():
     for ll in limit_list:
         need_list=need_run[ll:ll+limit_num]
         print("###############\n{} -> {}\n".format(ll,ll+limit_num))
-        for x in need_list:
-            print("###################\n")
-            print(x)
-            new_outdir = os.path.join(outdir, "output")
-            utils_.mkdir_join(new_outdir)
-            print(new_outdir)
-            sraid_outdir=os.path.join(new_outdir,x)
-            utils_.mkdir_join(sraid_outdir)
-            print(sraid_outdir)
-            #sraid_outdir = os.path.join(sraid_outdir, "sra")
-            #utils_.mkdir_join(sraid_outdir)
-            print(sraid_outdir)
-            #Download(x,outdir,sraid_outdir)
-            pool_list.append(pool.apply_async(Download, (x,outdir,sraid_outdir,)))
-            pdat=pdat_run[need_run.index(x)]
+        print("Download\n")
+        pool_append(need_list,outdir)
+        print("Download End\n")
+
         print("################\nsbatch_job\n")
         sbatch_job(outdir,pdat,need_list,ll,len(sra_run),start)
 
@@ -310,27 +321,22 @@ def main():
 
         ###################
         scp_start=time.time()
-        print("scp -r ./SRAtest/output root@140.112.165.124:/data/SRA_data/{}/output\n".format(str(ed_M),str(ed_M)))
-        utils_.run_cmd("scp -r ./SRAtest/output root@140.112.165.124:/data/SRA_data/{}/output".format(str(ed_M),str(ed_M)))
+        print("scp -r ./SRAtest/output/* root@140.112.165.124:/data/SRA_data/{}/output\n".format(str(ed_M),str(ed_M)))
+        utils_.run_cmd("scp -r ./SRAtest/output/* root@140.112.165.124:/data/SRA_data/{}/output".format(str(ed_M),str(ed_M)))
         print(str(datetime.datetime.now()), 'scp Done,current total cost', time.time() - scp_start, 'secs\n')
-
+        time.sleep(3)
         ##################
         remove_start=time.time()
-        utils_.run_cmd("rm -rf SRAtest/output")
+        #utils_.run_cmd("rm -rf ./SRAtest/output")
+        shutil.rmtree("./SRAtest/output")
         #utils_.run_cmd("rm -rf SRAtest/JOBoutput")
         print(str(datetime.datetime.now()), 'remove Done,current total cost', time.time() - remove_start, 'secs\n')
         ##################
+        time.sleep(3)
 
 
-
-
-
-    pool.close()
-    print("pool.close()")
-    pool.join()
-    print("pool.join()")
-    print("scp -r ./SRAtest root@140.112.165.124:/data/SRA_data/{}\n".format(str(ed_M)))
-    utils_.run_cmd("scp -r ./SRAtest root@140.112.165.124:/data/SRA_data/{}".format(str(ed_M)))
+    print("scp -r ./SRAtest/* root@140.112.165.124:/data/SRA_data/{}\n".format(str(ed_M)))
+    utils_.run_cmd("scp -r ./SRAtest/* root@140.112.165.124:/data/SRA_data/{}".format(str(ed_M)))
     print(str(datetime.datetime.now()), ' Done,current total cost', time.time() - start, 'secs\n')
 if __name__ == '__main__':
     main()

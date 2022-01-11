@@ -94,7 +94,7 @@ def sra_stat_old(sra_id, outdir, sra_dir, isfinal):
         else:
             print("layout=2\n")
             # if sra_layout==2 continue
-            Download(sra_id, outdir, sra_dir)
+            #Download(sra_id, outdir, sra_dir)
             sraList = os.path.join(outdir, "sraList.txt")
             with open(sraList, "a+") as f:
                 f.write(sra_id)
