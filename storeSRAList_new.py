@@ -9,32 +9,6 @@ from pathlib import Path
 import pandas as pd
 
 import utils_
-def Download(x,_outdir,sra_dir):
-    one_ = time.time()
-    #print(
-    #   "---------------------\n---------------------[ {} / {} ]---------------------\n".format(num + 1,
-    #                                                                                           len(idlist)))
-    #num += 1
-    print("x = {}".format(x))
-    # outdir__ = os.path.join(output, "out")
-    outdir__ = os.path.join(_outdir, "Assembled")
-    check_log = os.path.join(_outdir, "Analysischeck.log")
-    final_dir = os.path.join(outdir__, "{}_contig.fa".format(x))
-    sra_file=os.path.join(sra_dir,"{}/{}.sra".format(x,x))
-    print(final_dir)
-    print(sra_file)
-    if os.path.isfile(final_dir):
-        print("was ran assembly ,contig.fa is exist\n------------------------------\n\n")
-    elif os.path.isfile(sra_file):
-        print("was ran download ,sra is exist\n------------------------------\n\n")
-    else:
-        utils_.prefetch_srav2(x, sra_dir)
-        print("Download {}\n.".format(x))
-        #with open(Downloadcheck_log, "a+") as f:
-        #    f.write("{}\n".format(x))
-    dltime=time.time() - one_
-    print('Done,total cost',dltime, 'secs')
-    print("###########################################################")
 
 def sra_stat(sra_id,outdir,sraNUM,needNUM,date):
     print("sra_stat\n")
