@@ -301,21 +301,32 @@ def main():
         pd_start=time.time()
         while num == 2:
             print("progresses status is PD, or one progress is running\n")
-            utils_.run_cmd2("squeue -u linsslab01")
+            try:
+                utils_.run_cmd2("squeue -u linsslab01")
+                num = int(run_cmd2("squeue -u linsslab01 |wc -l"))
+            except Exception as e:
+                print("squeue -u linsslab01 err\n")
+                pass
+
             time.sleep(60)
-            num = int(run_cmd2("squeue -u linsslab01 |wc -l"))
+
+
         print(str(datetime.datetime.now()), 'PD Done,current total cost', time.time() - pd_start, 'secs\n')
 
         running_start=time.time()
         while num != 1:
             print("progresses is running\n")
-            run_cmd2("squeue -u linsslab01")
-            time.sleep(60)
-            num=int(run_cmd2("squeue -u linsslab01 |wc -l"))
+            try:
+                run_cmd2("squeue -u linsslab01")
+                num=int(run_cmd2("squeue -u linsslab01 |wc -l"))
+            except Exception as e:
+                print("squeue -u linsslab01 err\n")
+                pass
             print("Quantity of running progress  = {}\n".format(num-1))
             print(str(datetime.datetime.now()), 'Running,current total cost', time.time() - running_start, 'secs\n')
             if num==1:
                 break
+            time.sleep(60)
         print(str(datetime.datetime.now()), 'sbatch Done,current total cost', time.time() - running_start, 'secs\n')
         needList = os.path.join(outdir, "need_run_{}.txt".format(ll))
         #utils_.run_cmd2("rm -rf {}".format(needList))
