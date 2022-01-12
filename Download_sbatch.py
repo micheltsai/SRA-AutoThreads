@@ -294,9 +294,10 @@ def main():
         sbatch_job(outdir,pdat,need_list,ll,len(sra_run),start)
 
         print("sbatch_job {}->{}\n".format(ll,ll+limit_num))
-        print(run_cmd2("squeue -u linsslab01 |wc -l"))
-        print(type(run_cmd2("csqueue -u linsslab01 |wc -l")))
+        #print(run_cmd2("squeue -u linsslab01 |wc -l"))
+        #print(type(run_cmd2("csqueue -u linsslab01 |wc -l")))
 
+        utils_.run_cmd2("squeue -u linsslab01")
         num=int(run_cmd2("squeue -u linsslab01 |wc -l"))
         pd_start=time.time()
         while num == 2:
@@ -306,6 +307,7 @@ def main():
                 num = int(run_cmd2("squeue -u linsslab01 |wc -l"))
             except Exception as e:
                 print("squeue -u linsslab01 err\n")
+                utils_.run_cmd2("squeue -u linsslab01")
                 pass
 
             time.sleep(60)
@@ -317,10 +319,11 @@ def main():
         while num != 1:
             print("progresses is running\n")
             try:
-                run_cmd2("squeue -u linsslab01")
+                utils_.run_cmd2("squeue -u linsslab01")
                 num=int(run_cmd2("squeue -u linsslab01 |wc -l"))
             except Exception as e:
                 print("squeue -u linsslab01 err\n")
+                utils_.run_cmd2("squeue -u linsslab01")
                 pass
             print("Quantity of running progress  = {}\n".format(num-1))
             print(str(datetime.datetime.now()), 'Running,current total cost', time.time() - running_start, 'secs\n')
@@ -328,7 +331,7 @@ def main():
                 break
             time.sleep(60)
         print(str(datetime.datetime.now()), 'sbatch Done,current total cost', time.time() - running_start, 'secs\n')
-        needList = os.path.join(outdir, "need_run_{}.txt".format(ll))
+        #needList = os.path.join(outdir, "need_run_{}.txt".format(ll))
         #utils_.run_cmd2("rm -rf {}".format(needList))
 
         ###################
