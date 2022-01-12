@@ -133,7 +133,7 @@ def sbatch_job(outdir,pdat,need_list,ll,limit_number,sra_num_,start):
             f.write("/home/linsslab01/miniconda3/bin/python3 one_Analysis_new.py {} {} {} {}\n".format(pdat,
                                                                                                 sra_num_,
                                                                                                 "$SLURM_ARRAY_TASK_ID",
-                                                                                                       ll))
+                                                                                                       ll+limit_number))
         ###
         print("sbatch before du-sh\n")
         print(utils_.run_cmd("du ./SRAtest -sh"))
