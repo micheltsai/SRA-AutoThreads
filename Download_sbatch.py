@@ -303,13 +303,15 @@ def main():
         while num == 2:
             print("progresses status is PD, or one progress is running\n")
             try:
-                utils_.run_cmd2("squeue -u linsslab01")
+                #utils_.run_cmd2("squeue -u linsslab01")
+                #time.sleep(2)
                 tmp= run_cmd2("squeue -u linsslab01 |wc -l")
                 num = int(tmp)
             except Exception as e:
                 print(tmp)
                 print("again run 'squeue -u linsslab01'\n")
                 utils_.run_cmd2("squeue -u linsslab01")
+                time.sleep(2)
                 ####
                 print("print 'squeue -u linsslab01' error:\n")
                 error_class = e.__class__.__name__  # 取得錯誤類型
@@ -333,7 +335,8 @@ def main():
         while num != 1:
             print("progresses is running\n")
             try:
-                utils_.run_cmd2("squeue -u linsslab01")
+                #utils_.run_cmd2("squeue -u linsslab01")
+                #time.sleep(2)
                 tmp=run_cmd2("squeue -u linsslab01 |wc -l")
                 num=int(tmp)
                 print("Quantity of running progress  = {}\n".format(num - 1))
@@ -344,6 +347,7 @@ def main():
                 print(tmp)
                 print("again run 'squeue -u linsslab01'\n")
                 utils_.run_cmd2("squeue -u linsslab01")
+                time.sleep(2)
                 ####
                 print("print 'squeue -u linsslab01' error:\n")
                 error_class = e.__class__.__name__  # 取得錯誤類型
@@ -358,29 +362,29 @@ def main():
                 print(errMsg)
                 pass
             time.sleep(60)
-            
+
         print(str(datetime.datetime.now()), 'sbatch Done,current total cost', time.time() - running_start, 'secs\n')
         #needList = os.path.join(outdir, "need_run_{}.txt".format(ll))
         #utils_.run_cmd2("rm -rf {}".format(needList))
 
         ###################
         scp_start=time.time()
-        print("scp -r ./SRAtest/output/* root@140.112.165.124:/data/SRA_data/{}/output\n".format(str(ed_M),str(ed_M)))
-        utils_.run_cmd("scp -r ./SRAtest/output/* root@140.112.165.124:/data/SRA_data/{}/output".format(str(ed_M),str(ed_M)))
+        print("scp -r SRAtest/output/* root@140.112.165.124:/data/SRA_data/{}/output\n".format(str(ed_M),str(ed_M)))
+        utils_.run_cmd("scp -r SRAtest/output/* root@140.112.165.124:/data/SRA_data/{}/output".format(str(ed_M),str(ed_M)))
         print(str(datetime.datetime.now()), 'scp Done,current total cost', time.time() - scp_start, 'secs\n')
         time.sleep(3)
         ##################
         remove_start=time.time()
-        #utils_.run_cmd("rm -rf ./SRAtest/output")
-        shutil.rmtree("./SRAtest/output")
+        utils_.run_cmd("rm -rf SRAtest/output")
+        #shutil.rmtree("./SRAtest/output")
         #utils_.run_cmd("rm -rf SRAtest/JOBoutput")
         print(str(datetime.datetime.now()), 'remove Done,current total cost', time.time() - remove_start, 'secs\n')
         ##################
         time.sleep(3)
 
 
-    print("scp -r ./SRAtest/* root@140.112.165.124:/data/SRA_data/{}\n".format(str(ed_M)))
-    utils_.run_cmd("scp -r ./SRAtest/* root@140.112.165.124:/data/SRA_data/{}".format(str(ed_M)))
+    print("scp -r SRAtest/* root@140.112.165.124:/data/SRA_data/{}\n".format(str(ed_M)))
+    utils_.run_cmd("scp -r SRAtest/* root@140.112.165.124:/data/SRA_data/{}".format(str(ed_M)))
     print(str(datetime.datetime.now()), ' Done,current total cost', time.time() - start, 'secs\n')
 if __name__ == '__main__':
     main()
