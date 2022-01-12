@@ -48,7 +48,7 @@ def Download(x,_outdir,sra_dir):
     print('Done,total cost',dltime, 'secs')
     print("###########################################################")
 
-def sbatch_job(outdir,pdat,need_list,ll,sra_num_,start):
+def sbatch_job(outdir,pdat,need_list,ll,limit_number,sra_num_,start):
     print("outdir:{}\nnew_outdir:{}\n".format(outdir, outdir))
     job_dir = os.path.join(outdir, "job")
     utils_.mkdir_join(job_dir)
@@ -61,7 +61,7 @@ def sbatch_job(outdir,pdat,need_list,ll,sra_num_,start):
     check_file = Path(check_log)
     check_file.touch(exist_ok=True)
     sraList = os.path.join(outdir, "sraList_test.txt")
-    needList = os.path.join(outdir, "need_run_{}.txt".format(ll))
+    needList = os.path.join(outdir, "need_run_{}.txt".format(ll+limit_number))
     need_file = Path(needList)
     need_file.touch(exist_ok=True)
     with open(needList,"w")as f:
@@ -291,7 +291,7 @@ def main():
         pdat = pdat_run[need_run.index(need_list[0])]
 
         print("################\nsbatch_job\n")
-        sbatch_job(outdir,pdat,need_list,ll,len(sra_run),start)
+        sbatch_job(outdir,pdat,need_list,ll,limit_num,len(sra_run),start)
 
         print("sbatch_job {}->{}\n".format(ll,ll+limit_num))
         #print(run_cmd2("squeue -u linsslab01 |wc -l"))
