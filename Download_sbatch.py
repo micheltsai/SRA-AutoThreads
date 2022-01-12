@@ -369,24 +369,24 @@ def main():
 
         ###################
         scp_start=time.time()
-        print("scp -r SRAtest/output root@140.112.165.124:/data/SRA_data/{}/out_{}\n".format(str(ed_M),ll+limit_num))
-        utils_.run_cmd("scp -r SRAtest/output root@140.112.165.124:/data/SRA_data/{}/out_{}".format(str(ed_M),ll+limit_num))
+        print("scp SRAtest/output/* root@140.112.165.124:/data/SRA_data/{}/output}\n".format(str(ed_M),ll+limit_num))
+        utils_.run_cmd("scp SRAtest/output/* root@140.112.165.124:/data/SRA_data/{}/output".format(str(ed_M),ll+limit_num))
         print(str(datetime.datetime.now()), 'scp Done,current total cost', time.time() - scp_start, 'secs\n')
         time.sleep(3)
         ##################
-        remove_start=time.time()
-        utils_.run_cmd("rm -rf SRAtest/output")
+        #remove_start=time.time()
+        #utils_.run_cmd("rm -rf SRAtest/output")
         #shutil.rmtree("./SRAtest/output")
         #utils_.run_cmd("rm -rf SRAtest/JOBoutput")
-        print(str(datetime.datetime.now()), 'remove Done,current total cost', time.time() - remove_start, 'secs\n')
+        #print(str(datetime.datetime.now()), 'remove Done,current total cost', time.time() - remove_start, 'secs\n')
         ##################
         time.sleep(5)
 
 
-    print("scp -r SRAtest/Analysischeck.log root@140.112.165.124:/data/SRA_data/{}\n".format(str(ed_M)))
-    utils_.run_cmd("scp -r SRAtest/Analysischeck.log root@140.112.165.124:/data/SRA_data/{}".format(str(ed_M)))
-    print("scp -r SRAtest/sraList_test.txt root@140.112.165.124:/data/SRA_data/{}\n".format(str(ed_M)))
-    utils_.run_cmd("scp -r SRAtest/sraList_test.txt root@140.112.165.124:/data/SRA_data/{}".format(str(ed_M)))
+    print("scp SRAtest/Analysischeck.log root@140.112.165.124:/data/SRA_data/{}\n".format(str(ed_M)))
+    utils_.run_cmd("scp SRAtest/Analysischeck.log root@140.112.165.124:/data/SRA_data/{}".format(str(ed_M)))
+    print("scp SRAtest/sraList_test.txt root@140.112.165.124:/data/SRA_data/{}\n".format(str(ed_M)))
+    utils_.run_cmd("scp SRAtest/sraList_test.txt root@140.112.165.124:/data/SRA_data/{}".format(str(ed_M)))
     print(str(datetime.datetime.now()), ' Done,current total cost', time.time() - start, 'secs\n')
 if __name__ == '__main__':
     main()
