@@ -383,8 +383,10 @@ def main():
         time.sleep(3)
 
 
-    print("scp -r SRAtest/* root@140.112.165.124:/data/SRA_data/{}\n".format(str(ed_M)))
-    utils_.run_cmd("scp -r SRAtest/* root@140.112.165.124:/data/SRA_data/{}".format(str(ed_M)))
+    print("scp -r SRAtest/Analysischeck.log root@140.112.165.124:/data/SRA_data/{}\n".format(str(ed_M)))
+    utils_.run_cmd("scp -r SRAtest/Analysischeck.log root@140.112.165.124:/data/SRA_data/{}".format(str(ed_M)))
+    print("scp -r SRAtest/sraList_test.txt root@140.112.165.124:/data/SRA_data/{}\n".format(str(ed_M)))
+    utils_.run_cmd("scp -r SRAtest/sraList_test.txt root@140.112.165.124:/data/SRA_data/{}".format(str(ed_M)))
     print(str(datetime.datetime.now()), ' Done,current total cost', time.time() - start, 'secs\n')
 if __name__ == '__main__':
     main()

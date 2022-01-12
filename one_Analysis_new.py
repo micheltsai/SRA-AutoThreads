@@ -411,9 +411,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
     print("analysis outdir: {}\n".format(anoutdir_))
 
     # set {genomoe}_log_output
-    logpath_ = os.path.join(anoutdir_, inId)
-    utils_.mkdir_join(logpath_)
-    logpath = os.path.join(logpath_, "analysis_log.txt")
+    logpath = os.path.join(anoutdir_, "analysis_log.txt")
 
     # get relative output dir path
     outdir_list = anoutdir_.split("/")
@@ -458,7 +456,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         ###
         print("********** Now MLST analysis running. **********\n")
         #MLST_DB = "/home/linsslab01/mlst_db"
-        mlst_outdir = os.path.join(logpath_, "mlst")
+        mlst_outdir = os.path.join(anoutdir_, "mlst")
         utils_.mkdir_join(mlst_outdir)
         mlst_tmp=os.path.join(mlst_outdir,"tmp")
 
@@ -539,8 +537,8 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         ###
         print("********** Now plasmidfinder analysis running. **********\n")
         #PLASMID_DB = "/home/linsslab01/plasmidfinder_db"
-        utils_.mkdir_join(logpath_)
-        plas_outdir = os.path.join(logpath_, "plasmidfinder")
+        utils_.mkdir_join(anoutdir_)
+        plas_outdir = os.path.join(anoutdir_, "plasmidfinder")
         utils_.mkdir_join(plas_outdir)
         plas_outdir=plas_outdir.replace("work","home")
         #plas_cmd = "docker run --rm -it \-v {}:/databases \-v {}:/workdir \plasmidfinder -i {} -o {}".format(PLASMID_DB, current_path, relative_input, plas_outdir)
@@ -654,7 +652,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
     except Exception as e:
         time.sleep(3)
         print("not found mlst data.json\n")
-        mlst_outdir = os.path.join(logpath_, "mlst")
+        mlst_outdir = os.path.join(anoutdir_, "mlst")
         run_cmd("rm -rf {}".format(mlst_outdir))
 
         mlst_cmd = "singularity exec --containall --bind /work/linsslab01/:/home/linsslab01/ /work/linsslab01/mlst.sif python3 /home/linsslab01/mlst/mlst.py -i {} -o {} -s {}".format(
