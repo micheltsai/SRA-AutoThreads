@@ -380,7 +380,7 @@ def main():
         #utils_.run_cmd("rm -rf SRAtest/JOBoutput")
         print(str(datetime.datetime.now()), 'remove Done,current total cost', time.time() - remove_start, 'secs\n')
         ##################
-        time.sleep(3)
+        time.sleep(5)
 
 
     print("scp -r SRAtest/Analysischeck.log root@140.112.165.124:/data/SRA_data/{}\n".format(str(ed_M)))
