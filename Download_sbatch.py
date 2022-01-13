@@ -369,7 +369,7 @@ def main():
 
         ###################
         scp_start=time.time()
-        print("scp SRAtest/output/* root@140.112.165.124:/data/SRA_data/{}/{}/output\n".format(str(ed_Y),str(ed_M),ll+limit_num))
+        print("scp -r SRAtest/output/* root@140.112.165.124:/data/SRA_data/{}/{}/output\n".format(str(ed_Y),str(ed_M),ll+limit_num))
         utils_.run_cmd("scp SRAtest/output/* root@140.112.165.124:/data/SRA_data/{}/{}/output".format(str(ed_Y),str(ed_M),ll+limit_num))
         print(str(datetime.datetime.now()), 'scp Done,current total cost', time.time() - scp_start, 'secs\n')
         time.sleep(3)
