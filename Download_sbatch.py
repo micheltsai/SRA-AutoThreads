@@ -367,6 +367,10 @@ def main():
         #needList = os.path.join(outdir, "need_run_{}.txt".format(ll))
         #utils_.run_cmd2("rm -rf {}".format(needList))
 
+        ##################
+        #tar.gz
+
+
         ###################
         scp_start=time.time()
         print("scp -r SRAtest/output/* root@140.112.165.124:/data/SRA_data/{}/{}/output\n".format(str(ed_Y),str(ed_M),ll+limit_num))

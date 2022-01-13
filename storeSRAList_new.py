@@ -214,69 +214,71 @@ if __name__ == '__main__':
 
                 pattern, count = utils_.count_egquery(pattern, date, date)
                 print("pattern: {}\ncount: {}\n".format(pattern, count))
+                if int(count)==0:
+                    print("{} sra count =0\n".format(date))
+                else:
+                    idlist = utils_.IdList_esearch(pattern, 'sra', count)
 
-                idlist = utils_.IdList_esearch(pattern, 'sra', count)
+                    print(idlist)
 
-                print(idlist)
+                    runinfo = utils_.Get_RunInfo(idlist)
+                    run_list = list(runinfo['Run'])  # get SRAfile nameList stored in run_list
+                    print("runinfo: {}\n run_list: {}\n".format(runinfo, run_list))
 
-                runinfo = utils_.Get_RunInfo(idlist)
-                run_list = list(runinfo['Run'])  # get SRAfile nameList stored in run_list
-                print("runinfo: {}\n run_list: {}\n".format(runinfo, run_list))
+                    sraList = os.path.join(outdir, "sraList_test.txt")
+                    myfile2 = Path(sraList)
+                    myfile2.touch(exist_ok=True)
+                    f = open(sraList, 'r')
+                    line = f.readlines()
+                    print("check log :{}\n".format(line))
+                    f.close()
 
-                sraList = os.path.join(outdir, "sraList_test.txt")
-                myfile2 = Path(sraList)
-                myfile2.touch(exist_ok=True)
-                f = open(sraList, 'r')
-                line = f.readlines()
-                print("check log :{}\n".format(line))
-                f.close()
+                    for s in line:
+                        print("{}\n".format(s))
+                    finish = list(filter(lambda x: len(x.split(" ")) >= 4, line))
+                    finish_run = list(map(lambda x: x.split(" ")[1], finish))
+                    need_run = list(filter(lambda x: x not in finish_run, run_list))
+                    print("finish: {}\nfinish_run: {}\nneed_run".format(finish, finish_run, need_run))
+                    print(
+                        "finish length: {}\nfinish_run length: {}\nneed_run length: {}".format(len(finish), len(finish_run),
+                                                                                               len(need_run)))
+                    sra_num_=0
+                    sra_num_=len(need_run)+len(finish_run)
+                    for aa in need_run:
+                        isFinal=False
+                        if aa == need_run[len(need_run)-1]:
 
-                for s in line:
-                    print("{}\n".format(s))
-                finish = list(filter(lambda x: len(x.split(" ")) >= 4, line))
-                finish_run = list(map(lambda x: x.split(" ")[1], finish))
-                need_run = list(filter(lambda x: x not in finish_run, run_list))
-                print("finish: {}\nfinish_run: {}\nneed_run".format(finish, finish_run, need_run))
-                print(
-                    "finish length: {}\nfinish_run length: {}\nneed_run length: {}".format(len(finish), len(finish_run),
-                                                                                           len(need_run)))
-                sra_num_=0
-                sra_num_=len(need_run)+len(finish_run)
-                for aa in need_run:
-                    isFinal=False
-                    if aa == need_run[len(need_run)-1]:
-
-                        isFinal=True
-                    try:
-                        print("#########################\nhello {}\n".format(aa))
-                        pool_list.append(pool.apply_async(sra_stat,args=(aa,new_outdir,sra_num_,len(need_run),date,),callback=mycallback_write))
-                        # pool.apply_async(test, (k,new_outdir,))
-                        #sra_stat(aa, new_outdir, sra_dir)
-                    except KeyboardInterrupt:
-                        print("Catch keyboardinterdinterupterror\n")
-                        print("srart : {}\n".format(start))
-                        print("Download all ", 'Done,total cost', time.time() - start, 'secs')
-                        pid = os.getgid()
-                        with open("./SRA_run_error.txt", "a+") as f:
-                            f.write("Catch keyboardinterdinterupterror : {}/{}/{}\n".format())
-                        # with open("./Automate_check.log", "a+") as f:
-                        #    f.write("keyboardinterupter")
-                        #    f.write("{}:{}:{}\n".format(date, time.time() - ds, time.time() - start))
-                        # sys.exit("Catch keyboardinterdinterupterror")
-                        os.popen("taskkill.exe /f /pid:%d" % pid)
-                    except Exception as e:
-                        error_class = e.__class__.__name__  # 取得錯誤類型
-                        detail = e.args[0]  # 取得詳細內容
-                        cl, exc, tb = sys.exc_info()  # 取得Call Stack
-                        lastCallStack = traceback.extract_tb(tb)[-1]  # 取得Call Stack的最後一筆資料
-                        fileName = lastCallStack[0]  # 取得發生的檔案名稱
-                        lineNum = lastCallStack[1]  # 取得發生的行號
-                        funcName = lastCallStack[2]  # 取得發生的函數名稱
-                        errMsg = "File \"{}\", line {}, in {}: [{}] {}".format(fileName, lineNum, funcName, error_class,
-                                                                               detail)
-                        print(errMsg)
-                        with open("./SRA_run_error.txt", "a+") as f:
-                            f.write("{} :\n{}\n".format(date, errMsg))
+                            isFinal=True
+                        try:
+                            print("#########################\nhello {}\n".format(aa))
+                            pool_list.append(pool.apply_async(sra_stat,args=(aa,new_outdir,sra_num_,len(need_run),date,),callback=mycallback_write))
+                            # pool.apply_async(test, (k,new_outdir,))
+                            #sra_stat(aa, new_outdir, sra_dir)
+                        except KeyboardInterrupt:
+                            print("Catch keyboardinterdinterupterror\n")
+                            print("srart : {}\n".format(start))
+                            print("Download all ", 'Done,total cost', time.time() - start, 'secs')
+                            pid = os.getgid()
+                            with open("./SRA_run_error.txt", "a+") as f:
+                                f.write("Catch keyboardinterdinterupterror : {}/{}/{}\n".format())
+                            # with open("./Automate_check.log", "a+") as f:
+                            #    f.write("keyboardinterupter")
+                            #    f.write("{}:{}:{}\n".format(date, time.time() - ds, time.time() - start))
+                            # sys.exit("Catch keyboardinterdinterupterror")
+                            os.popen("taskkill.exe /f /pid:%d" % pid)
+                        except Exception as e:
+                            error_class = e.__class__.__name__  # 取得錯誤類型
+                            detail = e.args[0]  # 取得詳細內容
+                            cl, exc, tb = sys.exc_info()  # 取得Call Stack
+                            lastCallStack = traceback.extract_tb(tb)[-1]  # 取得Call Stack的最後一筆資料
+                            fileName = lastCallStack[0]  # 取得發生的檔案名稱
+                            lineNum = lastCallStack[1]  # 取得發生的行號
+                            funcName = lastCallStack[2]  # 取得發生的函數名稱
+                            errMsg = "File \"{}\", line {}, in {}: [{}] {}".format(fileName, lineNum, funcName, error_class,
+                                                                                   detail)
+                            print(errMsg)
+                            with open("./SRA_run_error.txt", "a+") as f:
+                                f.write("{} :\n{}\n".format(date, errMsg))
     pool.close()
     print("pool.close()\n")
     pool.join()
