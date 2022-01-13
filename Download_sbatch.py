@@ -381,12 +381,12 @@ def main():
         print(str(datetime.datetime.now()), 'scp Done,current total cost', time.time() - scp_start, 'secs\n')
         time.sleep(1)
         ##################
-        #remove_start=time.time()
-        #utils_.run_cmd("rm -rf SRAtest/output")
+        remove_start=time.time()
+        utils_.run_cmd("rm -rf SRAtest/output")
         #shutil.rmtree("./SRAtest/output")
         #utils_.run_cmd("rm -rf SRAtest/JOBoutput")
-        #utils_.run_cmd("rm -rf SRAtest/{}_{}.tar.gz".format(str(ed_M),ll+limit_num))
-        #print(str(datetime.datetime.now()), 'remove Done,current total cost', time.time() - remove_start, 'secs\n')
+        utils_.run_cmd("rm -rf SRAtest/{}_{}.tar.gz".format(str(ed_M),ll+limit_num))
+        print(str(datetime.datetime.now()), 'remove Done,current total cost', time.time() - remove_start, 'secs\n')
         ##################
         time.sleep(1)
 
