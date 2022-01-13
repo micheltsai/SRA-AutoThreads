@@ -370,8 +370,10 @@ def main():
         ##################
         #tar.gz
         tar_start = time.time()
-        print()
+        print("tar zcvf SRAtest/{}_{}.tar.gz SRAtest/output/".format(str(ed_M),ll+limit_num+len(finish_run)))
         utils_.run_cmd("tar zcvf SRAtest/{}_{}.tar.gz SRAtest/output/".format(str(ed_M),ll+limit_num+len(finish_run)))
+        print(str(datetime.datetime.now()), 'tar Done,current total cost', time.time() - tar_start, 'secs\n')
+        time.sleep(1)
         ###################
         scp_start=time.time()
         print("scp -r SRAtest/{}_{}.tar.gz root@140.112.165.124:/data/SRA_data/{}/{}/output/{}_{}.tar.gz\n".format(str(ed_M),ll+limit_num+len(finish_run),str(ed_Y),str(ed_M),str(ed_M),ll+limit_num+len(finish_run)))
@@ -379,12 +381,12 @@ def main():
         print(str(datetime.datetime.now()), 'scp Done,current total cost', time.time() - scp_start, 'secs\n')
         time.sleep(1)
         ##################
-        remove_start=time.time()
-        utils_.run_cmd("rm -rf SRAtest/output")
+        #remove_start=time.time()
+        #utils_.run_cmd("rm -rf SRAtest/output")
         #shutil.rmtree("./SRAtest/output")
         #utils_.run_cmd("rm -rf SRAtest/JOBoutput")
-        utils_.run_cmd("rm -rf SRAtest/{}_{}.tar.gz".format(str(ed_M),ll+limit_num))
-        print(str(datetime.datetime.now()), 'remove Done,current total cost', time.time() - remove_start, 'secs\n')
+        #utils_.run_cmd("rm -rf SRAtest/{}_{}.tar.gz".format(str(ed_M),ll+limit_num))
+        #print(str(datetime.datetime.now()), 'remove Done,current total cost', time.time() - remove_start, 'secs\n')
         ##################
         time.sleep(1)
 
