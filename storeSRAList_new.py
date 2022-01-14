@@ -186,16 +186,36 @@ if __name__ == '__main__':
         ########
         for mon in range(sM, eM + 1):
             ###########
-            if yy != ed_Y:
-                eD = Month[mon - 1]
-                sD = 1
-            else:
-                if mon != eM:
+            if yy == ed_Y and yy == sd_Y:
+                if mon == sd_M and mon == ed_M:
+                    sD = sd_D
+                    eD = ed_D
+                elif mon == sd_M:
+                    sD = sd_D
+                    eD = Month[mon-1]
+                elif mon == ed_M:
+                    sD = 1
+                    eD = ed_D
+                else:
+                    sD = 1
+                    eD =Month[mon-1]
+            elif yy == ed_Y:
+                if mon == ed_M:
+                    sD = 1
+                    eD = ed_D
+                else:
                     eD = Month[mon - 1]
                     sD = 1
+            elif yy == sd_Y:
+                if mon == sd_M:
+                    sD=sd_D
+                    eD=Month[mon-1]
                 else:
-                    eD = ed_D
-                    sD = sd_D
+                    eD = Month[mon - 1]
+                    sD = 1
+            else:
+                eD = Month[mon - 1]
+                sD = 1
             ########
             pool_list = []
             for d in range(sD, eD + 1):

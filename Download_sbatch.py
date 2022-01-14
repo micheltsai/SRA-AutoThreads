@@ -48,7 +48,7 @@ def Download(x,_outdir,sra_dir):
     print('Done,total cost',dltime, 'secs')
     print("###########################################################")
 
-def sbatch_job(outdir,pdat,need_list,ll,limit_number,sra_num_,start):
+def sbatch_job(outdir,pdat,need_list,ll,limit_number,sra_num_,finish_,start):
     print("outdir:{}\nnew_outdir:{}\n".format(outdir, outdir))
     job_dir = os.path.join(outdir, "job")
     utils_.mkdir_join(job_dir)
@@ -90,7 +90,7 @@ def sbatch_job(outdir,pdat,need_list,ll,limit_number,sra_num_,start):
     #    "finish length: {}\nfinish_run length: {}\nneed_run length: {}".format(len(finish_Analysis), len(finish_Analysis_run),
     #                                                                           len(need_run)))
     #sra_num_ = len(need_run) + len(finish_Analysis_run)
-    finish_num = 0
+    finish_num = finish_
     #print("len(finish_run)+len(need_run) = {}".format(sra_num_))
     #num = len(finish_Analysis_run)
     progress_list = []
@@ -291,7 +291,7 @@ def main():
         pdat = pdat_run[need_run.index(need_list[0])]
 
         print("################\nsbatch_job\n")
-        sbatch_job(outdir,pdat,need_list,ll,limit_num,len(sra_run),start)
+        sbatch_job(outdir,pdat,need_list,ll,limit_num,len(sra_run),len(finish_run),start)
 
         print("sbatch_job {}->{}\n".format(ll,ll+limit_num))
         #print(run_cmd2("squeue -u linsslab01 |wc -l"))
@@ -307,11 +307,12 @@ def main():
                 #time.sleep(2)
                 tmp= run_cmd2("squeue -u linsslab01 |wc -l")
                 num = int(tmp)
+                time.sleep(60)
             except Exception as e:
                 print(tmp)
-                print("again run 'squeue -u linsslab01'\n")
-                utils_.run_cmd2("squeue -u linsslab01")
-                time.sleep(2)
+                #print("again run 'squeue -u linsslab01'\n")
+                #utils_.run_cmd2("squeue -u linsslab01")
+                #time.sleep(2)
                 ####
                 print("print 'squeue -u linsslab01' error:\n")
                 error_class = e.__class__.__name__  # 取得錯誤類型
@@ -324,9 +325,8 @@ def main():
                 errMsg = "File \"{}\", line {}, in {}: [{}] {}".format(fileName, lineNum, funcName, error_class,
                                                                        detail)
                 print(errMsg)
+                time.sleep(5)
                 pass
-
-            time.sleep(60)
 
 
         print(str(datetime.datetime.now()), 'PD Done,current total cost', time.time() - pd_start, 'secs\n')
@@ -343,11 +343,12 @@ def main():
                 print(str(datetime.datetime.now()), 'Running,current total cost', time.time() - running_start, 'secs\n')
                 if num == 1:
                     break
+                time.sleep(60)
             except Exception as e:
                 print(tmp)
-                print("again run 'squeue -u linsslab01'\n")
-                utils_.run_cmd2("squeue -u linsslab01")
-                time.sleep(2)
+                #print("again run 'squeue -u linsslab01'\n")
+                #utils_.run_cmd2("squeue -u linsslab01")
+                #time.sleep(2)
                 ####
                 print("print 'squeue -u linsslab01' error:\n")
                 error_class = e.__class__.__name__  # 取得錯誤類型
@@ -360,8 +361,9 @@ def main():
                 errMsg = "File \"{}\", line {}, in {}: [{}] {}".format(fileName, lineNum, funcName, error_class,
                                                                        detail)
                 print(errMsg)
+                time.sleep(5)
                 pass
-            time.sleep(60)
+
 
         print(str(datetime.datetime.now()), 'sbatch Done,current total cost', time.time() - running_start, 'secs\n')
         #needList = os.path.join(outdir, "need_run_{}.txt".format(ll))
