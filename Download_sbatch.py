@@ -61,7 +61,7 @@ def sbatch_job(outdir,pdat,need_list,ll,limit_number,sra_num_,finish_,start):
     check_file = Path(check_log)
     check_file.touch(exist_ok=True)
     sraList = os.path.join(outdir, "sraList_test.txt")
-    needList = os.path.join(outdir, "need_run_{}.txt".format(ll+limit_number))
+    needList = os.path.join(outdir, "need_run_{}.txt".format(ll+len(need_list)))
     need_file = Path(needList)
     need_file.touch(exist_ok=True)
     with open(needList,"w")as f:
@@ -133,7 +133,7 @@ def sbatch_job(outdir,pdat,need_list,ll,limit_number,sra_num_,finish_,start):
             f.write("/home/linsslab01/miniconda3/bin/python3 one_Analysis_new.py {} {} {} {}\n".format(pdat,
                                                                                                 sra_num_,
                                                                                                 "$SLURM_ARRAY_TASK_ID",
-                                                                                                       ll+limit_number))
+                                                                                                       ll+len(need_list)))
         ###
         print("sbatch before du-sh\n")
         print(utils_.run_cmd("du ./SRAtest -sh"))
@@ -284,7 +284,7 @@ def main():
 
     for ll in limit_list:
         need_list=need_run[ll:ll+limit_num]
-        print("###############\n{} -> {}\n".format(ll,ll+limit_num))
+        print("###############\n{} -> {}\n".format(ll+len(finish_run),len(need_list)+len(finish_run)))
         print("Download\n")
         pool_append(need_list,outdir)
         print("Download End\n")
