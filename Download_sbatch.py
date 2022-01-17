@@ -366,37 +366,55 @@ def main():
 
 
         print(str(datetime.datetime.now()), 'sbatch Done,current total cost', time.time() - running_start, 'secs\n')
-        #needList = os.path.join(outdir, "need_run_{}.txt".format(ll))
-        #utils_.run_cmd2("rm -rf {}".format(needList))
+
+
 
         ##################
+
+        needList = os.path.join(outdir, "need_run_{}.txt".format(ll))
+        print("rm -rf {}\n".format(needList))
+        utils_.run_cmd2("rm -rf {}".format(needList))
+        #################
+        mytarfile = os.path.join(outdir, "{}_{}.tar.gz".format(str(ed_M), ll + limit_num + len(finish_run)))
+        print("mytarfile: {}\n".format(mytarfile))
         #tar.gz
         tar_start = time.time()
-        print("tar zcvf SRAtest/{}_{}.tar.gz SRAtest/output/".format(str(ed_M),ll+limit_num+len(finish_run)))
-        utils_.run_cmd("tar zcvf SRAtest/{}_{}.tar.gz SRAtest/output/".format(str(ed_M),ll+limit_num+len(finish_run)))
+        print("tar zcvf {} SRAtest/output/".format(mytarfile))
+        utils_.run_cmd("tar zcvf {} SRAtest/output/".format(mytarfile))
         print(str(datetime.datetime.now()), 'tar Done,current total cost', time.time() - tar_start, 'secs\n')
         time.sleep(1)
         ###################
         scp_start=time.time()
-        print("scp -r SRAtest/{}_{}.tar.gz root@140.112.165.124:/data/SRA_data/{}/{}/output/{}_{}.tar.gz\n".format(str(ed_M),ll+limit_num+len(finish_run),str(ed_Y),str(ed_M),str(ed_M),ll+limit_num+len(finish_run)))
-        utils_.run_cmd("scp -r SRAtest/{}_{}.tar.gz root@140.112.165.124:/data/SRA_data/{}/{}/output/{}_{}.tar.gz".format(str(ed_M),ll+limit_num+len(finish_run),str(ed_Y),str(ed_M),str(ed_M),ll+limit_num+len(finish_run)))
+        print("scp -r {} root@140.112.165.124:/data/SRA_data/{}/{}/output/{}_{}.tar.gz\n".format(mytarfile,str(ed_Y),str(ed_M),str(ed_M),ll+limit_num+len(finish_run)))
+        utils_.run_cmd("scp -r {} root@140.112.165.124:/data/SRA_data/{}/{}/output/{}_{}.tar.gz".format(mytarfile,str(ed_Y),str(ed_M),str(ed_M),ll+limit_num+len(finish_run)))
         print(str(datetime.datetime.now()), 'scp Done,current total cost', time.time() - scp_start, 'secs\n')
         time.sleep(1)
         ##################
+        output_dir=os.path.join(outdir,"output")
+        joboutput_dir = os.path.join(outdir, "JOBoutput")
+        print("outputdir: {}\n".format(output_dir))
+        print("JOBoutputdir: {}\n".format(joboutput_dir))
+        #output
         remove_start=time.time()
+        print("rm -rf SRAtest/output\n")
         utils_.run_cmd("rm -rf SRAtest/output")
         #shutil.rmtree("./SRAtest/output")
-        #utils_.run_cmd("rm -rf SRAtest/JOBoutput")
-        utils_.run_cmd("rm -rf SRAtest/{}_{}.tar.gz".format(str(ed_M),ll+limit_num))
+        print("rm -rf SRAtest/JOBoutput\n")
+        utils_.run_cmd("rm -rf SRAtest/JOBoutput")
+        print("rm -rf {}\n".format(mytarfile))
+        utils_.run_cmd("rm -rf {}".format(mytarfile))
         print(str(datetime.datetime.now()), 'remove Done,current total cost', time.time() - remove_start, 'secs\n')
         ##################
         time.sleep(1)
 
+    print("analysislog: {}\n".format(check_log))
 
-    print("scp SRAtest/Analysischeck.log root@140.112.165.124:/data/SRA_data/{}/{}\n".format(str(ed_Y),str(ed_M)))
-    utils_.run_cmd("scp SRAtest/Analysischeck.log root@140.112.165.124:/data/SRA_data/{}/{}".format(str(ed_Y),str(ed_M)))
-    print("scp SRAtest/sraList_test.txt root@140.112.165.124:/data/SRA_data/{}\n".format(str(ed_Y),str(ed_M)))
-    utils_.run_cmd("scp SRAtest/sraList_test.txt root@140.112.165.124:/data/SRA_data/{}/{}".format(str(ed_Y),str(ed_M)))
+    #######
+    print("scp {} root@140.112.165.124:/data/SRA_data/{}/{}\n".format(check_log,str(ed_Y),str(ed_M)))
+    utils_.run_cmd("scp {} root@140.112.165.124:/data/SRA_data/{}/{}".format(check_log,str(ed_Y),str(ed_M)))
+    print("scp {} root@140.112.165.124:/data/SRA_data/{}\n".format(sraList_txt,str(ed_Y),str(ed_M)))
+    utils_.run_cmd("scp {} root@140.112.165.124:/data/SRA_data/{}/{}".format(sraList_txt,str(ed_Y),str(ed_M)))
+    print("Progerss end\n")
     print(str(datetime.datetime.now()), ' Done,current total cost', time.time() - start, 'secs\n')
 if __name__ == '__main__':
     main()

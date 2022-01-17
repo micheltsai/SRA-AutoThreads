@@ -517,12 +517,14 @@ def run_for_114v3(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,sta
             print("rm -r {}\n".format(fastq_dir))
             run_cmd("rm -rf {}".format(fastq_dir))
 
-            print("and return run_for_114v2({},{},{},{},{},{},{},{},{})\n".format(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start,check_log))
-            with open("./run_for_err.txt","a+")as f:
-                f.write(sra_id)
-                f.write(",")
+            #print("and return run_for_114v2({},{},{},{},{},{},{},{},{})\n".format(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start,check_log))
+            errtext=os.path.join(outdir,"run_for_err.txt")
+            todaydate1=str(datetime.date.today()).replace("-","/")
+            with open(errtext,"a+")as f:
+                f.write("{}:Run {} isn't ok\n".format(todaydate1,sra_id))
+
             sys.exit(e)
-            #return run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start,check_log)
+            #return run_for_114v3(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start,check_log)
             #forward_reads, reverse_reads = [os.path.join(fastq_dir, fa) for fa in os.listdir(fastq_dir)]
             #sys.exit("{} again and exit\n".format(sra_id))
 
