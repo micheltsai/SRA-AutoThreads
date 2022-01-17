@@ -17,6 +17,7 @@ def sra_stat(sra_id,outdir,sraNUM,needNUM,date):
 
     print("SequenceReadArchive\n")
     sra = utils_.SequenceReadArchivev3(sra_id)
+    print("sra: {}".format(sra))
     _base_ = sra.base_percentage() * 100
     print("base percentage: ", _base_, "\n")
     #######Q30 base>=80%

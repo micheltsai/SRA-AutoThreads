@@ -375,7 +375,7 @@ def main():
         print("rm -rf {}\n".format(needList))
         utils_.run_cmd2("rm -rf {}".format(needList))
         #################
-        mytarfile = os.path.join(outdir, "{}_{}.tar.gz".format(str(ed_M), ll + limit_num + len(finish_run)))
+        mytarfile = os.path.join(outdir, "{}_{}.tar.gz".format(str(ed_M), ll + len(need_list) + len(finish_run)))
         print("mytarfile: {}\n".format(mytarfile))
         #tar.gz
         tar_start = time.time()
@@ -385,8 +385,8 @@ def main():
         time.sleep(1)
         ###################
         scp_start=time.time()
-        print("scp -r {} root@140.112.165.124:/data/SRA_data/{}/{}/output/{}_{}.tar.gz\n".format(mytarfile,str(ed_Y),str(ed_M),str(ed_M),ll+limit_num+len(finish_run)))
-        utils_.run_cmd("scp -r {} root@140.112.165.124:/data/SRA_data/{}/{}/output/{}_{}.tar.gz".format(mytarfile,str(ed_Y),str(ed_M),str(ed_M),ll+limit_num+len(finish_run)))
+        print("scp -r {} root@140.112.165.124:/data/SRA_data/{}/{}/output/{}_{}.tar.gz\n".format(mytarfile,str(ed_Y),str(ed_M),str(ed_M),ll+len(need_list)+len(finish_run)))
+        utils_.run_cmd("scp -r {} root@140.112.165.124:/data/SRA_data/{}/{}/output/{}_{}.tar.gz".format(mytarfile,str(ed_Y),str(ed_M),str(ed_M),ll+len(need_list)+len(finish_run)))
         print(str(datetime.datetime.now()), 'scp Done,current total cost', time.time() - scp_start, 'secs\n')
         time.sleep(1)
         ##################
