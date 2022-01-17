@@ -441,7 +441,19 @@ def Get_RunInfo(idlist):
             time.sleep(2)
     else:
         progress_bar("Entrez.efetch")
-        handle = Entrez.efetch(db = 'sra', id = idlist,rettype = 'runinfo',retmode = 'csv')
+        attempt = 0
+        while attempt < 5:
+            attempt += 1
+            try:
+                handle = Entrez.efetch(db = 'sra', id = idlist,rettype = 'runinfo',retmode = 'csv')
+            except HTTPError as err:
+                if 500 <= err.code <= 599:
+                    print("Received error from server %s" % err)
+                    print("Attempt %i of 5" % attempt)
+                    time.sleep(15)
+                else:
+                    raise
+        #handle = Entrez.efetch(db = 'sra', id = idlist,rettype = 'runinfo',retmode = 'csv')
         d = handle.read()
         df = pd.read_csv(StringIO(d))
         df_all = df[df['Run'] != 'Run']
