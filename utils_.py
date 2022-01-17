@@ -14,6 +14,8 @@ from pathlib import Path
 
 import pandas as pd
 from Bio import Entrez
+from urllib.error import HTTPError
+
 import datetime
 import glob
 import xml.etree.cElementTree as ET
@@ -414,7 +416,20 @@ def Get_RunInfo(idlist):
             start = k[i-1]
             end = k[i]
             #下載GenBank records
-            handle = Entrez.efetch(db = 'sra', id = idlist[start:end],rettype = 'runinfo',retmode = 'csv')
+            attempt =0
+            while attempt < 5:
+                attempt += 1
+                try:
+                    handle = Entrez.efetch(db='sra', id=idlist[start:end], rettype='runinfo', retmode='csv')
+                except HTTPError as err:
+                    if 500 <= err.code <= 599:
+                        print("Received error from server %s"% err)
+                        print("Attempt %i of 5"% attempt)
+                        time.sleep(15)
+                    else:
+                        raise
+            #handle = Entrez.efetch(db = 'sra', id = idlist[start:end],rettype = 'runinfo',retmode = 'csv')
+
             #查看原始的Genbank文件
             d = handle.read()
             #讀檔
