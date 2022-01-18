@@ -896,6 +896,6 @@ if __name__ == '__main__':
     SRA_Analysis(sra_id, sra_dir, ass_dir, fastq_dir, assemble_dir, new_outdir, thread, gsize, start, sra_num_)
 
     #shutil.rmtree(sra_dir)
-    #shutil.rmtree(fastq_dir)
+    shutil.rmtree(fastq_dir)
     #shutil.rmtree(assemble_dir)
 

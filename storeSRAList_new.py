@@ -108,7 +108,7 @@ def sra_stat_old(sra_id, outdir, sra_dir, isfinal):
 
 
 if __name__ == '__main__':
-    pool = multiprocessing.Pool(processes=20)
+    pool = multiprocessing.Pool(processes=1)
     start = time.time()
     current_path = os.path.abspath(os.getcwd())
     print("current_path: ", current_path, "\n")
@@ -273,6 +273,7 @@ if __name__ == '__main__':
                         try:
                             print("#########################\nhello {}\n".format(aa))
                             pool_list.append(pool.apply_async(sra_stat,args=(aa,new_outdir,sra_num_,len(need_run),date,),callback=mycallback_write))
+
                             # pool.apply_async(test, (k,new_outdir,))
                             #sra_stat(aa, new_outdir, sra_dir)
                         except KeyboardInterrupt:
