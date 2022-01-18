@@ -156,7 +156,9 @@ if __name__ == '__main__':
     print(ed_Y, ed_M, ed_D)
     utils_.mkdir_join(outdir)
     thread = 4
-
+    count_txt = "./SRAtest/all_count.txt"
+    myfile_5 = Path(count_txt)
+    myfile_5.touch(exist_ok=True)
     for yy in range(sd_Y, ed_Y + 1):
         Month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
         ########
@@ -236,15 +238,14 @@ if __name__ == '__main__':
                 pattern, count = utils_.count_egquery(pattern, date, date)
                 print("pattern: {}\ncount: {}\n".format(pattern, count))
                 ########
-                count_txt = "./SRAtest/all_count.txt"
-                myfile_5 = Path(count_txt)
-                myfile_5.touch(exist_ok=True)
+
                 #########
+                with open(count_txt, "a+") as f:
+                    f.write("{}:{}\n".format(date, count))
+
+            
                 if int(count)==0:
                     print("{} sra count =0\n".format(date))
-
-                    with open(count_txt,"a+")as f:
-                        f.write("{}:{}\n".format(date,count))
                 else:
                     idlist = utils_.IdList_esearch(pattern, 'sra', count)
 
