@@ -21,7 +21,7 @@ import glob
 import xml.etree.cElementTree as ET
 from io import StringIO
 from tempfile import TemporaryDirectory
-Entrez.email = 'sj985517@gmail.com'
+Entrez.email = 'ann850324@gmail.com'
 
 def progress_bar(Category):
     for i in range(1, 101):
@@ -416,19 +416,19 @@ def Get_RunInfo(idlist):
             start = k[i-1]
             end = k[i]
             #下載GenBank records
-            attempt =0
-            while attempt < 5:
-                attempt += 1
-                try:
-                    handle = Entrez.efetch(db='sra', id=idlist[start:end], rettype='runinfo', retmode='csv')
-                except HTTPError as err:
-                    if 500 <= err.code <= 599:
-                        print("Received error from server %s"% err)
-                        print("Attempt %i of 5"% attempt)
-                        time.sleep(15)
-                    else:
-                        raise
-            #handle = Entrez.efetch(db = 'sra', id = idlist[start:end],rettype = 'runinfo',retmode = 'csv')
+            #attempt =0
+            #while attempt < 5:
+            #    attempt += 1
+            #    try:
+            #        handle = Entrez.efetch(db='sra', id=idlist[start:end], rettype='runinfo', retmode='csv')
+            #    except HTTPError as err:
+            #        if 500 <= err.code <= 599:
+            #            print("Received error from server %s"% err)
+            #            print("Attempt %i of 5"% attempt)
+            #            time.sleep(15)
+            #        else:
+            #            raise
+            handle = Entrez.efetch(db = 'sra', id = idlist[start:end],rettype = 'runinfo',retmode = 'csv')
 
             #查看原始的Genbank文件
             d = handle.read()
@@ -441,19 +441,19 @@ def Get_RunInfo(idlist):
             time.sleep(2)
     else:
         progress_bar("Entrez.efetch")
-        attempt = 0
-        while attempt < 5:
-            attempt += 1
-            try:
-                handle = Entrez.efetch(db = 'sra', id = idlist,rettype = 'runinfo',retmode = 'csv')
-            except HTTPError as err:
-                if 500 <= err.code <= 599:
-                    print("Received error from server %s" % err)
-                    print("Attempt %i of 5" % attempt)
-                    time.sleep(15)
-                else:
-                    raise
-        #handle = Entrez.efetch(db = 'sra', id = idlist,rettype = 'runinfo',retmode = 'csv')
+        #attempt = 0
+        #while attempt < 5:
+        #    attempt += 1
+        #    try:
+        #        handle = Entrez.efetch(db = 'sra', id = idlist,rettype = 'runinfo',retmode = 'csv')
+        #    except HTTPError as err:
+        #        if 500 <= err.code <= 599:
+        #            print("Received error from server %s" % err)
+        #            print("Attempt %i of 5" % attempt)
+        #            time.sleep(15)
+        #        else:
+        #            raise
+        handle = Entrez.efetch(db = 'sra', id = idlist,rettype = 'runinfo',retmode = 'csv')
         d = handle.read()
         df = pd.read_csv(StringIO(d))
         df_all = df[df['Run'] != 'Run']
