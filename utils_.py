@@ -21,7 +21,7 @@ import glob
 import xml.etree.cElementTree as ET
 from io import StringIO
 from tempfile import TemporaryDirectory
-Entrez.email = 'ann850324@gmail.com'
+Entrez.email = 'sj985517@gmail.com'
 
 def progress_bar(Category):
     for i in range(1, 101):
