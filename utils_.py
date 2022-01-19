@@ -22,7 +22,7 @@ import xml.etree.cElementTree as ET
 from io import StringIO
 from tempfile import TemporaryDirectory
 Entrez.email = 'sj985517@gmail.com'
-
+Entrez.api_key='308dbfd4b53b309fdfcb486b733922ec9809'
 def progress_bar(Category):
     for i in range(1, 101):
         print("\r{}: ".format(Category),end="")
@@ -272,7 +272,7 @@ class SequenceReadArchivev3:
         #xml: ElementTree, xml節點: Element
         #fromstring: 從xml_str構成Element賦予變數self._stat_tree
         self._stat_tree = ET.fromstring(p.stdout.decode())
-        
+
 
     @property
     def sraid(self):
