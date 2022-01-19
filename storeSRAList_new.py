@@ -20,11 +20,19 @@ def sra_stat(sra_id,outdir,sraNUM,needNUM,date):
     print("sra: {}".format(sra))
     _base_ = sra.base_percentage() * 100
     print("base percentage: ", _base_, "\n")
+
+    stat_txt = os.path.join(outdir, "stat_result")
+    utils_.mkdir_join(stat_txt)
+    stat_txt = os.path.join(stat_txt, "{}.txt".format(sra_id))
+
+    print("store stat file: {}\n".format(stat_txt))
+
+    utils_.run_cmd2(f'sra-stat -x -s -b 1 -e 2 {sra_id} > {stat_txt}')
     #######Q30 base>=80%
     if _base_ < 80:
         # shutil.rmtree(outdir)
         with open(QC_error, "a+") as f:
-            f.write("{}: Reads quality is too low\n".format(sra_id))
+            f.write("{}:{}: Reads quality is too low\n".format(date,sra_id))
         #finish_num+=1
         #sys.exit('Reads quality is too low.\n')
         return "0"
@@ -32,7 +40,7 @@ def sra_stat(sra_id,outdir,sraNUM,needNUM,date):
 
     if sra.layout != '2':
         with open(QC_error, "a+") as f:
-            f.write("{}: File layout is not pair-end\n".format(sra_id))
+            f.write("{}:{}: File layout is not pair-end\n".format(date,sra_id))
         #finish_num+=1
         #sys.exit(f'File layout is not pair-end\n')
         return "1"
@@ -243,7 +251,7 @@ if __name__ == '__main__':
                 with open(count_txt, "a+") as f:
                     f.write("{}:{}\n".format(date, count))
 
-            
+
                 if int(count)==0:
                     print("{} sra count =0\n".format(date))
                 else:
@@ -254,6 +262,15 @@ if __name__ == '__main__':
                     runinfo = utils_.Get_RunInfo(idlist)
                     run_list = list(runinfo['Run'])  # get SRAfile nameList stored in run_list
                     print("runinfo: {}\n run_list: {}\n".format(runinfo, run_list))
+                    QC_error = os.path.join(outdir, "nofillQC.txt")
+                    myfileQC = Path(QC_error)
+                    myfileQC.touch(exist_ok=True)
+                    f4 = open(QC_error, 'r')
+                    line_QC = f4.readlines()
+                    print("check QC_error log :{}\n".format(line_QC))
+                    f4.close()
+                    noQC = list(filter(lambda x: len(x.split(":")) >= 2, line_QC))
+                    noQC_run = list(map(lambda x: x.split(":")[1], noQC))
 
                     sraList = os.path.join(outdir, "sraList_test.txt")
                     myfile2 = Path(sraList)
@@ -268,6 +285,16 @@ if __name__ == '__main__':
                     finish = list(filter(lambda x: len(x.split(" ")) >= 4, line))
                     finish_run = list(map(lambda x: x.split(" ")[1], finish))
                     need_run = list(filter(lambda x: x not in finish_run, run_list))
+                    need_run = list(filter(lambda x: x not in noQC_run, need_run))
+
+                    #######
+                    no_need_run = list(filter(lambda x: x in finish_run, run_list))
+
+                    for xx in no_need_run:
+                        with open(QC_error,"a+")as f:
+                            f.write("{}:{}: SRA is exist on sraList.\n".format(date,xx))
+                    ########
+
                     print("finish: {}\nfinish_run: {}\nneed_run".format(finish, finish_run, need_run))
                     print(
                         "finish length: {}\nfinish_run length: {}\nneed_run length: {}".format(len(finish), len(finish_run),
@@ -281,7 +308,7 @@ if __name__ == '__main__':
                             isFinal=True
                         try:
                             print("#########################\nhello {}\n".format(aa))
-                            pool_list.append(pool.apply_async(sra_stat,args=(aa,new_outdir,sra_num_,len(need_run),date,),callback=mycallback_write))
+                            pool_list.append(pool.apply_async(sra_stat,args=(aa,outdir,sra_num_,len(need_run),date,),callback=mycallback_write))
 
                             # pool.apply_async(test, (k,new_outdir,))
                             #sra_stat(aa, new_outdir, sra_dir)

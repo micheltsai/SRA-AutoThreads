@@ -272,6 +272,7 @@ class SequenceReadArchivev3:
         #xml: ElementTree, xml節點: Element
         #fromstring: 從xml_str構成Element賦予變數self._stat_tree
         self._stat_tree = ET.fromstring(p.stdout.decode())
+        
 
     @property
     def sraid(self):
