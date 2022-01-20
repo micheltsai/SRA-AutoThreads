@@ -367,8 +367,11 @@ def main():
 
         print(str(datetime.datetime.now()), 'sbatch Done,current total cost', time.time() - running_start, 'secs\n')
 
+        output_dir = os.path.join(outdir, "output")
 
-
+        joboutput_dir = os.path.join(outdir, "JOBoutput")
+        print("outputdir: {}\n".format(output_dir))
+        print("JOBoutputdir: {}\n".format(joboutput_dir))
         ##################
 
         needList = os.path.join(outdir, "need_run_{}.txt".format(ll))
@@ -379,7 +382,8 @@ def main():
         print("mytarfile: {}\n".format(mytarfile))
         #tar.gz
         tar_start = time.time()
-        print("tar zcvf {} SRAtest/output/".format(mytarfile))
+        print("tar zcvf {} {}\n".format(mytarfile,output_dir.replace(current_path,".")))
+
         utils_.run_cmd("tar zcvf {} SRAtest/output/".format(mytarfile))
         print(str(datetime.datetime.now()), 'tar Done,current total cost', time.time() - tar_start, 'secs\n')
         time.sleep(1)
@@ -390,10 +394,7 @@ def main():
         print(str(datetime.datetime.now()), 'scp Done,current total cost', time.time() - scp_start, 'secs\n')
         time.sleep(1)
         ##################
-        output_dir=os.path.join(outdir,"output")
-        joboutput_dir = os.path.join(outdir, "JOBoutput")
-        print("outputdir: {}\n".format(output_dir))
-        print("JOBoutputdir: {}\n".format(joboutput_dir))
+
         #output
         remove_start=time.time()
         print("rm -rf {}\n".format(output_dir))
