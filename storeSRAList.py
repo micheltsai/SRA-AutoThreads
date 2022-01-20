@@ -10,6 +10,9 @@ import pandas as pd
 
 import utils_
 
+
+####2022/01/20 modify "pool" in main()
+
 def sra_stat(sra_id,outdir,sraNUM,needNUM,date):
     print("sra_stat\n")
     #global finish_num
@@ -344,7 +347,7 @@ if __name__ == '__main__':
             for d in range(sD, eD + 1):
                 main(yy, mon, d, outdir)
 
-                
+
     print("Program Done\n")
 
     print('Done,total cost', time.time() - start, 'secs')
