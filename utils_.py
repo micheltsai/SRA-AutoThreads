@@ -726,8 +726,9 @@ def run_for_114v2(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,sta
             #run_cmd("rm {}/R1.fq {}/R2.fq".format(fastq_dir,fastq_dir))
 
             print("rm -r {}\n".format(fastq_dir_))
-            run_cmd("rm -r {}".format(fastq_dir_))
 
+            run_cmd("rm -r {}".format(fastq_dir_))
+            mkdir_join(fastq_dir_)
             print("and return run_for_114v2({},{},{},{},{},{},{},{},{})\n".format(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,start,check_log))
             with open("./run_for_err.txt","a+")as f:
                 f.write(sra_id)
