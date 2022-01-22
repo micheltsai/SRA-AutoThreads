@@ -388,6 +388,7 @@ def main():
         print(str(datetime.datetime.now()), 'tar Done,current total cost', time.time() - tar_start, 'secs\n')
         time.sleep(1)
         ###################
+
         scp_start=time.time()
         print("scp -r {} root@140.112.165.124:/data/SRA_data/{}/{}/output/{}_{}.tar.gz\n".format(mytarfile,str(ed_Y),str(ed_M),str(ed_M),ll+len(need_list)+len(finish_run)))
         utils_.run_cmd("scp -r {} root@140.112.165.124:/data/SRA_data/{}/{}/output/{}_{}.tar.gz".format(mytarfile,str(ed_Y),str(ed_M),str(ed_M),ll+len(need_list)+len(finish_run)))
