@@ -564,44 +564,38 @@ def run_for_114v3(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,sta
 
     #print('Trim sequences.')
     trim_time=time.time()
+    ###   卡兩次
+#    print("trim du-sh\n")
+#    run_cmd("du ./SRAtest -sh")
+#    time.sleep(1)
     ###
-    print("trim du-sh\n")
-    run_cmd("du ./SRAtest -sh")
-    time.sleep(1)
+    try:
+        r1, r2 = trimmingv2(forward_reads, reverse_reads, fastq_dir, threads)
+        print ("r1= {}, r2={}".format(r1,r2))
+    except Exception as e:
+        error_class = e.__class__.__name__  # 取得錯誤類型
+        detail = e.args[0]  # 取得詳細內容
+        cl, exc, tb = sys.exc_info()  # 取得Call Stack
+        lastCallStack = traceback.extract_tb(tb)[-1]  # 取得Call Stack的最後一筆資料
+        fileName = lastCallStack[0]  # 取得發生的檔案名稱
+        lineNum = lastCallStack[1]  # 取得發生的行號
+        funcName = lastCallStack[2]  # 取得發生的函數名稱
+        errMsg = "File \"{}\", line {}, in {}: [{}] {}".format(fileName, lineNum, funcName, error_class,
+                                                               detail)
+        print(errMsg)
     ###
-    r1, r2 = trimmingv2(forward_reads, reverse_reads, fastq_dir, threads)
-    print ("r1= {}, r2={}".format(r1,r2))
-    ###
-    print("trim du-sh\n")
-    run_cmd("du ./SRAtest -sh")
-    time.sleep(1)
-    ###
-    # Q30>=90
+    #print("trim du-sh\n")
+    #run_cmd("du ./SRAtest -sh")
+    #time.sleep(1)
 
-    #bases_percentage_time=time.time()
-    #if bases_percentage(r1, 30) < 90 and bases_percentage(r2, 30) < 90:
-    #    #shutil.rmtree(outdir)
-    #    sys.exit('Reads quality is too low.')
-
-    #with open("./ana_time.csv", "a+") as f:
-    #    fieldnames = ["func", "time"]
-    #    writer = csv.DictWriter(f, fieldnames=fieldnames)
-    #    writer.writeheader()
-    #    writer.writerow({"func": "bases_percentage", "time": str(time.time() - bases_percentage_time)})
-
-    # 預測基因組大小與定序深度(KMC & seqtk)--- depth>=80 ----> 抽樣(seqtk) -----------> SPAdes
-    #                                 --- depth<80 ---------> SPAdes
-    # de-novo assembly(SPAdes)------>Polish(pilon)---->Contings(最後成果檔案:conting.fa)
-    #print("Run assembly pipline 'shovill'")
-    #progress_bar("Run assembly pipline 'shovill'")
-    # depth >= 80
+    ###
 
     shovill_time=time.time()
 
     ###
-    print("shovill du-sh\n")
-    run_cmd("du ./SRAtest -sh")
-    time.sleep(1)
+    #print("shovill du-sh\n")
+    #run_cmd("du ./SRAtest -sh")
+    #time.sleep(1)
     ###
     #cmd = f"shovill --R1 {r1} --R2 {r2} --outdir {assemble_dir_} --depth 100 --tmpdir . --cpus {threads} --ram 3 --force"
     cmd = f"shovill --R1 {r1} --R2 {r2} --outdir {assemble_dir} --depth 80 --tmpdir . --cpus {threads} --ram {shovill_RAM} --force"
@@ -622,26 +616,26 @@ def run_for_114v3(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,sta
 
 
     ###
-    print("rm_sradir du-sh\n")
-    run_cmd("du ./SRAtest -sh")
-    time.sleep(1)
+    #print("rm_sradir du-sh\n")
+    #run_cmd("du ./SRAtest -sh")
+    #time.sleep(1)
     ###
     cmd2="cp {} {}".format(contig_tmp,final_dir)
     print("contig_tmp: {}\nfinal_dir: {}\ncmd2={}\n".format(contig_tmp,final_dir,cmd2))
     run_cmd(cmd2)
     ###
-    print("cp_assembled_dir du-sh\n")
-    run_cmd("du ./SRAtest -sh")
-    time.sleep(1)
+    #print("cp_assembled_dir du-sh\n")
+    #run_cmd("du ./SRAtest -sh")
+    #time.sleep(1)
     ###
     cmd3 = "rm -rf {}".format(assemble_dir)
     print(cmd3)
     run_cmd2(cmd3)
 
     ###
-    print("rm_assembledir du-sh\n")
-    run_cmd("du ./SRAtest -sh")
-    time.sleep(1)
+    #print("rm_assembledir du-sh\n")
+    #run_cmd("du ./SRAtest -sh")
+    #time.sleep(1)
     ###
 
     print("rm -r {}\n".format(fastq_dir))
@@ -649,9 +643,9 @@ def run_for_114v3(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,sta
 
 
     ###
-    print("rm_fastqdir du-sh\n")
+    print("rm du-sh\n")
     run_cmd("du ./SRAtest -sh")
-    time.sleep(1)
+    #time.sleep(1)
     ###
 
 
