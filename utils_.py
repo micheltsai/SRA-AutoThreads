@@ -515,9 +515,9 @@ def run_for_114v3(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,sta
     dump_time=time.time()
     # 解壓縮成fastq
     ###
-    print("dump du-sh\n")
-    run_cmd("du ./SRAtest -sh")
-    time.sleep(1)
+    #print("dump du-sh\n")
+    #run_cmd("du ./SRAtest -sh")
+    #time.sleep(1)
     ###
 
     print('Dump fastq.\n')
@@ -527,9 +527,9 @@ def run_for_114v3(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,sta
     print (fastq_dir)
 
     ###
-    print("dump du-sh\n")
-    run_cmd("du ./SRAtest -sh")
-    time.sleep(1)
+    #print("dump du-sh\n")
+    #run_cmd("du ./SRAtest -sh")
+    #time.sleep(1)
     ###
 
     reverse_time=time.time()
@@ -605,9 +605,9 @@ def run_for_114v3(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,sta
     run_cmd2(cmd)
 
     ###
-    print("shovill du-sh\n")
-    run_cmd("du ./SRAtest -sh")
-    time.sleep(1)
+    #print("shovill du-sh\n")
+    #run_cmd("du ./SRAtest -sh")
+    #time.sleep(1)
     ###
 
     print("rm -r {}\n".format(path_1))
@@ -643,8 +643,8 @@ def run_for_114v3(sra_id,sra_dir,fastq_dir,assemble_dir,outdir,threads,gsize,sta
 
 
     ###
-    print("rm du-sh\n")
-    run_cmd("du ./SRAtest -sh")
+    #print("rm du-sh\n")
+    #run_cmd("du ./SRAtest -sh")
     #time.sleep(1)
     ###
 

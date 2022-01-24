@@ -450,9 +450,9 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         step1_time = time.time()
         print("STEP{}\n".format(step + 1))
         ###
-        print("mlst du-sh\n")
-        utils_.run_cmd("du ./SRAtest -sh")
-        time.sleep(2)
+        #print("mlst du-sh\n")
+        #utils_.run_cmd("du ./SRAtest -sh")
+        #time.sleep(2)
         ###
         print("********** Now MLST analysis running. **********\n")
         #MLST_DB = "/home/linsslab01/mlst_db"
@@ -484,9 +484,9 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
                     f.write("mlst is ok\n")
             step += 1
             ###
-            print("mlst du-sh\n")
-            utils_.run_cmd("du ./SRAtest -sh")
-            time.sleep(1)
+            #print("mlst du-sh\n")
+            #utils_.run_cmd("du ./SRAtest -sh")
+            #time.sleep(1)
             ###
 
             rmTMP_cmd="rm -rf {}\n".format(mlst_tmp)
@@ -494,8 +494,8 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
             run_cmd(rmTMP_cmd)
             time.sleep(1)
             ###
-            print("rm_mlstTMP du-sh\n")
-            utils_.run_cmd("du ./SRAtest -sh")
+            #print("rm_mlstTMP du-sh\n")
+            #utils_.run_cmd("du ./SRAtest -sh")
             ###
         except Exception as e:
             error_class = e.__class__.__name__  # 取得錯誤類型
@@ -521,9 +521,9 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
     else:
         print("**********       mlst was running.      **********\n next step\n")
     ###
-    print("mlst du-sh\n")
-    utils_.run_cmd("du ./SRAtest -sh")
-    time.sleep(2)
+    #print("mlst du-sh\n")
+    #utils_.run_cmd("du ./SRAtest -sh")
+    #time.sleep(2)
     ###
     # run plasmidfinder
     print("**********       mlst end.      **********\n next step\n")
@@ -531,9 +531,9 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         step2_time = time.time()
         print("STEP{}\n".format(step + 1))
         ###
-        print("plas du-sh\n")
-        utils_.run_cmd("du ./SRAtest -sh")
-        time.sleep(2)
+        #print("plas du-sh\n")
+        #utils_.run_cmd("du ./SRAtest -sh")
+        #time.sleep(2)
         ###
         print("********** Now plasmidfinder analysis running. **********\n")
         #PLASMID_DB = "/home/linsslab01/plasmidfinder_db"
@@ -562,18 +562,18 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
     # run amrfinder
     print("**********       plasmidfinder end.      **********\n next step\n")
     ###
-    print("plas du-sh\n")
-    utils_.run_cmd("du ./SRAtest -sh")
-    time.sleep(2)
+    #print("plas du-sh\n")
+    #utils_.run_cmd("du ./SRAtest -sh")
+    #time.sleep(2)
     ###
 
     if step < 3:
         step3_time = time.time()
         print("STEP{}\n".format(step + 1))
         ###
-        print("amr du-sh\n")
-        utils_.run_cmd("du ./SRAtest -sh")
-        time.sleep(2)
+        #print("amr du-sh\n")
+        #utils_.run_cmd("du ./SRAtest -sh")
+        #time.sleep(2)
         ###
         print("********** Now amrfinder analysis running. **********\n")
         amr_outdir = os.path.join(relative_path_o2, "amrfinder")
@@ -592,9 +592,9 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
     else:
         print("**********   amrfinder was running.   **********\n next step\n")
     ###
-    print("amr du-sh\n")
-    utils_.run_cmd("du ./SRAtest -sh")
-    time.sleep(2)
+    #print("amr du-sh\n")
+    #utils_.run_cmd("du ./SRAtest -sh")
+    #time.sleep(2)
     ###
     print("**********       amrfinder end.      **********\n next step\n")
     # run sistr
@@ -602,9 +602,9 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         step4_time = time.time()
         print("STEP{}\n".format(step + 1))
         ###
-        print("sistr du-sh\n")
-        utils_.run_cmd("du ./SRAtest -sh")
-        time.sleep(2)
+        #print("sistr du-sh\n")
+        #utils_.run_cmd("du ./SRAtest -sh")
+        #time.sleep(2)
         ###
         print("********** Now sistr analysis running. **********")
         sistr_outdir = os.path.join(relative_path_o2, "sistr")
@@ -627,9 +627,9 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
     else:
         print("********** sistr was running. **********\n next step\n")
     ###
-    print("sistr du-sh\n")
-    utils_.run_cmd("du ./SRAtest -sh")
-    time.sleep(2)
+    #print("sistr du-sh\n")
+    #utils_.run_cmd("du ./SRAtest -sh")
+    #time.sleep(2)
     ###
 
     print("**********       sistr end.      **********\n next step\n")
@@ -765,9 +765,9 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
     print("finaldf.to_csv(finalfile, mode='a+', header=False)\n")
     finaldf.to_csv(finalfile, mode='a+', header=False)
     ###
-    print("finalfile du-sh\n")
-    utils_.run_cmd("du ./SRAtest -sh")
-    time.sleep(1)
+    #print("finalfile du-sh\n")
+    #utils_.run_cmd("du ./SRAtest -sh")
+    #time.sleep(1)
     ###
     # after run all state, save ID in "Anackeck.log" and remove ./analysis
     with open(check, "a+") as f:
