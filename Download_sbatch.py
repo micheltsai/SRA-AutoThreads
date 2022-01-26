@@ -16,7 +16,18 @@ def run_cmd2(cmd):
     p = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True, check=True)
     return p.stdout.decode().strip("\n")
 
-
+def getProgramTime():
+    cmd="squeue -u linsslab01"
+    str = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True,
+                         check=True).stdout.decode().strip("\n")
+    print(str.split("\n")[1].strip().split("   "))
+    programID=str.split("\n")[1].strip().split("   ")[0]
+    time=str.split("\n")[1].strip().split("   ")[2]
+    time=time.split(":")
+    if len(time)>3:
+        if int(time[0])>1:
+            os.system("scancel -b {}".format(programID))
+    return
 def Download(x,_outdir,sra_dir):
     one_ = time.time()
     #print(
@@ -78,7 +89,7 @@ def sbatch_job(outdir,pdat,need_list,ll,limit_number,sra_num_,finish_,start):
     # print(run_list)
     f = open(check_log, 'r')
     line_Analysis = f.readlines()
-    print("check log :{}\n".format(line_Analysis))
+    #print("check log :{}\n".format(line_Analysis))
     f.close()
     #for s in line_Analysis:
         #print("{}\n".format(s))
@@ -98,7 +109,8 @@ def sbatch_job(outdir,pdat,need_list,ll,limit_number,sra_num_,finish_,start):
 
     #finish_num = len(finish_Analysis_run)
     #finish_num_ = len(finish_Analysis_run)
-    print("finish_num = {}".format(finish_num))
+    print("finish_num = {}\n".format(finish_num))
+    print("need_num={}\n".format(len(need_list)-finish_num))
     pool_list = []
     try:
         for k in need_list:
@@ -341,6 +353,8 @@ def main():
                 num=int(tmp)
                 print("Quantity of running progress  = {}\n".format(num - 1))
                 print(str(datetime.datetime.now()), 'Running,current total cost', time.time() - running_start, 'secs\n')
+                if num == 2 and time.time() - running_start > 5600:
+                   getProgramTime()
                 if num == 1:
                     break
                 time.sleep(60)
