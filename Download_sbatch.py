@@ -24,7 +24,7 @@ def getProgramTime():
     programID=str.split("\n")[1].strip().split("   ")[0]
     time=str.split("\n")[1].strip().split("   ")[2]
     time=time.split(":")
-    if len(time)>3:
+    if len(time)>2:
         if int(time[0])>1:
             print("time: {}\n".format(time))
             print("time[0]: {}\n".format(time[0]))
