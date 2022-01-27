@@ -25,11 +25,11 @@ def getProgramTime():
         print(str)
         print(len(str))
         for x in range(1,len(str)-1):
-            str=str[x].strip().split(" ")
+            str=str[x].strip().split("   ")
             str=[x for x in str if x!='']
             print(str)
             programID=str[0]
-            time=str[2]
+            time=str[1]
             time=time.split(":")
             if len(time)>2:
                 if int(time[0])>1:
