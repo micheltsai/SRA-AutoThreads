@@ -168,9 +168,9 @@ def Assembled(x,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir,thread,gsize,star
 
 def QualityCheck(sra_id,_outdir,genome_Path,thread,gsize,start):
     ###
-    print("Qualitycheck_start du-sh\n")
-    utils_.run_cmd("du ./SRAtest -sh")
-    time.sleep(1)
+    #print("Qualitycheck_start du-sh\n")
+    #utils_.run_cmd("du ./SRAtest -sh")
+    #time.sleep(1)
     ###
     print("#####################  QualityCheck  #####################\n")
 
@@ -222,9 +222,9 @@ def QualityCheck(sra_id,_outdir,genome_Path,thread,gsize,start):
     replace_path = outdir.replace(current_path, ".")
     fastani_outdir = os.path.join(replace_path, '{}_ani.txt'.format(gID))
     ###
-    print("fastANI du-sh\n")
-    utils_.run_cmd("du ./SRAtest -sh")
-    time.sleep(1)
+    #print("fastANI du-sh\n")
+    #utils_.run_cmd("du ./SRAtest -sh")
+    #time.sleep(1)
     ###
     print("-------------------------------fastANI start.-------------------------------")
     print("reseq: {}\n qen: {}\n outdir: {}\nout_txt: {}\n{}\n".format(refPath, genome_Path, outdir, outfile,
@@ -245,23 +245,23 @@ def QualityCheck(sra_id,_outdir,genome_Path,thread,gsize,start):
     print(
         "-------------------------------fastANI end.-------------------------------\ncompare and calculate ANI\nget ANIoutPath\n")
     ###
-    print("fastANI du-sh\n")
-    utils_.run_cmd("du ./SRAtest -sh")
-    time.sleep(1)
+    #print("fastANI du-sh\n")
+    #utils_.run_cmd("du ./SRAtest -sh")
+    #time.sleep(1)
     ###
 
     ###
-    print("rm_ref_cmd du-sh\n")
-    utils_.run_cmd("du ./SRAtest -sh")
-    time.sleep(1)
+    #print("rm_ref_cmd du-sh\n")
+    #utils_.run_cmd("du ./SRAtest -sh")
+    #time.sleep(1)
     ###
     rm_ref_cmd="rm -rf {}".format(refDIR)
     print(rm_ref_cmd)
     utils_.run_cmd(rm_ref_cmd)
     ###
-    print("rm_ref_cmd du-sh\n")
-    utils_.run_cmd("du ./SRAtest -sh")
-    time.sleep(1)
+    #print("rm_ref_cmd du-sh\n")
+    #utils_.run_cmd("du ./SRAtest -sh")
+    #time.sleep(1)
     ###
 
     # open fastANI output
@@ -307,9 +307,9 @@ def QualityCheck(sra_id,_outdir,genome_Path,thread,gsize,start):
 
     # BUSCO------
     ###
-    print("busco du-sh\n")
-    utils_.run_cmd("du ./SRAtest -sh")
-    time.sleep(1)
+    #print("busco du-sh\n")
+    #utils_.run_cmd("du ./SRAtest -sh")
+    #time.sleep(1)
     ###
     print("-------------------------------ANI>=95 continue, BUSCO start-------------------------------\n")
     # use conda enterring the busco VM(vm name is "busco")
@@ -328,9 +328,9 @@ def QualityCheck(sra_id,_outdir,genome_Path,thread,gsize,start):
     print(cmd_bus, "\n")
     utils_.run_cmd(cmd_bus)
     ###
-    print("busco du-sh\n")
-    utils_.run_cmd("du ./SRAtest -sh")
-    time.sleep(1)
+    #print("busco du-sh\n")
+    #utils_.run_cmd("du ./SRAtest -sh")
+    #time.sleep(1)
     ###
     # get BUSCO complete>=95 & duplicate>=3 ,or exit
     buscopath = os.path.join(outdir, "{}".format(gID))
@@ -758,9 +758,9 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
     print(finaldf)
     finalfile = os.path.join(outdir, "analysis_final.csv")
     ###
-    print("finalfile du-sh\n")
-    utils_.run_cmd("du ./SRAtest -sh")
-    time.sleep(1)
+    #print("finalfile du-sh\n")
+    #utils_.run_cmd("du ./SRAtest -sh")
+    #time.sleep(1)
     ###
     print("finaldf.to_csv(finalfile, mode='a+', header=False)\n")
     finaldf.to_csv(finalfile, mode='a+', header=False)
