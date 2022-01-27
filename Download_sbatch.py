@@ -26,7 +26,10 @@ def getProgramTime():
     time=time.split(":")
     if len(time)>3:
         if int(time[0])>1:
-            os.system("scancel -b {}".format(programID))
+            print("time: {}\n".format(time))
+            print("time[0]: {}\n".format(time[0]))
+            print("scancel -b {}\n".format(programID))
+            run_cmd2("scancel -b {}".format(programID))
     return
 def Download(x,_outdir,sra_dir):
     one_ = time.time()
