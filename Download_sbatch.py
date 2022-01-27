@@ -356,8 +356,10 @@ def main():
                 num=int(tmp)
                 print("Quantity of running progress  = {}\n".format(num - 1))
                 print(str(datetime.datetime.now()), 'Running,current total cost', time.time() - running_start, 'secs\n')
-                if time.time() - running_start > 7200:
-                   getProgramTime()
+                if time.time() - running_start > 200:
+
+                    getProgramTime()
+                    sys.exit()
                 if num == 1:
                     break
                 time.sleep(60)
