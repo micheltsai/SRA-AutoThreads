@@ -21,6 +21,7 @@ def getProgramTime():
     str = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True,
                          check=True).stdout.decode().strip("\n")
     str=str.split("\n")
+    print(str)
     for x in range(1,len(str)):
         str=str[x].strip().split(" ")
         str=[x for x in str if x!='']
