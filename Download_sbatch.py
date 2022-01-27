@@ -23,7 +23,7 @@ def getProgramTime():
     str=str.split("\n")
     try:
         print(str)
-        for x in range(1,len(str)):
+        for x in range(0,len(str)):
             str=str[x].strip().split(" ")
             str=[x for x in str if x!='']
             print(str)
