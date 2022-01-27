@@ -21,21 +21,24 @@ def getProgramTime():
     str = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True,
                          check=True).stdout.decode().strip("\n")
     str=str.split("\n")
-    print(str)
-    for x in range(1,len(str)):
-        str=str[x].strip().split(" ")
-        str=[x for x in str if x!='']
+    try:
         print(str)
-        programID=str[0]
-        time=str[2]
-        time=time.split(":")
-        if len(time)>2:
-            if int(time[0])>1:
-                print("time: {}\n".format(time))
-                print("time[0]: {}\n".format(time[0]))
-                print("scancel -b {}\n".format(programID))
-                run_cmd2("scancel -b {}".format(programID))
-        return 0
+        for x in range(1,len(str)):
+            str=str[x].strip().split(" ")
+            str=[x for x in str if x!='']
+            print(str)
+            programID=str[0]
+            time=str[2]
+            time=time.split(":")
+            if len(time)>2:
+                if int(time[0])>1:
+                    print("time: {}\n".format(time))
+                    print("time[0]: {}\n".format(time[0]))
+                    print("scancel -b {}\n".format(programID))
+                    run_cmd2("scancel -b {}".format(programID))
+    except Exception as e:
+        print(e)
+    return 0
 def Download(x,_outdir,sra_dir):
     one_ = time.time()
     #print(
