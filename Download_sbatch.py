@@ -300,6 +300,9 @@ def main():
     pdat_run=list(map(lambda x: x.split(" ")[0].split(":")[0], sralist))
 
     #print(sra_run)
+    final_log= os.path.join(outdir, "analysis_final.csv")
+    myfile_final = Path(final_log)
+    myfile_final.touch(exist_ok=True)
     check_log = os.path.join(outdir, "Analysischeck.log")
     myfile2 = Path(check_log)
     myfile2.touch(exist_ok=True)
@@ -446,6 +449,7 @@ def main():
         utils_.run_cmd("rm -rf {}".format(joboutput_dir))
         print("rm -rf {}\n".format(mytarfile))
         utils_.run_cmd("rm -rf {}".format(mytarfile))
+
         print(str(datetime.datetime.now()), 'remove Done,current total cost', time.time() - remove_start, 'secs\n')
         ##################
         time.sleep(1)
@@ -453,6 +457,8 @@ def main():
     print("analysislog: {}\n".format(check_log))
 
     #######
+    print("scp {} root@140.112.165.124:/data/SRA_data/{}/{}\n".format(final_log, str(ed_Y), str(ed_M)))
+    utils_.run_cmd("scp {} root@140.112.165.124:/data/SRA_data/{}/{}".format(final_log, str(ed_Y), str(ed_M)))
     print("scp {} root@140.112.165.124:/data/SRA_data/{}/{}\n".format(check_log,str(ed_Y),str(ed_M)))
     utils_.run_cmd("scp {} root@140.112.165.124:/data/SRA_data/{}/{}".format(check_log,str(ed_Y),str(ed_M)))
     print("scp {} root@140.112.165.124:/data/SRA_data/{}\n".format(sraList_txt,str(ed_Y),str(ed_M)))
