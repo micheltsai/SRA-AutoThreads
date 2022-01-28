@@ -29,10 +29,14 @@ def getProgramTime():
             s=[x for x in s if x!='']
             print(s)
             programID=s[0]
+            print(programID)
             time=s[2]
             time=time.split(":")
-            if len(time)>2:
+            print(time)
+            if len(time)>=2:
+                print("len(time)>2")
                 if int(time[0])>1:
+                    print("int(time[0])>1")
                     print("time: {}\n".format(time))
                     print("time[0]: {}\n".format(time[0]))
                     print("scancel -b {}\n".format(programID))
