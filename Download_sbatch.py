@@ -24,7 +24,7 @@ def getProgramTime():
     try:
         print(str)
         print(len(str))
-        for x in range(1,len(str)-1):
+        for x in range(1,len(str)):
             s=str[x].strip().split("   ")
             s=[x for x in s if x!='']
             print(s)
@@ -33,9 +33,9 @@ def getProgramTime():
             time=s[2]
             time=time.split(":")
             print(time)
-            if len(time)>=2:
+            if len(time)>=3:
                 print("len(time)>2")
-                if int(time[0])>1:
+                if int(time[0])>=2:
                     print("int(time[0])>1")
                     print("time: {}\n".format(time))
                     print("time[0]: {}\n".format(time[0]))
@@ -378,7 +378,7 @@ def main():
                 num=int(tmp)
                 print("Quantity of running progress  = {}\n".format(num - 1))
                 print(str(datetime.datetime.now()), 'Running,current total cost', time.time() - running_start, 'secs\n')
-                if time.time() - running_start > 60:
+                if time.time() - running_start >= 7200:
 
                     getProgramTime()
                     sys.exit()
