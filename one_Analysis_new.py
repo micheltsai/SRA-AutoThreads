@@ -241,9 +241,9 @@ def QualityCheck(sra_id,_outdir,genome_Path,thread,gsize,start):
     print(
         "-------------------------------fastANI end.-------------------------------\ncompare and calculate ANI\nget ANIoutPath\n")
 
-    rm_ref_cmd="rm -rf {}".format(refDIR)
-    print(rm_ref_cmd)
-    utils_.run_cmd(rm_ref_cmd)
+    #rm_ref_cmd="rm -rf {}".format(refDIR)
+    #print(rm_ref_cmd)
+    #utils_.run_cmd(rm_ref_cmd)
 
     print("open fastANI output txt\n")
     # open fastANI output
