@@ -221,11 +221,7 @@ def QualityCheck(sra_id,_outdir,genome_Path,thread,gsize,start):
     print("current_path: ", current_path, "\n")
     replace_path = outdir.replace(current_path, ".")
     fastani_outdir = os.path.join(replace_path, '{}_ani.txt'.format(gID))
-    ###
-    #print("fastANI du-sh\n")
-    #utils_.run_cmd("du ./SRAtest -sh")
-    #time.sleep(1)
-    ###
+
     print("-------------------------------fastANI start.-------------------------------")
     print("reseq: {}\n qen: {}\n outdir: {}\nout_txt: {}\n{}\n".format(refPath, genome_Path, outdir, outfile,
                                                                        os.path.join(outdir_ani, outfile_)))
@@ -244,26 +240,11 @@ def QualityCheck(sra_id,_outdir,genome_Path,thread,gsize,start):
     # ANI>=95------
     print(
         "-------------------------------fastANI end.-------------------------------\ncompare and calculate ANI\nget ANIoutPath\n")
-    ###
-    #print("fastANI du-sh\n")
-    #utils_.run_cmd("du ./SRAtest -sh")
-    #time.sleep(1)
-    ###
 
-    ###
-    #print("rm_ref_cmd du-sh\n")
-    #utils_.run_cmd("du ./SRAtest -sh")
-    #time.sleep(1)
-    ###
     rm_ref_cmd="rm -rf {}".format(refDIR)
     print(rm_ref_cmd)
     utils_.run_cmd(rm_ref_cmd)
-    ###
-    #print("rm_ref_cmd du-sh\n")
-    #utils_.run_cmd("du ./SRAtest -sh")
-    #time.sleep(1)
-    ###
-
+    print("open fastANI output txt\n")
     # open fastANI output
     f = open(outfile, 'r')
     AverageANI = 0.0
