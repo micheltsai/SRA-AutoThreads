@@ -265,7 +265,7 @@ def QualityCheck(sra_id,_outdir,outdir,genome_Path,thread,gsize,start):
     # num =0
     QC_error=os.path.join(outdir,"nofillQC.txt")
     if num==0:
-        with open(QC _error, "a+") as f:
+        with open(QC_error, "a+") as f:
             f.write("{}: all ANI value < 95\n".format(sra_id))
         sys.exit("all ANI value <95\n")
     AverageANI = ANI_total / num  # if ANI>=95 ,calulate average value of ANI
