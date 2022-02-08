@@ -296,8 +296,13 @@ def main():
     myfile.touch(exist_ok=True)
     with open(sraList_txt,"r")as f:
         lines=f.readlines()
-    sralist = list(filter(lambda x: len(x.split(" ")) >= 4, lines))
-    sra_run = list(map(lambda x: x.split(" ")[1], sralist))
+    #sralist = list(filter(lambda x: len(x.split(" ")) >= 4, lines))
+    #sralist = list(filter(lambda x: len(x.split(" ")) >= 4, lines))
+    #sra_run = list(map(lambda x: x.split(" ")[1], sralist))
+    ##<DATE>:<sraID>
+    sralist = list(filter(lambda x: len(x.split(":")) >= 2, lines))
+    sra_run = list(map(lambda x: x.split(":")[1], sralist))
+
     pdat_run=list(map(lambda x: x.split(" ")[0].split(":")[0], sralist))
 
     #print(sra_run)
