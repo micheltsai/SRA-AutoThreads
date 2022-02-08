@@ -172,7 +172,7 @@ def sbatch_job(outdir,pdat,need_list,ll,limit_number,sra_num_,finish_,start):
                                                                                                 sra_num_,
                                                                                                 "$SLURM_ARRAY_TASK_ID",
                                                                                                        ll+len(need_list)))
-        ###
+        ### 
         print("sbatch before du-sh\n")
         print(utils_.run_cmd("du ./SRAtest -sh"))
         time.sleep(1)
