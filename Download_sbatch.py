@@ -301,7 +301,7 @@ def main():
     #sra_run = list(map(lambda x: x.split(" ")[1], sralist))
     ##<DATE>:<sraID>
     sralist = list(filter(lambda x: len(x.split(":")) >= 2, lines))
-    sra_run = list(map(lambda x: x.split(":")[1], sralist))
+    sra_run = list(map(lambda x: x.split(":")[1].strip("\n"), sralist))
 
     pdat_run=list(map(lambda x: x.split(" ")[0].split(":")[0], sralist))
 
