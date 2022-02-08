@@ -834,7 +834,9 @@ def mycallback_write_Finish(sra_id):
 if __name__ == '__main__':
     start = time.time()
     argvs=sys.argv
+
     print(argvs)
+
     pdat=argvs[1]
     #need_run=argvs[2]
     sra_num_ = argvs[2]
