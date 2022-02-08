@@ -120,10 +120,11 @@ def Download(x,_outdir,sra_dir):
     elif os.path.isfile(sra_file):
         print("was ran download ,sra is exist\n------------------------------\n\n")
     else:
-        utils_.prefetch_sra(x, sra_dir)
-        print("Download {}\n.".format(x))
+        #utils_.prefetch_sra(x, sra_dir)
+        #print("no Download {}\n.".format(x))
         #with open(Downloadcheck_log, "a+") as f:
         #    f.write("{}\n".format(x))
+        sys.exit("no Download {}\n{} is no exist.\n".format(sra_file))
     dltime=time.time() - one_
     print('Done,total cost',dltime, 'secs')
     print("###########################################################")
