@@ -64,18 +64,19 @@ def Download(x,_outdir,sra_dir):
     outdir__ = os.path.join(sra_dir, "Assembled")
     check_log = os.path.join(_outdir, "Analysischeck.log")
     final_dir = os.path.join(outdir__, "{}_contig.fa".format(x))
-
-    sra_file=os.path.join(sra_dir,"{}/{}.sra".format(x,x))
-    print(final_dir)
-    print(sra_file)
+    utils_.mkdir_join(sra_dir)
+    sra_file=os.path.join(sra_dir,"sra/{}/{}.sra".format(x,x))
+    print("final_dir:",final_dir)
+    print("sra_file:",sra_file)
     if os.path.isfile(final_dir):
         print("was ran assembly ,contig.fa is exist\n------------------------------\n\n")
     elif os.path.isfile(sra_file):
         print("was ran download ,sra is exist\n------------------------------\n\n")
     else:
+
         sra_dir = os.path.join(sra_dir, "sra")
         utils_.mkdir_join(sra_dir)
-        print(sra_dir)
+        print("sra_dir:",sra_dir)
         utils_.prefetch_srav2(x, sra_dir)
         print("Download {}\n.".format(x))
         #with open(Downloadcheck_log, "a+") as f:
@@ -323,12 +324,18 @@ def main():
 
 
     for ll in limit_list:
+
+
         need_list=need_run[ll:ll+limit_num]
         print("###############\n{} -> {}\n".format(ll+len(finish_run),len(need_list)+len(finish_run)))
         print("Download\n")
         pool_append(need_list,outdir)
         print("Download End\n")
+
+        # git date for store gz file name
         pdat = pdat_run[need_run.index(need_list[0])]
+        print("pdat:{}".format(pdat))
+
 
         print("################\nsbatch_job\n")
         sbatch_job(outdir,pdat,need_list,ll,limit_num,len(sra_run),len(finish_run),start)

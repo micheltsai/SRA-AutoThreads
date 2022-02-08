@@ -145,8 +145,9 @@ def Assembled(x,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir,thread,gsize,star
         # utils_.prefetch_sra(x,sra_dir)
         one_run_ass = time.time()
         sra_file_dir = os.path.join(sra_dir, x)
+        print("sra_file_dir:",sra_file_dir)
         sra_file = os.path.join(sra_dir, "{}/{}.sra".format(x, x))
-        print(sra_file)
+        print("sra_file:",sra_file)
         if os.path.isfile(sra_file):
             print("have {}.sra file.\n".format(x))
         else:
@@ -431,11 +432,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
     if step < 1:
         step1_time = time.time()
         print("STEP{}\n".format(step + 1))
-        ###
-        #print("mlst du-sh\n")
-        #utils_.run_cmd("du ./SRAtest -sh")
-        #time.sleep(2)
-        ###
+
         print("********** Now MLST analysis running. **********\n")
         #MLST_DB = "/home/linsslab01/mlst_db"
         mlst_outdir = os.path.join(anoutdir_, "mlst")
