@@ -264,6 +264,8 @@ def QualityCheck(sra_id,_outdir,outdir,genome_Path,thread,gsize,start):
             not_num += 1
     # num =0
     QC_error=os.path.join(outdir,"nofillQC.txt")
+    QC_file = Path(QC_error)
+    QC_file.touch(exist_ok=True)
     if num==0:
         with open(QC_error, "a+") as f:
             f.write("{}: all ANI value < 95\n".format(sra_id))
