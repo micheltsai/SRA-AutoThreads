@@ -168,7 +168,7 @@ def Assembled(x,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir,thread,gsize,star
         #run_cmd(rmsra_cmd)
 
 
-def QualityCheck(sra_id,_outdir,outdir,genome_Path,thread,gsize,start):
+def QualityCheck(sra_id,_outdir,ori_outdir,genome_Path,thread,gsize,start):
     ###
     #print("Qualitycheck_start du-sh\n")
     #utils_.run_cmd("du ./SRAtest -sh")
@@ -263,7 +263,7 @@ def QualityCheck(sra_id,_outdir,outdir,genome_Path,thread,gsize,start):
         else:
             not_num += 1
     # num =0
-    QC_error=os.path.join(outdir,"nofillQC.txt")
+    QC_error=os.path.join(ori_outdir,"nofillQC.txt")
     print("QC_errfile:", QC_error)
     QC_file = Path(QC_error)
     QC_file.touch(exist_ok=True)

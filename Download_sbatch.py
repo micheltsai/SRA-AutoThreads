@@ -309,14 +309,26 @@ def main():
     final_log= os.path.join(outdir, "analysis_final.csv")
     myfile_final = Path(final_log)
     myfile_final.touch(exist_ok=True)
+
     check_log = os.path.join(outdir, "Analysischeck.log")
     myfile2 = Path(check_log)
     myfile2.touch(exist_ok=True)
     with open(check_log,"r")as f:
         line=f.readlines()
+
     finish = list(filter(lambda x: len(x.split(" ")) >= 4, line))
     finish_run = list(map(lambda x: x.split(" ")[1], finish))
     need_run = list(filter(lambda x: x not in finish_run, sra_run))
+
+    QCcheck_log = os.path.join(outdir, "nofillQC.txt")
+    QC_file = Path(QCcheck_log)
+    QC_file.touch(exist_ok=True)
+    with open(QCcheck_log,"r")as f:
+        QCline=f.readlines()
+    QC_run=list(filter(lambda x: len(x.split(":")) >= 2, QCline))
+    QCfinish_run = list(map(lambda x: x.split(" ")[1], QC_run))
+    need_run = list(filter(lambda x: x not in QCfinish_run, need_run))
+
     print("sra_list length: {}\n".format(len(sra_run)))
     print("need_run length: {}\n".format(len(need_run)))
     print("finish_list length: {}\n".format(len(finish_run)))
