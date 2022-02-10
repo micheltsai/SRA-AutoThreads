@@ -264,6 +264,7 @@ def QualityCheck(sra_id,_outdir,outdir,genome_Path,thread,gsize,start):
             not_num += 1
     # num =0
     QC_error=os.path.join(outdir,"nofillQC.txt")
+    print("QC_errfile:", QC_error)
     QC_file = Path(QC_error)
     QC_file.touch(exist_ok=True)
     if num==0:
