@@ -172,11 +172,7 @@ def sbatch_job(outdir,pdat,need_list,ll,limit_number,sra_num_,finish_,start):
                                                                                                 sra_num_,
                                                                                                 "$SLURM_ARRAY_TASK_ID",
                                                                                                        ll+len(need_list)))
-        ### 
-        print("sbatch before du-sh\n")
-        print(utils_.run_cmd("du ./SRAtest -sh"))
-        time.sleep(1)
-        ###
+
         print("sbatch {}".format(job_file))
         utils_.run_cmd("sbatch {}".format(job_file))
         time.sleep(2)
@@ -338,7 +334,7 @@ def main():
 
     limit_list=list(range(0, len(need_run), limit_num))
 
- 
+
 
 
     for ll in limit_list:
@@ -452,7 +448,7 @@ def main():
         tar_start = time.time()
         print("tar zcvf {} {}\n".format(mytarfile,output_dir.replace(current_path,".")))
 
-        utils_.run_cmd("tar zcvf {} SRAtest/output/".format(mytarfile))
+        utils_.run_cmd("tar zcvf {} outdir".format(mytarfile,output_dir.replace(current_path,".")))
         print(str(datetime.datetime.now()), 'tar Done,current total cost', time.time() - tar_start, 'secs\n')
         time.sleep(1)
         ###################
