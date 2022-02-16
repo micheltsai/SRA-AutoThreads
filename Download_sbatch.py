@@ -487,6 +487,8 @@ def main():
     utils_.run_cmd("scp {} root@140.112.165.124:/data/SRA_data/{}/{}".format(check_log,str(ed_Y),str(ed_M)))
     print("scp {} root@140.112.165.124:/data/SRA_data/{}\n".format(sraList_txt,str(ed_Y),str(ed_M)))
     utils_.run_cmd("scp {} root@140.112.165.124:/data/SRA_data/{}/{}".format(sraList_txt,str(ed_Y),str(ed_M)))
+    print("scp {} root@140.112.165.124:/data/SRA_data/{}\n".format(QCcheck_log, str(ed_Y), str(ed_M)))
+    utils_.run_cmd("scp {} root@140.112.165.124:/data/SRA_data/{}/{}".format(QCcheck_log, str(ed_Y), str(ed_M)))
     print("Progerss end\n")
     print(str(datetime.datetime.now()), ' Done,current total cost', time.time() - start, 'secs\n')
 if __name__ == '__main__':
