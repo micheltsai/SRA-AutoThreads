@@ -309,12 +309,11 @@ def main():
         myfile_final = Path(final_log)
         myfile_final.touch(exist_ok=True)
         print("build {}.\n".format(final_log))
-        df1 = pd.read_csv(final_log)
-        # print(df)
-        df1 = pd.DataFrame(df1)
-        df1.columns = ["", "Accession", "MLST", "AMR", "Point", "Serotype", "IncType"]
-        print(df1)
-        sys.exit("test build final_log\n")
+        with open(final_log,"r+") as f:
+            df_clowns = ""+","+"Accession"+","+"MLST"+","+"AMR"+","+"Point"+","+"Serotype"+","+"IncType"
+            f.write(df_clowns+"\n")
+            print(f.readlines())
+    sys.exit("test build final_log\n")
 
 
     check_log = os.path.join(outdir, "Analysischeck.log")
