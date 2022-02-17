@@ -313,7 +313,8 @@ def main():
             df_clowns = ""+","+"Accession"+","+"MLST"+","+"AMR"+","+"Point"+","+"Serotype"+","+"IncType"
             f.write(df_clowns+"\n")
             print(f.readlines())
-    sys.exit("test build final_log\n")
+        print("build {} Done.\n".format(final_log))
+
 
 
     check_log = os.path.join(outdir, "Analysischeck.log")
