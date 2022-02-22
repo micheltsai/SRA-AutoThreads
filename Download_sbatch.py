@@ -239,9 +239,9 @@ def main():
     start = time.time()
     current_path = os.path.abspath(os.getcwd())
     print("current_path: ", current_path, "\n")
+    ##########
     ## read SRAsetting.txt
     setting_path = os.path.join(current_path, "SRAsettings.txt")
-
     with open(setting_path, "r") as f:
         setList = f.readlines()
 
@@ -284,24 +284,28 @@ def main():
     print(sd_Y, sd_M, sd_D)
     print(ed_Y, ed_M, ed_D)
     utils_.mkdir_join(outdir)
-    pdat=str(datetime.datetime.now())
-
-    print("pdat: {}".format(pdat))
+    today1=str(datetime.datetime.now())
+    ##################
+    print("pdat: {}".format(today1))
     sraList_txt=os.path.join(outdir,"sraList_test.txt")
     myfile = Path(sraList_txt)
     myfile.touch(exist_ok=True)
     with open(sraList_txt,"r")as f:
         lines=f.readlines()
-    #sralist = list(filter(lambda x: len(x.split(" ")) >= 4, lines))
+
+    #######<DATE>:Run <sraID> is ok.
     #sralist = list(filter(lambda x: len(x.split(" ")) >= 4, lines))
     #sra_run = list(map(lambda x: x.split(" ")[1], sralist))
-    ##<DATE>:<sraID>
+
+    ###<DATE>:<sraID>
     sralist = list(filter(lambda x: len(x.split(":")) >= 2, lines))
     sra_run = list(map(lambda x: x.split(":")[1].strip("\n"), sralist))
-
+    #######
     pdat_run=list(map(lambda x: x.split(" ")[0].split(":")[0], sralist))
 
     #print(sra_run)
+
+    ##build analysis_final
     final_log= os.path.join(outdir, "analysis_final.csv")
     if os.path.isfile(final_log):
         print("{} is exist.\n".format(final_log))
@@ -314,7 +318,7 @@ def main():
             f.write(df_clowns+"\n")
             print(f.readlines())
         print("build {} Done.\n".format(final_log))
-
+    ######
 
 
     check_log = os.path.join(outdir, "Analysischeck.log")
@@ -327,6 +331,7 @@ def main():
     finish_run = list(map(lambda x: x.split(" ")[1], finish))
     need_run = list(filter(lambda x: x not in finish_run, sra_run))
 
+    #####sra_id file not fill ANI>95 in nofillQC.txt
     QCcheck_log = os.path.join(outdir, "nofillQC.txt")
     QC_file = Path(QCcheck_log)
     QC_file.touch(exist_ok=True)
@@ -433,7 +438,7 @@ def main():
                 fileName = lastCallStack[0]  # 取得發生的檔案名稱
                 lineNum = lastCallStack[1]  # 取得發生的行號
                 funcName = lastCallStack[2]  # 取得發生的函數名稱
-                errMsg = "File \"{}\", line {}, in {}: [{}] {}".format(fileName, lineNum, funcName, error_class,
+                errMsg = "File \"{}\", line {}, in {}: [{}]_ {}".format(fileName, lineNum, funcName, error_class,
                                                                        detail)
                 print(errMsg)
                 time.sleep(5)
