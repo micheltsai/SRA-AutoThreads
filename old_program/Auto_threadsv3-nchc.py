@@ -1,5 +1,6 @@
 from __future__ import print_function
-
+import concurrent.futures
+import concurrent
 import csv
 import datetime
 import errno
@@ -15,6 +16,7 @@ import subprocess
 import sys
 import time
 import traceback
+from concurrent.futures import as_completed
 from pathlib import Path
 import pandas as pd
 
@@ -25,7 +27,9 @@ logging.basicConfig(
     format='%(asctime)-15s - %(levelname)s - %(message)s'
 )
 global sra_num_
+global finish_num_
 sra_num_=0
+finish_num_=0
 def wait_child(signum, frame):
     logging.info('receive SIGCHLD')
     try:
@@ -192,7 +196,8 @@ def QualityCheck(sra_id,_outdir,genome_Path,thread,gsize,start):
     print("reseq: {}\n qen: {}\n outdir: {}\nout_txt: {}\n{}\n".format(refPath, genome_Path, outdir, outfile,
                                                                        os.path.join(outdir_ani, outfile_)))
     utils_.progress_bar("fastANI excuting")
-    fastani_ = "/data/usrhome/LabSSLin/user30/Desktop/FastANI/fastANI -t {} --rl {} -q {} -o {}".format(thread,refPath, genome_Path, outfile)
+    #fastani_ = "/data/usrhome/LabSSLin/user30/Desktop/FastANI/fastANI -t {} --rl {} -q {} -o {}".format(thread,refPath, genome_Path, outfile)
+    fastani_ = "/home/linsslab01/FastANI/fastANI -t {} --rl {} -q {} -o {}".format(thread, refPath,genome_Path,outfile)
     print(fastani_ + "\n")
     if os.path.isfile(outfile):
         print(outfile, " is exist.\n")
@@ -267,7 +272,8 @@ def QualityCheck(sra_id,_outdir,genome_Path,thread,gsize,start):
 
     # genome is "one excuting"
     # busco -i /data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/RefSeq/GCF_000335875.2.fa -o cofig --out_path /data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/SRA-AutomatedAnalysis/QualityCheck -l enterobacterales_odb10 -m geno --download_path /data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/SRA-AutomatedAnalysis/QualityCheck/QualityCheck/busco_db -f
-    cmd_bus = 'bash -c "source /data/usrhome/LabSSLin/user30/anaconda3/etc/profile.d/conda.sh && conda activate busco && busco -c {} -i {} -o {} --out_path {} -l {} -m {} --download_path {} -f"'.format(
+    #cmd_bus = 'bash -c "source /data/usrhome/LabSSLin/user30/anaconda3/etc/profile.d/conda.sh && conda activate busco && busco -c {} -i {} -o {} --out_path {} -l {} -m {} --download_path {} -f"'.format(
+    cmd_bus = 'bash -c "source /home/linsslab01/miniconda3/etc/profile.d/conda.sh && conda activate busco && busco -c {} -i {} -o {} --out_path {} -l {} -m {} --download_path {} -f"'.format(
         thread,targetPath, gID, outdir, db, mode, busco_db)
     print(cmd_bus, "\n")
     utils_.run_cmd(cmd_bus)
@@ -332,6 +338,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
 
     # workdir
     current_path = os.path.abspath(os.getcwd())
+    current_path=current_path.replace("/SRA-AutoThreads","")
     print("current_path: ", current_path, "\n")
     relative_input = input.replace(current_path, ".")
     print("relative input: {}\n".format(relative_input))
@@ -386,14 +393,14 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         step1_time = time.time()
         print("STEP{}\n".format(step + 1))
         print("********** Now MLST analysis running. **********\n")
-        MLST_DB = "/data/usrhome/LabSSLin/user30/Desktop/SRA_Analysis/mlst_db"
+        MLST_DB = "/home/linsslab01/mlst_db"
         mlst_outdir = os.path.join(relative_path2, "mlst")
         utils_.mkdir_join(mlst_outdir)
         mlst_datajson = os.path.join(mlst_outdir, "data.json")
         f = open(mlst_datajson, "a+")
         f.close()
-        mlst_cmd = "docker run --rm -it \-v {}:/databases \-v {}:/workdir \mlst -i {} -o {} -s {}".format(MLST_DB,
-                                                                                                          current_path,
+        #mlst_cmd = "docker run --rm -it \-v {}:/databases \-v {}:/workdir \mlst -i {} -o {} -s {}".format(MLST_DB,current_path,relative_input,mlst_outdir,mlst_organism)
+        mlst_cmd = "singularity exec --containall --bind /work/linsslab01/:/home/linsslab01/ /work/linsslab01/mlst.sif python3 /home/linsslab01/mlst/mlst.py -i {} -o {} -s {}".format(
                                                                                                           relative_input,
                                                                                                           mlst_outdir,
                                                                                                           mlst_organism)
@@ -421,11 +428,14 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         step2_time = time.time()
         print("STEP{}\n".format(step + 1))
         print("********** Now plasmidfinder analysis running. **********\n")
-        PLASMID_DB = "/data/usrhome/LabSSLin/user30/Desktop/SRA_Analysis/plasmidfinder_db"
+        PLASMID_DB = "/home/linsslab01/plasmidfinder_db"
         plas_outdir = os.path.join(relative_path2, "plasmidfinder")
         utils_.mkdir_join(plas_outdir)
-        plas_cmd = "docker run --rm -it \-v {}:/databases \-v {}:/workdir \plasmidfinder -i {} -o {}".format(
-            PLASMID_DB, current_path, relative_input, plas_outdir)
+        #plas_cmd = "docker run --rm -it \-v {}:/databases \-v {}:/workdir \plasmidfinder -i {} -o {}".format(PLASMID_DB, current_path, relative_input, plas_outdir)
+        plas_cmd = "singularity exec --containall --bind /work/linsslab01/:/home/linsslab01/ /work/linsslab01/plasmidfinder.sif python3 /home/linsslab01/plasmidfinder/plasmidfinder.py -i {} -o {}".format(
+                                                                                                             relative_input,
+                                                                                                             plas_outdir)
+
         print(plas_cmd, "\n")
         plas = run_cmd(plas_cmd)
         with open(logpath, "a+") as f:
@@ -493,11 +503,6 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
                 f.write("sistr is ok\n")
         step += 1
         # time
-        with open("./ana_time.csv", "a+") as f:
-            fieldnames = ["func", "time"]
-            writer = csv.DictWriter(f, fieldnames=fieldnames)
-            writer.writeheader()
-            writer.writerow({"func": "{} sistr".format(inId), "time": str(time.time() - step4_time)})
     else:
         print("********** sistr was running. **********\n next step\n")
 
@@ -631,6 +636,7 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
         Assembled(sra_id,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir,thread,gsize,start)
         #####
         genome = os.path.join(ass_dir, "{}_contig.fa".format(sra_id))
+        #sys.exit()
         targetPath=QualityCheck(sra_id,_outdir,genome,thread,gsize,start)
         print("targetPAth = {}\n######\n".format(targetPath.encode("utf-8").decode()))
         target_ = targetPath.replace(current_path, ".")
@@ -659,7 +665,9 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
     check_log = os.path.join(_outdir, "Analysischeck.log")
     with open(check_log,"a+") as f:
         f.write("Run {} is ok.\n".format(sra_id))
-    sra_num_ +=1
+    finish_num_+=1
+    if finish_num_ == sra_num_:
+        sys.exit("Run last\n")
     return 0
 
 def test(sra_id,_outdir):
@@ -673,7 +681,7 @@ current_path = os.path.abspath(os.getcwd())
 print("current_path: ", current_path, "\n")
 ## read SRAsetting.txt
 utils_.progress_bar("read SRAsetting.txt")
-setting_path = os.path.join(current_path, "SRAsettings.txt")
+setting_path = os.path.join(current_path, "../SRAsettings.txt")
 with open(setting_path, "r") as f:
     setList = f.readlines()
 
@@ -718,175 +726,186 @@ thread = 4
 sra_num_=0
 ##############
 if __name__ == '__main__':
-    pool = multiprocessing.Pool(processes=4)
+    #pool = multiprocessing.Pool(processes=4)
     start=time.time()
     #Month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
     #####################
     with open("./Automate_check.log", "a+") as f:
         f.write(str(datetime.datetime.now()).split(".")[0])
-    for yy in range(sd_Y,ed_Y+1):
-        Month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-        ########
-        if (yy % 4) == 0:
-            if (yy % 100) == 0:
-                if (yy % 400) == 0:
+    with concurrent.futures.ProcessPoolExecutor() as executor:
+        for yy in range(sd_Y, ed_Y + 1):
+            Month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+            ########
+            if (yy % 4) == 0:
+                if (yy % 100) == 0:
+                    if (yy % 400) == 0:
+                        Month = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+                else:
                     Month = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-            else:
-                Month = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
-        ########
-        if sd_Y != ed_Y:
-            if sd_Y == yy:
+            ########
+            if sd_Y != ed_Y:
+                if sd_Y == yy:
+                    sM = sd_M
+                    eM = 12
+                    sD = sd_D
+                    print("a")
+                elif yy == ed_Y:
+                    sM = 1
+                    eM = ed_M
+                    sD = 1
+                    print("b")
+            else:
                 sM = sd_M
-                eM = 12
-                sD = sd_D
-                print("a")
-            elif yy == ed_Y:
-                sM = 1
                 eM = ed_M
                 sD = 1
-                print("b")
-        else:
-            sM = sd_M
-            eM = ed_M
-            sD = 1
 
-        ########
-        for mon in range(sM, eM+1):
-            ###########
-            if yy != ed_Y:
-                eD = Month[mon - 1]
-                sD = 1
-            else:
-                if mon != eM:
+            ########
+            for mon in range(sM, eM + 1):
+                ###########
+                if yy != ed_Y:
                     eD = Month[mon - 1]
                     sD = 1
                 else:
-                    eD = ed_D
-                    sD = sd_D
-            ########
-            for d in range(sD,eD+1):
+                    if mon != eM:
+                        eD = Month[mon - 1]
+                        sD = 1
+                    else:
+                        eD = ed_D
+                        sD = sd_D
+                ########
+                for d in range(sD, eD + 1):
 
-                pattern = "salmonella enterica[ORGN] AND illumina[PLAT] AND wgs[STRA] AND genomic[SRC] AND paired[LAY]"
-                ds = time.time()
+                    pattern = "salmonella enterica[ORGN] AND illumina[PLAT] AND wgs[STRA] AND genomic[SRC] AND paired[LAY]"
+                    ds = time.time()
 
-                date = datetime.date(yy, mon, d).strftime("%Y/%m/%d")
-                # temp="{}/{}/{}".format(str(2020),str(mon+1),str(d))
-                ######
-                pdat = date.replace("/", "")
-                new_outdir = os.path.join(outdir, pdat)
-                utils_.mkdir_join(new_outdir)
-                print("output: {}\n".format(new_outdir))
+                    date = datetime.date(yy, mon, d).strftime("%Y/%m/%d")
+                    # temp="{}/{}/{}".format(str(2020),str(mon+1),str(d))
+                    ######
+                    pdat = date.replace("/", "")
+                    new_outdir = os.path.join(outdir, pdat)
+                    utils_.mkdir_join(new_outdir)
+                    print("output: {}\n".format(new_outdir))
 
-                # commit
-                check_log = os.path.join(new_outdir, "Analysischeck.log")
+                    # commit
+                    check_log = os.path.join(new_outdir, "Analysischeck.log")
 
-                myfile2 = Path(check_log)
-                myfile2.touch(exist_ok=True)
-                with open(check_log, "a+") as f:
-                    f.write(str(datetime.datetime.now()).split(".")[0])
-                    f.write("\n")
+                    myfile2 = Path(check_log)
+                    myfile2.touch(exist_ok=True)
+                    with open(check_log, "a+") as f:
+                        f.write(str(datetime.datetime.now()).split(".")[0])
+                        f.write("\n")
 
-                pattern, count = utils_.count_egquery(pattern, date, date)
-                print("pattern: {}\ncount: {}\n".format(pattern, count))
+                    pattern, count = utils_.count_egquery(pattern, date, date)
+                    print("pattern: {}\ncount: {}\n".format(pattern, count))
 
-                i_e_ = time.time()
-                idlist = utils_.IdList_esearch(pattern, 'sra', count)
+                    i_e_ = time.time()
+                    idlist = utils_.IdList_esearch(pattern, 'sra', count)
 
-                print(idlist)
+                    print(idlist)
 
-                runinfo = utils_.Get_RunInfo(idlist)
-                run_list = list(runinfo['Run'])  # get SRAfile nameList stored in run_list
-                print("runinfo: {}\n run_list: {}\n".format(runinfo, run_list))
+                    runinfo = utils_.Get_RunInfo(idlist)
+                    run_list = list(runinfo['Run'])  # get SRAfile nameList stored in run_list
+                    print("runinfo: {}\n run_list: {}\n".format(runinfo, run_list))
 
-                sra_dir = os.path.join(new_outdir, "sra")  # .sra file
-                utils_.mkdir_join(sra_dir)
-                ass_dir = os.path.join(new_outdir, "Assembled")
-                utils_.mkdir_join(ass_dir)
-                fastq_dir = os.path.join(new_outdir, 'fastq')
-                utils_.mkdir_join(fastq_dir)
-                assemble_dir = os.path.join(new_outdir, "assembly_result")
-                utils_.mkdir_join(assemble_dir)
-                print("sra_dir:{}\nass_dir={}\nfastq_dir={}\nassemble_dir={}\n".format(sra_dir,ass_dir,fastq_dir,assemble_dir))
-                read_log_ = time.time()
+                    sra_dir = os.path.join(new_outdir, "sra")  # .sra file
+                    utils_.mkdir_join(sra_dir)
+                    ass_dir = os.path.join(new_outdir, "Assembled")
+                    utils_.mkdir_join(ass_dir)
+                    fastq_dir = os.path.join(new_outdir, 'fastq')
+                    utils_.mkdir_join(fastq_dir)
+                    assemble_dir = os.path.join(new_outdir, "assembly_result")
+                    utils_.mkdir_join(assemble_dir)
+                    print("sra_dir:{}\nass_dir={}\nfastq_dir={}\nassemble_dir={}\n".format(sra_dir, ass_dir, fastq_dir,
+                                                                                           assemble_dir))
+                    read_log_ = time.time()
 
-                f = open(check_log, 'r')
-                line = f.readlines()
-                print("check log :{}\n".format(line))
-                f.close()
+                    f = open(check_log, 'r')
+                    line = f.readlines()
+                    print("check log :{}\n".format(line))
+                    f.close()
 
-                for s in line:
-                    print("{}\n".format(s))
-                finish = list(filter(lambda x: len(x.split(" ")) >= 4, line))
-                finish_run = list(map(lambda x: x.split(" ")[1], finish))
-                need_run = list(filter(lambda x: x not in finish_run, run_list))
-                print("finish: {}\nfinish_run: {}\nneed_run".format(finish, finish_run, need_run))
-                print("finish length: {}\nfinish_run length: {}\nneed_run length: ".format(len(finish), len(finish_run),
-                                                                                           len(need_run)))
-                print("Toal", len(need_run), "sra runs need to downlaod.")
+                    for s in line:
+                        print("{}\n".format(s))
+                    finish = list(filter(lambda x: len(x.split(" ")) >= 4, line))
+                    finish_run = list(map(lambda x: x.split(" ")[1], finish))
+                    need_run = list(filter(lambda x: x not in finish_run, run_list))
+                    print("finish: {}\nfinish_run: {}\nneed_run".format(finish, finish_run, need_run))
+                    print("finish length: {}\nfinish_run length: {}\nneed_run length: ".format(len(finish),
+                                                                                               len(finish_run),
+                                                                                               len(need_run)))
+                    print("Toal", len(need_run), "sra runs need to downlaod.")
 
-                num = len(finish_run)
-                progress_list = []
-                prog_num = 0
-                finish_num = 0
-                finish_num = len(finish_run)
-                try:
+                    num = len(finish_run)
+                    progress_list = []
+                    prog_num = 0
+                    finish_num = 0
+                    finish_num = len(finish_run)
+                    pool_list = []
+                    try:
+                        for k in need_run:
+                            print("########### hello %d ############\n" % prog_num)
+                            print("########## {}/{} ###########".format(finish_num, count))
+                            pool_list.append(executor.map(SRA_Analysis,(k,sra_dir,ass_dir,fastq_dir,assemble_dir,new_outdir,thread,gsize,start)))
+                            # pool_list.append(pool.apply_async(SRA_Analysis, (k,sra_dir,ass_dir,fastq_dir,assemble_dir,new_outdir,thread,gsize,start,)))
+                            # pool.apply_async(test, (k,new_outdir,))
+                            # progress_list.append(multiprocessing.Process(target=SRA_Analysis, args=(k,)))
+                            prog_num += 1
+                            finish_num += 1
+                            sra_num_ += 1
 
-                    for k in need_run:
-                        print("########### hello %d ############\n" % prog_num)
-                        print("########## {}/{} ###########".format(finish_num, count))
-                        pool.apply_async(SRA_Analysis, (k,sra_dir,ass_dir,fastq_dir,assemble_dir,new_outdir,thread,gsize,start,))
-                        #pool.apply_async(test, (k,new_outdir,))
-                        #progress_list.append(multiprocessing.Process(target=SRA_Analysis, args=(k,)))
-                        prog_num += 1
-                        finish_num += 1
+                    except KeyboardInterrupt:
+                        print("Catch keyboardinterdinterupterror\n")
+                        print("srart : {}\n".format(start))
+                        print("Download all ", 'Done,total cost', time.time() - start, 'secs')
+                        print("Download {} ".format(date), 'Done,total cost', time.time() - ds, 'secs')
+                        pid = os.getgid()
+                        with open("./SRA_run_error.txt", "a+") as f:
+                            f.write("Catch keyboardinterdinterupterror : {}/{}/{}\n".format())
+                        # with open("./Automate_check.log", "a+") as f:
+                        #    f.write("keyboardinterupter")
+                        #    f.write("{}:{}:{}\n".format(date, time.time() - ds, time.time() - start))
+                        # sys.exit("Catch keyboardinterdinterupterror")
+                        os.popen("taskkill.exe /f /pid:%d" % pid)
+                    except Exception as e:
+                        error_class = e.__class__.__name__  # 取得錯誤類型
+                        detail = e.args[0]  # 取得詳細內容
+                        cl, exc, tb = sys.exc_info()  # 取得Call Stack
+                        lastCallStack = traceback.extract_tb(tb)[-1]  # 取得Call Stack的最後一筆資料
+                        fileName = lastCallStack[0]  # 取得發生的檔案名稱
+                        lineNum = lastCallStack[1]  # 取得發生的行號
+                        funcName = lastCallStack[2]  # 取得發生的函數名稱
+                        errMsg = "File \"{}\", line {}, in {}: [{}] {}".format(fileName, lineNum, funcName, error_class,
+                                                                               detail)
+                        print(errMsg)
+                        with open("./SRA_run_error.txt", "a+") as f:
+                            f.write("{} :\n{}\n".format(date, errMsg))
 
-
-                except KeyboardInterrupt:
-                    print("Catch keyboardinterdinterupterror\n")
-                    print("srart : {}\n".format(start))
-                    print("Download all ", 'Done,total cost', time.time() - start, 'secs')
-                    print("Download {} ".format(date), 'Done,total cost', time.time() - ds, 'secs')
-                    pid = os.getgid()
-                    with open("./SRA_run_error.txt", "a+") as f:
-                        f.write("Catch keyboardinterdinterupterror : {}/{}/{}\n".format())
-                    # with open("./Automate_check.log", "a+") as f:
-                    #    f.write("keyboardinterupter")
-                    #    f.write("{}:{}:{}\n".format(date, time.time() - ds, time.time() - start))
-                    #sys.exit("Catch keyboardinterdinterupterror")
-                    os.popen("taskkill.exe /f /pid:%d"%pid)
-                except Exception as e:
-                    error_class = e.__class__.__name__  # 取得錯誤類型
-                    detail = e.args[0]  # 取得詳細內容
-                    cl, exc, tb = sys.exc_info()  # 取得Call Stack
-                    lastCallStack = traceback.extract_tb(tb)[-1]  # 取得Call Stack的最後一筆資料
-                    fileName = lastCallStack[0]  # 取得發生的檔案名稱
-                    lineNum = lastCallStack[1]  # 取得發生的行號
-                    funcName = lastCallStack[2]  # 取得發生的函數名稱
-                    errMsg = "File \"{}\", line {}, in {}: [{}] {}".format(fileName, lineNum, funcName, error_class,
-                                                                           detail)
-                    print(errMsg)
-                    with open("./SRA_run_error.txt", "a+") as f:
-                        f.write("{} :\n{}\n".format(date, errMsg))
-
-                with open("./Automate_check.log", "a+") as f:
-                    f.write("{}\n".format(date))
-                print("Download all {} ".format(date), 'Done,total cost', time.time() - ds, 'secs')
+                    with open("./Automate_check.log", "a+") as f:
+                        f.write("{}\n".format(date))
+                #print("Download all {} ".format(date), 'Done,total cost', time.time() - ds, 'secs')
                 #time.sleep(3)
                 # for i in range(prog_num):
                 #    progress_list[i].join()
-
-    #signal.signal(signal.SIGCHLD, wait_child)
-    pool.close()
-    print("pool.close()\n")
+    for future in as_completed(pool_list):
+        data = future.result()
+        print("in main: get page {}s success".format(data))
+    #pool.close()
+    #print("pool.close()\n")
     #time.sleep(3)
-    pool.join()
-    print("pool.join()\n")
+    #signal.signal(signal.SIGCHLD, wait_child)
+    #print("pool.join()\n")
     print("Program Done\n")
     print('Done,total cost', time.time() - start, 'secs')
+    with open("./run_time.txt", "a+") as f:
+        f.write("{}-{}: {} sec".format(start_date,expiry_date,time.time() - start))
+    with open("./threads_time.csv", "a+") as f:
+        fieldnames = ["func", "time"]
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerow({"func": "{}-{}".format(start_date,expiry_date), "time": str(time.time() - start)})
     ##########
-
 
 
 

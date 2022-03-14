@@ -464,7 +464,7 @@ def main():
         tar_start = time.time()
         print("tar zcvf {} {}\n".format(mytarfile,output_dir.replace(current_path,".")))
 
-        utils_.run_cmd("tar zcvf {} outdir".format(mytarfile,output_dir.replace(current_path,".")))
+        utils_.run_cmd("tar zcvf {} {}".format(mytarfile,output_dir.replace(current_path,".")))
         print(str(datetime.datetime.now()), 'tar Done,current total cost', time.time() - tar_start, 'secs\n')
         time.sleep(1)
         ###################

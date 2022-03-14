@@ -201,8 +201,11 @@ def QualityCheck(sra_id,_outdir,genome_Path,thread,gsize,start):
         print(outfile, " is exist.\n")
         print("fastANI was done.\n")
     else:
-        utils_.run_cmd(fastani_)
-        print("fastANI done.\n")
+        try:
+            utils_.run_cmd(fastani_)
+            print("fastANI done.\n")
+        except Exception as e:
+            utils_.run_cmd("free -h > ./checkmem.txt")
 
     # ANI>=95------
     print(
@@ -313,11 +316,6 @@ def QualityCheck(sra_id,_outdir,genome_Path,thread,gsize,start):
         f.write("{} is ok.\n".format(gID))
         print("commit on check \n")
 
-    with open("./ana_time.csv", "a+") as f:
-        fieldnames = ["func", "time"]
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
-        writer.writeheader()
-        writer.writerow({"func": "{} busco".format(gID), "time": str(time.time() - busco_time)})
     print('Done,total cost', time.time() - start, 'secs\n')
 
     return targetPath
@@ -401,8 +399,11 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         mlst_datajson = os.path.join(mlst_outdir, "data.json")
         #mlst_cmd = "docker run --rm -it \-v {}:/databases \-v {}:/workdir \mlst -i {} -o {} -s {}".format(MLST_DB,current_path,relative_input,mlst_outdir,mlst_organism)
 
-        #mlst_cmd = "singularity exec --containall --bind /work/linsslab01/:/home/linsslab01/ /work/linsslab01/mlst.sif python3 /home/linsslab01/mlst/mlst.py -i {} -o {} -s {}".format(relative_input_,mlst_outdir.replace("work", "home"),mlst_organism)
-        mlst_cmd="/home/linsslab01/miniconda3/bin/python3 /work/linsslab01/mlst/mlst.py -i {} -o {} -s {}".format(relative_input.replace("work","home"),mlst_outdir,mlst_organism)
+        with open(mlst_datajson,"w+") as f:
+            f.close()
+
+        mlst_cmd = "singularity exec --containall --bind /work/linsslab01/:/home/linsslab01/ /work/linsslab01/mlst.sif python3 /home/linsslab01/mlst/mlst.py -i {} -o {} -s {}".format(relative_input_.replace("work","home"),mlst_outdir.replace("work", "home"),mlst_organism)
+        #mlst_cmd="/home/linsslab01/miniconda3/bin/python3 /work/linsslab01/mlst/mlst.py -i {} -o {} -s {}".format(relative_input.replace("work","home"),mlst_outdir,mlst_organism)
         print(mlst_cmd, "\n")
         try:
             mlst, err = utils_.run_cmd3(mlst_cmd)
@@ -411,8 +412,9 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
                 if mlst.returncode != 0:
                     # print(mlst.stdout.readline())
                     # print(err)
-                    f.write(err + "\n")
-                    sys.exit()
+                    f.write(str(err))
+                    f.write("\n")
+                    sys.exit(err)
                 else:
                     f.write("mlst is ok\n")
             step += 1
@@ -689,6 +691,7 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
         target_ = targetPath.replace(current_path, ".")
         print("target_= {}\n".format(target_))
         time.sleep(1)
+
         Analysis(sra_id,genome,target_,_outdir,_outdir,thread,gsize,start)
         with open("./checkAnalysis.txt","a+") as f:
             f.write("Run {} is ok.\n".format(sra_id))
@@ -700,11 +703,11 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
 
         with open(check_log,"r") as f:
             check_lines=f.readlines()
-
         finish = list(filter(lambda x: len(x.split(" ")) >= 4, check_lines))
         finish_num_ = list(map(lambda x: x.split(" ")[1], finish))
-        print("finish num={}\n".format(finish_num_))
-        print("{} / {}\n".format(finish_num_,sra_num_))
+
+        print("finish num={}\n".format(len(finish_num_)))
+        print("{} / {}\n".format(len(finish_num_),sra_num_))
 
         print("Run {} is Done\n".format(sra_id))
         with open("./threads_time.csv", "a+") as f:
@@ -713,13 +716,13 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
             writer.writeheader()
             writer.writerow({"func": "{}".format(sra_id), "time": str(time.time() - SRA_start)})
         #######
-        print('Done,current total cost', time.time() - start, 'secs\n')
+        print(str(datetime.datetime.now()),' Done,current total cost', time.time() - start, 'secs\n')
 
 
-        if finish_num_ == sra_num_:
+        if finish_num == sra_num_:
             print("kill {}\n".format(os.getpid()))
             with open("./run_time.txt", "a+") as f:
-                f.write("{}/{}:{}-{}: {} secs\n".format(finish_num_,sra_num_,start_date, expiry_date, time.time() - start))
+                f.write("\n{}/{}:{}-{}: {} secs\n".format(finish_num_,sra_num_,start_date, expiry_date, time.time() - start))
     except Exception as e:
         error_class = e.__class__.__name__  # 取得錯誤類型
         detail = e.args[0]  # 取得詳細內容
@@ -728,8 +731,13 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
         fileName = lastCallStack[0]  # 取得發生的檔案名稱
         lineNum = lastCallStack[1]  # 取得發生的行號
         funcName = lastCallStack[2]  # 取得發生的函數名稱
-        errMsg = "File \"{}\", line {}, in {}: [{}] {}".format(fileName, lineNum, funcName, error_class, detail)
+        errMsg = "File \"{}\", line {}, in {}: [{}] {}\n".format(fileName, lineNum, funcName, error_class, detail)
         print(errMsg)
+        ###
+        #process = psutil.Process(os.getpid())
+        #print(str(datetime.datetime.now()), process.memory_info().rss)
+        #utils_.run_cmd("free -h")
+        ####
         with open("./SRA_run_error.txt", "a+") as f:
             f.write("{} :\n{}\n".format(sra_id, errMsg))
         sys.exit(e)
@@ -747,7 +755,7 @@ current_path = os.path.abspath(os.getcwd())
 print("current_path: ", current_path, "\n")
 ## read SRAsetting.txt
 utils_.progress_bar("read SRAsetting.txt")
-setting_path = os.path.join(current_path, "SRAsettings.txt")
+setting_path = os.path.join(current_path, "../SRAsettings.txt")
 with open(setting_path, "r") as f:
     setList = f.readlines()
 
@@ -788,10 +796,9 @@ ed_D = int(expiry_date.split("/")[2])
 print(sd_Y, sd_M, sd_D)
 print(ed_Y, ed_M, ed_D)
 utils_.mkdir_join(outdir)
-thread = 4
 ##############
 if __name__ == '__main__':
-    #pool = multiprocessing.Pool(processes=112)
+    pool = multiprocessing.Pool(processes=cpu_process)
     start=time.time()
     #Month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
@@ -859,7 +866,7 @@ if __name__ == '__main__':
                 myfile2.touch(exist_ok=True)
                 with open(check_log, "a+") as f:
                     f.write(str(datetime.datetime.now()).split(".")[0])
-                    f.write("\n")
+                    f.write(",")
 
                 #pattern, count = utils_.count_egquery(pattern, date, date)
                 #print("pattern: {}\ncount: {}\n".format(pattern, count))
@@ -876,8 +883,10 @@ if __name__ == '__main__':
 
                 with open(sraList,"r") as f:
                     run_list=f.readlines()
-                for rr in run_list:
-                    run_list=rr.split(",")
+
+                run_list=run_list[0].split(",")
+                print(run_list)
+                run_list=[rr.strip() for rr in run_list if rr.strip()!='']
 
                 print(run_list)
 
@@ -896,17 +905,16 @@ if __name__ == '__main__':
                 line = f.readlines()
                 print("check log :{}\n".format(line))
                 f.close()
-
                 for s in line:
                     print("{}\n".format(s))
                 finish = list(filter(lambda x: len(x.split(" ")) >= 4, line))
                 finish_run = list(map(lambda x: x.split(" ")[1], finish))
                 need_run = list(filter(lambda x: x not in finish_run, run_list))
-                print("finish: {}\nfinish_run: {}\nneed_run".format(finish, finish_run, need_run))
-                print("finish length: {}\nfinish_run length: {}\nneed_run length: ".format(len(finish), len(finish_run),
+                print("finish: {}\nfinish_run: {}\nneed_run: {}".format(finish, finish_run, need_run))
+                print("finish length: {}\nfinish_run length: {}\nneed_run length: {}".format(len(finish), len(finish_run),
                                                                                            len(need_run)))
                 print("Toal", len(need_run), "sra runs need to downlaod.")
-                sra_num_ = len(run_list)
+                sra_num_ = len(need_run)+len(finish_run)
                 finish_num = 0
                 print("len(finish_run)+len(need_run) = {}".format(sra_num_))
                 num = len(finish_run)
@@ -919,18 +927,19 @@ if __name__ == '__main__':
                 pool_list=[]
                 try:
                     for k in need_run:
+                        k.strip("\n")
                         print("########### hello %d ############\n" % prog_num)
+                        print(k)
                         print("########## {}/{} ###########".format(finish_num, sra_num_))
                         #pool_list.append(pool.apply_async(SRA_Analysis, (k,sra_dir,ass_dir,fastq_dir,assemble_dir,new_outdir,thread,gsize,start,sra_num_,)))
+                        pool.apply_async(SRA_Analysis, (
+                        k, sra_dir, ass_dir, fastq_dir, assemble_dir, new_outdir, thread, gsize, start, sra_num_,))
                         #pool.apply_async(test, (k,new_outdir,))
-                        progress_list.append(multiprocessing.Process(target=SRA_Analysis, args=(k,)))
-                        progress_list[prog_num].start()
+                        #progress_list.append(multiprocessing.Process(target=SRA_Analysis, args=(k,)))
                         prog_num += 1
                         finish_num += 1
                         #sra_num_+=1
                         time.sleep(1)
-                    for k in need_run:
-                        progress_list[need_run.index(k)].join()
 
 
                 except KeyboardInterrupt:
@@ -956,7 +965,12 @@ if __name__ == '__main__':
                     funcName = lastCallStack[2]  # 取得發生的函數名稱
                     errMsg = "File \"{}\", line {}, in {}: [{}] {}".format(fileName, lineNum, funcName, error_class,
                                                                            detail)
-                    #print(errMsg)
+                    print(errMsg)
+                    ###
+                    #process = psutil.Process(os.getpid())
+                    #print(str(datetime.datetime.now()), process.memory_info().rss)
+                    utils_.run_cmd("free -h > ./checkmem.txt")
+                    ####
                     with open("./SRA_run_error.txt", "a+") as f:
                         f.write("{} :\n{}\n".format(date, errMsg))
                     sys.exit(errMsg)
@@ -967,14 +981,14 @@ if __name__ == '__main__':
                 # for i in range(prog_num):
                 #    progress_list[i].join()
 
-    #pool.close()
-    #print("pool.close()\n")
+    pool.close()
+    print("pool.close()\n")
     #time.sleep(3)
     #signal.signal(signal.SIGCHLD, wait_child)
     #os.kill(os.getpid(),signal.SIGTERM)
 
-    #pool.join()
-    #print("pool.join()\n")
+    pool.join()
+    print("pool.join()\n")
     print("Program Done\n")
     print('Done,total cost', time.time() - start, 'secs')
     with open("./run_time.txt", "a+") as f:

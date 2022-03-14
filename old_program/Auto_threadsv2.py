@@ -24,8 +24,8 @@ logging.basicConfig(
     level=logging.DEBUG,
     format='%(asctime)-15s - %(levelname)s - %(message)s'
 )
-
-
+global sra_num_
+sra_num_=0
 def wait_child(signum, frame):
     logging.info('receive SIGCHLD')
     try:
@@ -115,7 +115,6 @@ def Assembled(x,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir,thread,gsize,star
         # one_run_prefetch = time.time()
         # utils_.prefetch_sra(x,sra_dir)
         one_run_ass = time.time()
-        sra_file_dir = os.path.join(sra_dir, x)
         sra_file = os.path.join(sra_dir, "{}/{}.sra".format(x, x))
         print(sra_file)
         if os.path.isfile(sra_file):
@@ -131,9 +130,8 @@ def Assembled(x,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir,thread,gsize,star
         # print ("shutil.rmtree({})\n".format(current_path))
         #utils_.run_cmd2("rm -rf {}".format(current_path))
         #print("remove {}\n".format(current_path))
-        rmsra_cmd="rm -rf {}".format(sra_file_dir)
+        rmsra_cmd="rm -rf {}".format(sra_file)
         print(rmsra_cmd)
-        print("remove {}.sra".format(x))
         run_cmd(rmsra_cmd)
 
 
@@ -195,7 +193,6 @@ def QualityCheck(sra_id,_outdir,genome_Path,thread,gsize,start):
                                                                        os.path.join(outdir_ani, outfile_)))
     utils_.progress_bar("fastANI excuting")
     fastani_ = "/data/usrhome/LabSSLin/user30/Desktop/FastANI/fastANI -t {} --rl {} -q {} -o {}".format(thread,refPath, genome_Path, outfile)
-    #fastani_ = "/home/linsslab01/FastANI/fastANI -t {} --rl {} -q {} -o {}".format(thread, refPath,genome_Path,outfile)
     print(fastani_ + "\n")
     if os.path.isfile(outfile):
         print(outfile, " is exist.\n")
@@ -271,7 +268,6 @@ def QualityCheck(sra_id,_outdir,genome_Path,thread,gsize,start):
     # genome is "one excuting"
     # busco -i /data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/RefSeq/GCF_000335875.2.fa -o cofig --out_path /data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/SRA-AutomatedAnalysis/QualityCheck -l enterobacterales_odb10 -m geno --download_path /data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/SRA-AutomatedAnalysis/QualityCheck/QualityCheck/busco_db -f
     cmd_bus = 'bash -c "source /data/usrhome/LabSSLin/user30/anaconda3/etc/profile.d/conda.sh && conda activate busco && busco -c {} -i {} -o {} --out_path {} -l {} -m {} --download_path {} -f"'.format(
-    #cmd_bus = 'bash -c "source /home/linsslab01/miniconda3/etc/profile.d/conda.sh && conda activate busco && busco -c {} -i {} -o {} --out_path {} -l {} -m {} --download_path {} -f"'.format(
         thread,targetPath, gID, outdir, db, mode, busco_db)
     print(cmd_bus, "\n")
     utils_.run_cmd(cmd_bus)
@@ -284,13 +280,13 @@ def QualityCheck(sra_id,_outdir,genome_Path,thread,gsize,start):
     print(buscopath)
     with open(buscopath, "r") as f:
         b = f.readlines()
-    #print(b, "\n")
+    print(b, "\n")
     b = b[8].strip("\t")
-    #print(b)
-    #print([float(s) for s in re.findall(r'-?\d+\.?\d*', b)])
+    print(b)
+    print([float(s) for s in re.findall(r'-?\d+\.?\d*', b)])
 
     bC, bS, bD, bF, bM, bn = [float(s) for s in re.findall(r'-?\d+\.?\d*', b)]
-    #print("c:{}%, d:{}%\n".format(bC, bD))
+    print("c:{}%, d:{}%\n".format(bC, bD))
 
     with open(BUSCOresult, "a+") as f:
         print("stored BUSCO result\n")
@@ -318,7 +314,6 @@ def QualityCheck(sra_id,_outdir,genome_Path,thread,gsize,start):
         writer.writeheader()
         writer.writerow({"func": "{} busco".format(gID), "time": str(time.time() - busco_time)})
     print('Done,total cost', time.time() - start, 'secs\n')
-
     return targetPath
 
 def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
@@ -337,12 +332,10 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
 
     # workdir
     current_path = os.path.abspath(os.getcwd())
-    current_path2 = current_path.replace("/SRA-AutoThreads", "")
     print("current_path: ", current_path, "\n")
-    relative_input_ = input.replace(current_path2, ".")
     relative_input = input.replace(current_path, ".")
     print("relative input: {}\n".format(relative_input))
-    print("relative input_: {}\n".format(relative_input_))
+
     origin_outdir = _outdir
     allinfopath = os.path.join(origin_outdir, "info.txt")
     check = os.path.join(origin_outdir, "Anacheck.log")
@@ -354,19 +347,18 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
     print("analysis outdir: {}\n".format(anoutdir_))
 
     # set {genomoe}_log_output
-    logpath_ = os.path.join(anoutdir_, inId)
-    utils_.mkdir_join(logpath_)
-    logpath = os.path.join(logpath_, "analysis_log.txt")
+    logpath = os.path.join(anoutdir_, inId)
+    utils_.mkdir_join(logpath)
+    logpath = os.path.join(logpath, "analysis_log.txt")
 
     # get relative output dir path
     outdir_list = anoutdir_.split("/")
-    relative_path_o2 = anoutdir_.replace(current_path, ".")
-    relative_path2 = anoutdir_.replace(current_path2, ".")
+    relative_path2 = anoutdir_.replace(current_path, ".")
     print("relative2: {}\n".format(relative_path2))
     print("relative_path: {}".format(relative_path2))
-    relative_path_o2 = os.path.join(relative_path_o2, inId)
+
     relative_path2 = os.path.join(relative_path2, inId)
-    utils_.mkdir_join(relative_path_o2)
+    utils_.mkdir_join(relative_path2)
     print("relative_path: {}".format(relative_path2))
 
     # load log.txt read running statedat
@@ -394,35 +386,27 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         step1_time = time.time()
         print("STEP{}\n".format(step + 1))
         print("********** Now MLST analysis running. **********\n")
-        #MLST_DB = "/home/linsslab01/mlst_db"
-        mlst_outdir = os.path.join(logpath_, "mlst")
+        MLST_DB = "/data/usrhome/LabSSLin/user30/Desktop/SRA_Analysis/mlst_db"
+        mlst_outdir = os.path.join(relative_path2, "mlst")
         utils_.mkdir_join(mlst_outdir)
         mlst_datajson = os.path.join(mlst_outdir, "data.json")
-        mlst_cmd = "docker run --rm -it \-v {}:/databases \-v {}:/workdir \mlst -i {} -o {} -s {}".format(MLST_DB,current_path,relative_input,mlst_outdir,mlst_organism)
-
-        #mlst_cmd = "singularity exec --containall --bind /work/linsslab01/:/home/linsslab01/ /work/linsslab01/mlst.sif python3 /home/linsslab01/mlst/mlst.py -i {} -o {} -s {}".format(relative_input_,mlst_outdir.replace("work", "home"),mlst_organism)
-        #mlst_cmd="/home/linsslab01/miniconda3/bin/python3 /work/linsslab01/mlst/mlst.py -i {} -o {} -s {}".format(relative_input,mlst_outdir,mlst_organism)
+        f = open(mlst_datajson, "a+")
+        f.close()
+        mlst_cmd = "docker run --rm -it \-v {}:/databases \-v {}:/workdir \mlst -i {} -o {} -s {}".format(MLST_DB,
+                                                                                                          current_path,
+                                                                                                          relative_input,
+                                                                                                          mlst_outdir,
+                                                                                                          mlst_organism)
         print(mlst_cmd, "\n")
-        try:
-            mlst, err = utils_.run_cmd3(mlst_cmd)
-        except Exception as e:
-            print("mlst err\n")
-            with open("./err_need_again.txt","a+"):
-                f.write(sra_id)
-            sys.exit(e)
-
-
-
+        mlst, err = utils_.run_cmd3(mlst_cmd)
         with open(logpath, "a+") as f:
             if mlst.returncode != 0:
-                #print(mlst.stdout.readline())
-                #print(err)
+                print(mlst.stdout.readline())
                 f.write(err + "\n")
                 sys.exit()
             else:
                 f.write("mlst is ok\n")
         step += 1
-
         # time
         with open("./ana_time.csv", "a+") as f:
             fieldnames = ["func", "time"]
@@ -431,20 +415,17 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
             writer.writerow({"func": "{} mlst".format(inId), "time": str(time.time() - step1_time)})
     else:
         print("**********       mlst was running.      **********\n next step\n")
-    time.sleep(2)
+
     # run plasmidfinder
     if step < 2:
         step2_time = time.time()
         print("STEP{}\n".format(step + 1))
         print("********** Now plasmidfinder analysis running. **********\n")
-        #PLASMID_DB = "/home/linsslab01/plasmidfinder_db"
-        utils_.mkdir_join(logpath_)
-        plas_outdir = os.path.join(logpath_, "plasmidfinder")
+        PLASMID_DB = "/data/usrhome/LabSSLin/user30/Desktop/SRA_Analysis/plasmidfinder_db"
+        plas_outdir = os.path.join(relative_path2, "plasmidfinder")
         utils_.mkdir_join(plas_outdir)
-        plas_outdir=plas_outdir.replace("work","home")
-        plas_cmd = "docker run --rm -it \-v {}:/databases \-v {}:/workdir \plasmidfinder -i {} -o {}".format(PLASMID_DB, current_path, relative_input, plas_outdir)
-        #plas_cmd = "singularity exec --containall --bind /work/linsslab01/:/home/linsslab01/ /work/linsslab01/plasmidfinder.sif python3 /home/linsslab01/plasmidfinder/plasmidfinder.py -i {} -o {}".format(relative_input_,plas_outdir)
-
+        plas_cmd = "docker run --rm -it \-v {}:/databases \-v {}:/workdir \plasmidfinder -i {} -o {}".format(
+            PLASMID_DB, current_path, relative_input, plas_outdir)
         print(plas_cmd, "\n")
         plas = run_cmd(plas_cmd)
         with open(logpath, "a+") as f:
@@ -463,13 +444,13 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
             writer.writerow({"func": "{} plasmidfinder".format(inId), "time": str(time.time() - step2_time)})
     else:
         print("********** plasmidfinder was running. **********\n next step\n")
-    time.sleep(1)
+
     # run amrfinder
     if step < 3:
         step3_time = time.time()
         print("STEP{}\n".format(step + 1))
         print("********** Now amrfinder analysis running. **********\n")
-        amr_outdir = os.path.join(relative_path_o2, "amrfinder")
+        amr_outdir = os.path.join(relative_path2, "amrfinder")
         utils_.mkdir_join(amr_outdir)
         amr_outdir = os.path.join(amr_outdir, "amrout.tsv")
         amr_cmd = "amrfinder -n {} -o {} -O {}".format(input, amr_outdir, amr_organism)
@@ -495,7 +476,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
         step4_time = time.time()
         print("STEP{}\n".format(step + 1))
         print("********** Now sistr analysis running. **********")
-        sistr_outdir = os.path.join(relative_path_o2, "sistr")
+        sistr_outdir = os.path.join(relative_path2, "sistr")
         utils_.mkdir_join(sistr_outdir)
         sistr_outdir = os.path.join(sistr_outdir, "sistr_out")
         input_list = input.split("/")
@@ -525,46 +506,21 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
     # save data in analysis_final.csv and update DB
 
     # read mlst 'Sequence Type'
-    mlst_file = os.path.join(relative_path_o2, "mlst/results.txt")
-    print("mlst_file:",mlst_file)
-    try:
-        with open(mlst_file, "r") as f:
-            data = f.readlines()
-            print(data[6])
-            # Sequence Type: 11
-            sequenceType = data[6].split(" ")
-            sequenceType = sequenceType[len(sequenceType) - 1].strip("\n")
+    mlst_file = os.path.join(relative_path2, "mlst/results.txt")
+    with open(mlst_file, "r") as f:
+        data = f.readlines()
+        print(data[6])
+        # Sequence Type: 11
+        sequenceType = data[6].split(" ")
+        sequenceType = sequenceType[len(sequenceType) - 1].strip("\n")
 
-            print(sequenceType)
-    except Exception as e:
-        time.sleep(3)
-        print("not found mlst data.json\n")
-        mlst_outdir = os.path.join(logpath_, "mlst")
-        #mlst_cmd = "singularity exec --containall --bind /work/linsslab01/:/home/linsslab01/ /work/linsslab01/mlst.sif python3 /home/linsslab01/mlst/mlst.py -i {} -o {} -s {}".format(
-        #    relative_input_, mlst_outdir.replace("work", "home"), mlst_organism)
-        #mlst, err = utils_.run_cmd3(mlst_cmd)
-        #mlst_file = os.path.join(relative_path_o2, "mlst/results.txt")
-        #with open(mlst_file, "r") as f:
-        #    data = f.readlines()
-        #    print(data[6])
-        #    # Sequence Type: 11
-         #   sequenceType = data[6].split(" ")
-         #   sequenceType = sequenceType[len(sequenceType) - 1].strip("\n")
+        print(sequenceType)
 
     # read plasmidfinder 'gene'
-    try:
-        plas_file = os.path.join(relative_path_o2, "plasmidfinder/results_tab.tsv")
-        pladf = pd.read_table(plas_file, sep='\t')
-        # print(df)
-        pladf = pd.DataFrame(pladf)
-    except Exception as e:
-        time.sleep(3)
-        print("not found mlst data.json\n")
-        plas = run_cmd(plas_cmd)
-        plas_file = os.path.join(relative_path_o2, "plasmidfinder/results_tab.tsv")
-        pladf = pd.read_table(plas_file, sep='\t')
-        # print(df)
-        pladf = pd.DataFrame(pladf)
+    plas_file = os.path.join(relative_path2, "plasmidfinder/results_tab.tsv")
+    pladf = pd.read_table(plas_file, sep='\t')
+    # print(df)
+    pladf = pd.DataFrame(pladf)
     print(pladf)
     print(pladf.columns)
     print(pladf.Plasmid)
@@ -579,7 +535,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
 
     # read amrfinder 'Gene symbol', 'subtype'
     ##add amr "Point"
-    amr_file = os.path.join(relative_path_o2, "amrfinder/amrout.tsv")
+    amr_file = os.path.join(relative_path2, "amrfinder/amrout.tsv")
     amrdf = pd.read_table(amr_file, sep='\t')
     # print(df)
     amrdf = pd.DataFrame(amrdf)
@@ -616,7 +572,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
     print(amr_format)
     print(point_format)
 
-    sistr_file = os.path.join(relative_path_o2, "sistr")
+    sistr_file = os.path.join(relative_path2, "sistr")
     utils_.mkdir_join(sistr_file)
     sistr_file = os.path.join(sistr_file, "sistr_out.csv")
 
@@ -646,8 +602,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
     with open(check, "a+") as f:
         f.write("Run {} is ok.\n".format(inId))
 
-sra_num_=0
-finish_num_=0
+
 def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gsize,start):
     SRA_start=time.time()
     QC_error=os.path.join(_outdir,"nofillQC.txt")
@@ -675,36 +630,13 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
         Download(sra_id,_outdir,sra_dir)
         Assembled(sra_id,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir,thread,gsize,start)
         #####
-
         genome = os.path.join(ass_dir, "{}_contig.fa".format(sra_id))
-        #sys.exit()
         targetPath=QualityCheck(sra_id,_outdir,genome,thread,gsize,start)
-        time.sleep(1)
         print("targetPAth = {}\n######\n".format(targetPath.encode("utf-8").decode()))
         target_ = targetPath.replace(current_path, ".")
         print("target_= {}\n".format(target_))
-        time.sleep(1)
         Analysis(sra_id,genome,target_,_outdir,_outdir,thread,gsize,start)
-        global sra_num_
-        global finish_num_
-        finish_num_ += 1
-        print("{} / {}\n".format(finish_num_,sra_num_))
         print("Run {} is Done\n".format(sra_id))
-        with open("./threads_time.csv", "a+") as f:
-            fieldnames = ["func", "time"]
-            writer = csv.DictWriter(f, fieldnames=fieldnames)
-            writer.writeheader()
-            writer.writerow({"func": "{}".format(sra_id), "time": str(time.time() - SRA_start)})
-        #######
-        check_log = os.path.join(_outdir, "Analysischeck.log")
-        with open(check_log,"a+") as f:
-            f.write("Run {} is ok.\n".format(sra_id))
-
-        print('Done,current total cost', time.time() - start, 'secs\n')
-        if finish_num_ == sra_num_:
-            print("kill {}\n".format(os.getpid()))
-            with open("./run_time.txt", "a+") as f:
-                f.write("{}/{}:{}-{}: {} secs\n".format(finish_num_,sra_num_,start_date, expiry_date, time.time() - start))
     except Exception as e:
         error_class = e.__class__.__name__  # 取得錯誤類型
         detail = e.args[0]  # 取得詳細內容
@@ -718,7 +650,16 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
         with open("./SRA_run_error.txt", "a+") as f:
             f.write("{} :\n{}\n".format(sra_id, errMsg))
         sys.exit(e)
-
+    with open("./threads_time.csv", "a+") as f:
+        fieldnames = ["func", "time"]
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerow({"func": "{}".format(sra_id), "time": str(time.time() - SRA_start)})
+    #######
+    check_log = os.path.join(_outdir, "Analysischeck.log")
+    with open(check_log,"a+") as f:
+        f.write("Run {} is ok.\n".format(sra_id))
+    sra_num_ +=1
     return 0
 
 def test(sra_id,_outdir):
@@ -732,7 +673,7 @@ current_path = os.path.abspath(os.getcwd())
 print("current_path: ", current_path, "\n")
 ## read SRAsetting.txt
 utils_.progress_bar("read SRAsetting.txt")
-setting_path = os.path.join(current_path, "SRAsettings.txt")
+setting_path = os.path.join(current_path, "../SRAsettings.txt")
 with open(setting_path, "r") as f:
     setList = f.readlines()
 
@@ -774,6 +715,7 @@ print(sd_Y, sd_M, sd_D)
 print(ed_Y, ed_M, ed_D)
 utils_.mkdir_join(outdir)
 thread = 4
+sra_num_=0
 ##############
 if __name__ == '__main__':
     pool = multiprocessing.Pool(processes=4)
@@ -883,28 +825,22 @@ if __name__ == '__main__':
                 print("finish length: {}\nfinish_run length: {}\nneed_run length: ".format(len(finish), len(finish_run),
                                                                                            len(need_run)))
                 print("Toal", len(need_run), "sra runs need to downlaod.")
-                sra_num_ = len(run_list)
-                finish_num = 0
-                print("len(finish_run)+len(need_run) = {}".format(sra_num_))
+
                 num = len(finish_run)
                 progress_list = []
                 prog_num = 0
-
+                finish_num = 0
                 finish_num = len(finish_run)
-                finish_num_ = len(finish_run)
-                print("finish_num = {}".format(finish_num))
-                pool_list=[]
                 try:
+
                     for k in need_run:
                         print("########### hello %d ############\n" % prog_num)
                         print("########## {}/{} ###########".format(finish_num, count))
-                        pool_list.append(pool.apply_async(SRA_Analysis, (k,sra_dir,ass_dir,fastq_dir,assemble_dir,new_outdir,thread,gsize,start,)))
+                        pool.apply_async(SRA_Analysis, (k,sra_dir,ass_dir,fastq_dir,assemble_dir,new_outdir,thread,gsize,start,))
                         #pool.apply_async(test, (k,new_outdir,))
                         #progress_list.append(multiprocessing.Process(target=SRA_Analysis, args=(k,)))
                         prog_num += 1
                         finish_num += 1
-                        #sra_num_+=1
-                        time.sleep(1)
 
 
                 except KeyboardInterrupt:
@@ -936,28 +872,21 @@ if __name__ == '__main__':
 
                 with open("./Automate_check.log", "a+") as f:
                     f.write("{}\n".format(date))
-                #print("Download all {} ".format(date), 'Done,total cost', time.time() - ds, 'secs')
+                print("Download all {} ".format(date), 'Done,total cost', time.time() - ds, 'secs')
                 #time.sleep(3)
                 # for i in range(prog_num):
                 #    progress_list[i].join()
 
+    #signal.signal(signal.SIGCHLD, wait_child)
     pool.close()
     print("pool.close()\n")
     #time.sleep(3)
-    #signal.signal(signal.SIGCHLD, wait_child)
-    #os.kill(os.getpid(),signal.SIGTERM)
     pool.join()
     print("pool.join()\n")
     print("Program Done\n")
     print('Done,total cost', time.time() - start, 'secs')
-    with open("./run_time.txt", "a+") as f:
-        f.write("{}-{}: {} sec".format(start_date,expiry_date,time.time() - start))
-    with open("./threads_time.csv", "a+") as f:
-        fieldnames = ["func", "time"]
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
-        writer.writeheader()
-        writer.writerow({"func": "{}-{}".format(start_date,expiry_date), "time": str(time.time() - start)})
     ##########
+
 
 
 

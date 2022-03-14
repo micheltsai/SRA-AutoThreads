@@ -239,7 +239,7 @@ if __name__ == '__main__':
     print("current_path: ", current_path, "\n")
     ## read SRAsetting.txt
     utils_.progress_bar("read SRAsetting.txt")
-    setting_path = os.path.join(current_path, "SRAsettings.txt")
+    setting_path = os.path.join(current_path, "../SRAsettings.txt")
     with open(setting_path, "r") as f:
         setList = f.readlines()
 
