@@ -202,7 +202,10 @@ def QualityCheck(sra_id,_outdir,ori_outdir,genome_Path,thread,gsize,start):
     refPath = utils_.getRefListPath(ref_dir, refDIR)
     # refPath=args.ref
 
+
+
     # outdir_ani = os.path.join(outdir, 'fastani')
+
     outdir_ani = os.path.join(outdir, 'fastani')
     utils_.mkdir_join(outdir_ani)
     print("outdir_ani: {}\n".format(outdir_ani))
@@ -231,6 +234,7 @@ def QualityCheck(sra_id,_outdir,ori_outdir,genome_Path,thread,gsize,start):
     #fastani_ = "/data/usrhome/LabSSLin/user30/Desktop/FastANI/fastANI -t {} --rl {} -q {} -o {}".format(thread,refPath, genome_Path, outfile)
     fastani_ = "/home/linsslab01/FastANI/fastANI -t {} --rl {} -q {} -o {}".format(thread, refPath,genome_Path,outfile)
     print(fastani_ + "\n")
+
     if os.path.isfile(outfile):
         print(outfile, " is exist.\n")
         print("fastANI was done.\n")
@@ -239,6 +243,11 @@ def QualityCheck(sra_id,_outdir,ori_outdir,genome_Path,thread,gsize,start):
         print("fastANI done.\n")
 
 
+    ######move anifile to QCdir/
+    anifile_new = os.path.join(outdir, outfile_)
+    mvani_cmd="cp {} {}".format(outfile,anifile_new)
+    print(mvani_cmd)
+    run_cmd(mvani_cmd)
     # ANI>=95------
     print(
         "-------------------------------fastANI end.-------------------------------\ncompare and calculate ANI\nget ANIoutPath\n")
@@ -291,7 +300,7 @@ def QualityCheck(sra_id,_outdir,ori_outdir,genome_Path,thread,gsize,start):
             f.write("{} is ANI<95.\n".format(gID))
         return 0
 
-
+    ###################################
     # BUSCO------
     ###
     #print("busco du-sh\n")
@@ -323,6 +332,12 @@ def QualityCheck(sra_id,_outdir,ori_outdir,genome_Path,thread,gsize,start):
     buscopath = os.path.join(outdir, "{}".format(gID))
     buscopath = os.path.join(buscopath, "run_{}".format(db))
     buscopath = glob.glob(buscopath + "/*.txt")
+
+    buscofile_newpath=os.path.join(outdir,)
+    mvbuscocmd="cp {} {}".format(buscopath,buscofile_newpath)
+    print(mvbuscocmd)
+    run_cmd(mvbuscocmd)
+
     print(buscopath)
     buscopath = os.path.abspath(buscopath[0])
     print(buscopath)
@@ -778,7 +793,9 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
         target_ = targetPath.replace(current_path, ".")
         print("target_= {}\n".format(target_))
         time.sleep(1)
+        sys.exit("stop")
 
+        
         Analysis(sra_id,genome,target_,_outdir,_outdir,thread,gsize,start)
         with open("./checkAnalysis.txt","a+") as f:
             f.write("Run {} is ok.\n".format(sra_id))
