@@ -247,7 +247,10 @@ def QualityCheck(sra_id,_outdir,ori_outdir,genome_Path,thread,gsize,start):
     anifile_new = os.path.join(outdir, outfile_)
     mvani_cmd="cp {} {}".format(outfile,anifile_new)
     print(mvani_cmd)
-    run_cmd(mvani_cmd)
+    os.system(mvani_cmd)
+
+
+
     # ANI>=95------
     print(
         "-------------------------------fastANI end.-------------------------------\ncompare and calculate ANI\nget ANIoutPath\n")
@@ -336,7 +339,7 @@ def QualityCheck(sra_id,_outdir,ori_outdir,genome_Path,thread,gsize,start):
     buscofile_newpath=os.path.join(outdir,)
     mvbuscocmd="cp {} {}".format(buscopath,buscofile_newpath)
     print(mvbuscocmd)
-    run_cmd(mvbuscocmd)
+    os.system(mvbuscocmd)
 
     print(buscopath)
     buscopath = os.path.abspath(buscopath[0])
@@ -795,7 +798,7 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
         time.sleep(1)
         sys.exit("stop")
 
-        
+
         Analysis(sra_id,genome,target_,_outdir,_outdir,thread,gsize,start)
         with open("./checkAnalysis.txt","a+") as f:
             f.write("Run {} is ok.\n".format(sra_id))
