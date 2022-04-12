@@ -334,8 +334,9 @@ def QualityCheck(sra_id,_outdir,ori_outdir,genome_Path,thread,gsize,start):
     # get BUSCO complete>=95 & duplicate>=3 ,or exit
     buscopath = os.path.join(outdir, "{}".format(gID))
     buscopath = os.path.join(buscopath, "run_{}".format(db))
-    buscopath = glob.glob(buscopath + "/*.txt")
-
+    #buscopath = glob.glob(buscopath + "/*.txt")
+    buscopath = glob.glob(buscopath + "/short_summary.txt")
+    
     buscofile_newpath=os.path.join(outdir,)
     mvbuscocmd="cp {} {}".format(buscopath,buscofile_newpath)
     print(mvbuscocmd)
