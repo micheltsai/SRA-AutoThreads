@@ -389,13 +389,14 @@ def QualityCheck(sra_id,_outdir,ori_outdir,genome_Path,thread,gsize,start):
 
     return targetPath
 
-def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
+def Analysis(sra_id,input,target_ref,outdir,thread,gsize,start):
     print("#####################  Analysis  #####################\n")
     mlst_organism = mlstS
     amr_organism = amrS
+    anoutdir=outdir
     utils_.mkdir_join(anoutdir)
     print("anoutdir:{}\n".format(anoutdir))
-    print("_outdir:{}\n".format(_outdir))
+    print("_outdir:{}\n".format(outdir))
 
     # get input id
     inlist = input.split("/")
@@ -407,20 +408,20 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
 
     # workdir
     current_path = os.path.abspath(os.getcwd())
-    current_path2 = current_path.replace("/SRA-AutoThreads", "")
+    #current_path2 = current_path.replace("/SRA-AutoThreads", "")
     print("current_path: ", current_path, "\n")
-    print("current_path2: ", current_path2, "\n")
-    relative_input_ = input.replace(current_path2, ".")
+    #print("current_path2: ", current_path2, "\n")
+    #relative_input_ = input.replace(current_path2, ".")
     relative_input = input.replace(current_path, ".")
     print("relative input: {}\n".format(relative_input))
-    print("relative input_: {}\n".format(relative_input_))
-    origin_outdir = _outdir
+    #print("relative input_: {}\n".format(relative_input_))
+    origin_outdir = outdir
     print("origin_outdir:".format(origin_outdir))
     check = os.path.join(origin_outdir, "Anacheck.log")
     print("check: {}\n".format(check))
     # add outpath "analysis"
-    utils_.mkdir_join(_outdir)
-    anoutdir_ = os.path.join(_outdir, "analysis")
+    utils_.mkdir_join(outdir)
+    anoutdir_ = os.path.join(outdir, "analysis")
     utils_.mkdir_join(anoutdir_)
     print("anoutdir_: {}\n".format(anoutdir_))
 
@@ -431,21 +432,21 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
     print("logpath: {}\n".format(logpath))
     # get relative output dir path
     relative_path_o2 = anoutdir_.replace(current_path, ".")
-    relative_path2 = anoutdir_.replace(current_path2, ".")
-    print("relative2: {}\n".format(relative_path2))
-    print("relative_path: {}".format(relative_path2))
+    #relative_path2 = anoutdir_.replace(current_path2, ".")
+    #print("relative2: {}\n".format(relative_path2))
+    #print("relative_path: {}".format(relative_path2))
     #relative_path_o2 = os.path.join(relative_path_o2, inId)
     #relative_path2 = os.path.join(relative_path2, inId)
     utils_.mkdir_join(relative_path_o2)
-    utils_.mkdir_join(relative_path2)
-    print("relative_path: {}".format(relative_path2))
+   # utils_.mkdir_join(relative_path2)
+    #qprint("relative_path: {}".format(relative_path2))
 
     # load log.txt read running statedat
     step = 0
     filename = Path(logpath)
     filename.touch(exist_ok=True)
 
-    sys.exit("stop")
+
 
     with open(logpath, "r") as f:
         line = f.readlines()
@@ -648,140 +649,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
     print("**********       sistr end.      **********\n next step\n")
     ########################
     ########################
-    # # save data in analysis_final.csv and update DB
-    #
-    # # read mlst 'Sequence Type'
-    # mlst_file = os.path.join(relative_path_o2, "mlst/results.txt")
-    # print("mlst_file:",mlst_file)
-    # try:
-    #     with open(mlst_file, "r") as f:
-    #         data = f.readlines()
-    #         print(data[6])
-    #         # Sequence Type: 11
-    #         sequenceType = data[6].split(" ")
-    #         sequenceType = sequenceType[len(sequenceType) - 1].strip("\n")
-    #
-    #         print(sequenceType)
-    # except Exception as e:
-    #     time.sleep(3)
-    #     print("not found mlst data.json\n")
-    #     mlst_outdir = os.path.join(anoutdir_, "mlst")
-    #     run_cmd("rm -rf {}".format(mlst_outdir))
-    #
-    #     mlst_cmd = "singularity exec --containall --bind /work/linsslab01/:/home/linsslab01/ /work/linsslab01/mlst.sif python3 /home/linsslab01/mlst/mlst.py -i {} -o {} -s {}".format(
-    #         relative_input_.replace("work","home"), mlst_outdir.replace("work", "home"), mlst_organism)
-    #     print(mlst_cmd)
-    #     mlst, err = utils_.run_cmd3(mlst_cmd)
-    #     mlst_file = os.path.join(relative_path_o2, "mlst/results.txt")
-    #     with open(mlst_file, "r") as f:
-    #         data = f.readlines()
-    #         print(data[6])
-    #         # Sequence Type: 11
-    #         sequenceType = data[6].split(" ")
-    #         sequenceType = sequenceType[len(sequenceType) - 1].strip("\n")
-    #     pass
-    # # read plasmidfinder 'gene'
-    # try:
-    #     plas_file = os.path.join(relative_path_o2, "plasmidfinder/results_tab.tsv")
-    #     pladf = pd.read_table(plas_file, sep='\t')
-    #     # print(df)
-    #     pladf = pd.DataFrame(pladf)
-    # except Exception as e:
-    #     time.sleep(3)
-    #     print("not found mlst data.json\n")
-    #     plas = run_cmd(plas_cmd)
-    #     plas_file = os.path.join(relative_path_o2, "plasmidfinder/results_tab.tsv")
-    #     pladf = pd.read_table(plas_file, sep='\t')
-    #     # print(df)
-    #     pladf = pd.DataFrame(pladf)
-    #     pass
-    # print(pladf)
-    # print(pladf.columns)
-    # print(pladf.Plasmid)
-    # plist = list(pladf.Plasmid)
-    # plas_format = ""
-    #
-    # for x in range(0, len(plist)):
-    #     plas_format += plist[x]
-    #     if x <= len(plist) - 1:
-    #         plas_format += ","
-    # print(plas_format)
-    #
-    # # read amrfinder 'Gene symbol', 'subtype'
-    # ##add amr "Point"
-    # amr_file = os.path.join(relative_path_o2, "amrfinder/amrout.tsv")
-    # amrdf = pd.read_table(amr_file, sep='\t')
-    # # print(df)
-    # amrdf = pd.DataFrame(amrdf)
-    # print(amrdf)
-    # print(amrdf.columns)
-    # # replace ' ' as '_'
-    # amrdf.columns = ['Protein_identifier', 'Contig_id', 'Start', 'Stop', 'Strand',
-    #                  'Gene_symbol', 'Sequence_name', 'Scope', 'Element_type',
-    #                  'Element_subtype', 'Class', 'Subclass', 'Method', 'Target_length',
-    #                  'Reference_sequence_length', 'Coverage_of_reference_sequence',
-    #                  'Identity_to_reference_sequence', 'Alignment_length',
-    #                  'Accession_of_closest sequence', 'Name_of_closest sequence', 'HMM_id',
-    #                  'HMM_description']
-    #
-    # print(amrdf.columns)
-    # # if list is [], show NaN
-    # print(amrdf.Gene_symbol)
-    # print(amrdf.Element_subtype)
-    #
-    # amr_format = ""
-    # point_format = ""
-    # sym_list = list(amrdf.Gene_symbol)
-    # sub_list = list(amrdf.Element_subtype)
-    # for i in range(0, len(sym_list)):
-    #     if sub_list[i] == "AMR":
-    #         if len(amr_format) > 0 and i!=len(sym_list):
-    #             amr_format += ","
-    #         amr_format += sym_list[i]
-    #     elif sub_list[i] == "POINT":
-    #         if len(point_format) > 0 and i!=len(sym_list):
-    #             point_format += ","
-    #         point_format += sym_list[i]
-    #
-    # print(amr_format)
-    # print(point_format)
-    #
-    # sistr_file = os.path.join(relative_path_o2, "sistr")
-    # utils_.mkdir_join(sistr_file)
-    # sistr_file = os.path.join(sistr_file, "sistr_out.csv")
-    #
-    # sistrdf = pd.read_csv(sistr_file)
-    # # print(df)
-    # sistrdf = pd.DataFrame(sistrdf)
-    # print(sistrdf)
-    # print(sistrdf.columns)
-    # print(sistrdf.serovar)
-    #
-    # in_abspath = input.replace(".", current_path)
-    #
-    # dict = {'Accession': sra_id,
-    #         'MLST': sequenceType,
-    #         'AMR': amr_format,
-    #         'Point': point_format,
-    #         'Serotype': sistrdf.serovar,
-    #         'Inc Type': plas_format
-    #         }
-    #
-    # finaldf = pd.DataFrame(dict)
-    # print(finaldf)
-    # finalfile = os.path.join(outdir, "analysis_final.csv")
-    # ###
-    # #print("finalfile du-sh\n")
-    # #utils_.run_cmd("du ./SRAtest -sh")
-    # #time.sleep(1)
-    # ###
-    # print("finaldf.to_csv(finalfile, mode='a+', header=False)\n")
-    # finaldf.to_csv(finalfile, mode='a+', header=False)
-    # ###
-    # #print("finalfile du-sh\n")
-    # #utils_.run_cmd("du ./SRAtest -sh")
-    # #time.sleep(1)
-    # ###
+
     # after run all state, save ID in "Anackeck.log" and remove ./analysis
     with open(check, "a+") as f:
         f.write("Run {} is ok.\n".format(inId))
@@ -852,6 +720,7 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
 
         sys.exit(e)
     #sys.exit("subpreocess End\n")
+
     return sra_id
 
 def mycallback_write_Finish(sra_id):
