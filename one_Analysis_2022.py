@@ -408,13 +408,13 @@ def Analysis(sra_id,input,target_ref,outdir,thread,gsize,start):
 
     # workdir
     current_path = os.path.abspath(os.getcwd())
-    #current_path2 = current_path.replace("/SRA-AutoThreads", "")
+    current_path2 = current_path.replace("/SRA-AutoThreads-test", "")
     print("current_path: ", current_path, "\n")
-    #print("current_path2: ", current_path2, "\n")
-    #relative_input_ = input.replace(current_path2, ".")
+    print("current_path2: ", current_path2, "\n")
+    relative_input_ = input.replace(current_path2, ".")
     relative_input = input.replace(current_path, ".")
     print("relative input: {}\n".format(relative_input))
-    #print("relative input_: {}\n".format(relative_input_))
+    print("relative input_: {}\n".format(relative_input_))
     origin_outdir = outdir
     print("origin_outdir:".format(origin_outdir))
     check = os.path.join(origin_outdir, "Anacheck.log")
