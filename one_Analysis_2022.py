@@ -342,10 +342,10 @@ def QualityCheck(sra_id,_outdir,ori_outdir,genome_Path,thread,gsize,start):
     print(mvbuscocmd)
     os.system(mvbuscocmd)
 
-    print(buscopath)
-    buscopath = os.path.abspath(buscopath[0])
-    print(buscopath)
-    with open(buscopath, "r") as f:
+    print(buscofile_newpath)
+    buscopath = os.path.abspath(buscofile_newpath)
+    print(buscofile_newpath)
+    with open(buscofile_newpath, "r") as f:
         b = f.readlines()
     #print(b, "\n")
     b = b[8].strip("\t")
