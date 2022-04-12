@@ -377,8 +377,8 @@ def QualityCheck(sra_id,_outdir,ori_outdir,genome_Path,thread,gsize,start):
         print("commit on check \n")
 
     #### remove
+    rm_fastaniDir = "rm -rf {}".format(outdir_ani)
     print(rm_fastaniDir)
-    rm_fastaniDir="rm -rf {}".format(outdir_ani)
     os.system(rm_fastaniDir)
 
     print(rm_fastaniDir)
