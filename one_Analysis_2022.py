@@ -335,7 +335,7 @@ def QualityCheck(sra_id,_outdir,ori_outdir,genome_Path,thread,gsize,start):
     buscopath = os.path.join(outdir, "{}".format(gID))
     buscopath = os.path.join(buscopath, "run_{}".format(db))
     #buscopath = glob.glob(buscopath + "/*.txt")
-    buscopath = os.path.join(buscopath + "short_summary.txt")
+    buscopath = os.path.join(buscopath , "short_summary.txt")
 
     buscofile_newpath=os.path.join(outdir,"short_summary.txt")
     mvbuscocmd="cp {} {}".format(buscopath,buscofile_newpath)
