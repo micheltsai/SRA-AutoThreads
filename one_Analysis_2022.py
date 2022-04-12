@@ -255,10 +255,11 @@ def QualityCheck(sra_id,_outdir,ori_outdir,genome_Path,thread,gsize,start):
     print(
         "-------------------------------fastANI end.-------------------------------\ncompare and calculate ANI\nget ANIoutPath\n")
 
+    ######
     rm_ref_cmd="rm -rf {}".format(refDIR)
     print(rm_ref_cmd)
     utils_.run_cmd(rm_ref_cmd)
-
+    ######
     print("open fastANI output txt\n")
     # open fastANI output
     f = open(outfile, 'r')
@@ -332,12 +333,12 @@ def QualityCheck(sra_id,_outdir,ori_outdir,genome_Path,thread,gsize,start):
     #time.sleep(1)
     ###
     # get BUSCO complete>=95 & duplicate>=3 ,or exit
-    buscopath = os.path.join(outdir, "{}".format(gID))
-    buscopath = os.path.join(buscopath, "run_{}".format(db))
+    buscoDirpath = os.path.join(outdir, "{}".format(gID))
+    buscopath = os.path.join(buscoDirpath, "run_{}".format(db))
     #buscopath = glob.glob(buscopath + "/*.txt")
     buscopath = os.path.join(buscopath , "short_summary.txt")
 
-    buscofile_newpath=os.path.join(outdir,"short_summary.txt")
+    buscofile_newpath=os.path.join(outdir,"busco_short_summary.txt")
     mvbuscocmd="cp {} {}".format(buscopath,buscofile_newpath)
     print(mvbuscocmd)
     os.system(mvbuscocmd)
@@ -375,20 +376,26 @@ def QualityCheck(sra_id,_outdir,ori_outdir,genome_Path,thread,gsize,start):
         f.write("{} is ok.\n".format(gID))
         print("commit on check \n")
 
+    #### remove
+    print(rm_fastaniDir)
+    rm_fastaniDir="rm -rf {}".format(outdir_ani)
+    os.system(rm_fastaniDir)
+
+    print(rm_fastaniDir)
+    rm_buscoDir="rm -rf {}".format(buscoDirpath)
+    os.system(rm_buscoDir)
+
     print('Done,total cost', time.time() - start, 'secs\n')
 
     return targetPath
 
 def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
-    ###
-    print("Analysis du-sh\n")
-    utils_.run_cmd("du ./SRAtest -sh")
-    time.sleep(1)
-    ###
     print("#####################  Analysis  #####################\n")
     mlst_organism = mlstS
     amr_organism = amrS
     utils_.mkdir_join(anoutdir)
+    print("anoutdir:{}\n".format(anoutdir))
+    print("_outdir:{}\n".format(_outdir))
 
     # get input id
     inlist = input.split("/")
@@ -402,25 +409,27 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
     current_path = os.path.abspath(os.getcwd())
     current_path2 = current_path.replace("/SRA-AutoThreads", "")
     print("current_path: ", current_path, "\n")
+    print("current_path2: ", current_path2, "\n")
     relative_input_ = input.replace(current_path2, ".")
     relative_input = input.replace(current_path, ".")
     print("relative input: {}\n".format(relative_input))
     print("relative input_: {}\n".format(relative_input_))
     origin_outdir = _outdir
-    allinfopath = os.path.join(origin_outdir, "info.txt")
+    print("origin_outdir:".format(origin_outdir))
     check = os.path.join(origin_outdir, "Anacheck.log")
-
+    print("check: {}\n".format(check))
     # add outpath "analysis"
     utils_.mkdir_join(_outdir)
     anoutdir_ = os.path.join(_outdir, "analysis")
     utils_.mkdir_join(anoutdir_)
-    print("analysis outdir: {}\n".format(anoutdir_))
+    print("anoutdir_: {}\n".format(anoutdir_))
+
+
 
     # set {genomoe}_log_output
     logpath = os.path.join(anoutdir_, "analysis_log.txt")
-
+    print("logpath: {}\n".format(logpath))
     # get relative output dir path
-    outdir_list = anoutdir_.split("/")
     relative_path_o2 = anoutdir_.replace(current_path, ".")
     relative_path2 = anoutdir_.replace(current_path2, ".")
     print("relative2: {}\n".format(relative_path2))
@@ -435,6 +444,8 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
     step = 0
     filename = Path(logpath)
     filename.touch(exist_ok=True)
+
+    sys.exit("stop")
 
     with open(logpath, "r") as f:
         line = f.readlines()
@@ -797,7 +808,6 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
         target_ = targetPath.replace(current_path, ".")
         print("target_= {}\n".format(target_))
         time.sleep(1)
-        sys.exit("stop")
 
 
         Analysis(sra_id,genome,target_,_outdir,_outdir,thread,gsize,start)
