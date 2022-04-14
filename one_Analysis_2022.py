@@ -727,6 +727,7 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
 def mycallback_write_Finish(sra_id):
     print("mycallback_write\n")
     check_log = os.path.join(outdir,"Analysischeck.log")
+    print("check_log: {}\n".format(check_log))
     with open(check_log, "a+") as f:
         f.write("Run {} is ok.\n".format(sra_id))
         check_lines = f.readlines()
