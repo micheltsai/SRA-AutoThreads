@@ -132,11 +132,6 @@ def Download(x,_outdir,sra_dir):
 
 
 def Assembled(x,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir,thread,gsize,start):
-    ###
-    print("Assemble du-sh\n")
-    utils_.run_cmd("du ./SRAtest -sh")
-    time.sleep(1)
-    ###
     final_dir = os.path.join(ass_dir, "{}_contig.fa".format(x))
     check_log = os.path.join(_outdir, "Asembledcheck.log")
     if os.path.isfile(final_dir):
@@ -169,11 +164,6 @@ def Assembled(x,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir,thread,gsize,star
 
 
 def QualityCheck(sra_id,_outdir,ori_outdir,genome_Path,thread,gsize,start):
-    ###
-    #print("Qualitycheck_start du-sh\n")
-    #utils_.run_cmd("du ./SRAtest -sh")
-    #time.sleep(1)
-    ###
     print("#####################  QualityCheck  #####################\n")
 
     Assem_path = os.path.join(_outdir, "Assembled/")
@@ -654,6 +644,19 @@ def Analysis(sra_id,input,target_ref,outdir,thread,gsize,start):
     with open(check, "a+") as f:
         f.write("Run {} is ok.\n".format(inId))
     return 0
+
+def getBenga2(sra_id,outdir):
+    Benga_start=time.time()
+    input=os.path.join(outdir,"{}/Assembled/{}_contig.fa".format(sra_id,sra_id))
+    output = os.path.join(outdir, sra_id)
+    output=os.path.join(output,"cgMLST")
+    output = os.path.join(output, "{}.tsv".format(sra_id))
+    cmd="python3 ./20210210cgMLST/Benga-2/Benga-2/profiling.py -i {} -o {} " \
+        "--scheme ./20210210cgMLST/Benga-2/Benga-2/scheme.faa --prodigaltf ./20210210cgMLST/Benga-2/Benga-2/prodigaltf.trn".format(input,output)
+    print(cmd)
+    os.system(cmd)
+    print('getBenga2 Done,{} total cost'.format(sra_id), time.time() - Benga_start, 'secs\n')
+
 
 def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gsize,start,sra_num_,outdir):
     SRA_start=time.time()
