@@ -785,7 +785,7 @@ def mycallback_write_Finish(sra_id):
     finish = list(filter(lambda x: len(x.split(" ")) >= 4, check_lines))
     finish_num_s = list(map(lambda x: x.split(" ")[1], finish))
     print("finish num={}\n".format(len(finish_num_s)))
-    print("{} / {}\n".format(len(finish_num_s), sra_num_))
+    print("{} / {}\n".format(len(finish_num_s)+1, sra_num_))
 
 if __name__ == '__main__':
     start = time.time()
