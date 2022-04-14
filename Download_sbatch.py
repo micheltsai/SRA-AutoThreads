@@ -62,7 +62,11 @@ def Download(x,_outdir,sra_dir):
     print("x = {}".format(x))
     # outdir__ = os.path.join(output, "out")
     outdir__ = os.path.join(sra_dir, "Assembled")
-    check_log = os.path.join(_outdir, "Analysischeck.log")
+
+    check_dir = os.path.join(_outdir, "check")
+    utils_.mkdir_join(check_dir)
+    check_log = os.path.join(check_dir, "Analysischeck.log")
+
     final_dir = os.path.join(outdir__, "{}_contig.fa".format(x))
     utils_.mkdir_join(sra_dir)
     sra_file=os.path.join(sra_dir,"sra/{}/{}.sra".format(x,x))
@@ -87,18 +91,24 @@ def Download(x,_outdir,sra_dir):
 
 def sbatch_job(outdir,pdat,need_list,ll,limit_number,sra_num_,finish_,start):
     print("outdir:{}\nnew_outdir:{}\n".format(outdir, outdir))
-    job_dir = os.path.join(outdir, "job")
+
+    check_dir = os.path.join(outdir, "check")
+    utils_.mkdir_join(check_dir)
+
+    job_dir = os.path.join(check_dir, "job")
     utils_.mkdir_join(job_dir)
-    utils_.mkdir_join(outdir)
-    job_file = os.path.join(job_dir, "{}.sh".format("test"))
-    job_out = os.path.join(outdir, "JOBoutput")
+    job_file = os.path.join(job_dir, "{}.sh".format("pdat"))
+
+    job_out = os.path.join(check_dir, "JOBoutput")
     utils_.mkdir_join(job_out)
 
-    check_log = os.path.join(outdir, "Analysischeck.log")
+    check_log = os.path.join(check_dir, "Analysischeck.log")
     check_file = Path(check_log)
     check_file.touch(exist_ok=True)
+
     sraList = os.path.join(outdir, "sraList_test.txt")
-    needList = os.path.join(outdir, "need_run_{}.txt".format(ll+len(need_list)))
+
+    needList = os.path.join(check_dir, "need_run_{}.txt".format(ll+len(need_list)))
     need_file = Path(needList)
     need_file.touch(exist_ok=True)
     with open(needList,"w")as f:
@@ -138,6 +148,7 @@ def sbatch_job(outdir,pdat,need_list,ll,limit_number,sra_num_,finish_,start):
     print("finish_num = {}\n".format(finish_num))
     print("need_num={}\n".format(len(need_list)-finish_num))
     pool_list = []
+    SRA_run_error = os.path.join(check_dir, "SRA_run_error.txt")
     try:
         for k in need_list:
             k.strip("\n")
@@ -183,8 +194,9 @@ def sbatch_job(outdir,pdat,need_list,ll,limit_number,sra_num_,finish_,start):
         print("srart : {}\n".format(start))
         print("Download all ", 'Done,total cost', time.time() - start, 'secs')
         pid = os.getgid()
-        with open("./SRA_run_error.txt", "a+") as f:
-            f.write("Catch keyboardinterdinterupterror : {}/{}/{}\n".format())
+
+        with open(SRA_run_error, "a+") as f:
+            f.write("Catch keyboardinterdinterupterror\n")
         # with open("./Automate_check.log", "a+") as f:
         #    f.write("keyboardinterupter")
         #    f.write("{}:{}:{}\n".format(date, time.time() - ds, time.time() - start))
@@ -206,7 +218,8 @@ def sbatch_job(outdir,pdat,need_list,ll,limit_number,sra_num_,finish_,start):
         # print(str(datetime.datetime.now()), process.memory_info().rss)
         utils_.run_cmd("free -h > ./checkmem.txt")
         ####
-        with open("./SRA_run_error.txt", "a+") as f:
+
+        with open(SRA_run_error, "a+") as f:
             f.write("{}\n".format(errMsg))
         sys.exit(errMsg)
 
@@ -302,11 +315,14 @@ def main():
     sra_run = list(map(lambda x: x.split(":")[1].strip("\n"), sralist))
     #######
     pdat_run=list(map(lambda x: x.split(" ")[0].split(":")[0], sralist))
-
+    Year=pdat_run[0].split("/")[0]
+    Month = pdat_run[0].split("/")[1]
     #print(sra_run)
 
     ##build analysis_final
-    final_log= os.path.join(outdir, "analysis_final.csv")
+    check_dir = os.path.join(outdir, "check")
+    utils_.mkdir_join(check_dir)
+    final_log= os.path.join(check_dir, "analysis_final.csv")
     if os.path.isfile(final_log):
         print("{} is exist.\n".format(final_log))
     else:
@@ -320,8 +336,7 @@ def main():
         print("build {} Done.\n".format(final_log))
     ######
 
-
-    check_log = os.path.join(outdir, "Analysischeck.log")
+    check_log = os.path.join(check_dir, "Analysischeck.log")
     myfile2 = Path(check_log)
     myfile2.touch(exist_ok=True)
     with open(check_log,"r")as f:
@@ -332,7 +347,7 @@ def main():
     need_run = list(filter(lambda x: x not in finish_run, sra_run))
 
     #####sra_id file not fill ANI>95 in nofillQC.txt
-    QCcheck_log = os.path.join(outdir, "nofillQC.txt")
+    QCcheck_log = os.path.join(check_dir, "nofillQC.txt")
     QC_file = Path(QCcheck_log)
     QC_file.touch(exist_ok=True)
     with open(QCcheck_log,"r")as f:
@@ -376,37 +391,37 @@ def main():
 
         utils_.run_cmd2("squeue -u linsslab01")
         num=int(run_cmd2("squeue -u linsslab01 |wc -l"))
-        pd_start=time.time()
-        while num == 2:
-            print("progresses status is PD, or one progress is running\n")
-            try:
-                #utils_.run_cmd2("squeue -u linsslab01")
-                #time.sleep(2)
-                tmp= run_cmd2("squeue -u linsslab01 |wc -l")
-                num = int(tmp)
-                time.sleep(60)
-            except Exception as e:
-                print(tmp)
-                #print("again run 'squeue -u linsslab01'\n")
-                #utils_.run_cmd2("squeue -u linsslab01")
-                #time.sleep(2)
-                ####
-                print("print 'squeue -u linsslab01' error:\n")
-                error_class = e.__class__.__name__  # 取得錯誤類型
-                detail = e.args[0]  # 取得詳細內容
-                cl, exc, tb = sys.exc_info()  # 取得Call Stack
-                lastCallStack = traceback.extract_tb(tb)[-1]  # 取得Call Stack的最後一筆資料
-                fileName = lastCallStack[0]  # 取得發生的檔案名稱
-                lineNum = lastCallStack[1]  # 取得發生的行號
-                funcName = lastCallStack[2]  # 取得發生的函數名稱
-                errMsg = "File \"{}\", line {}, in {}: [{}] {}".format(fileName, lineNum, funcName, error_class,
-                                                                       detail)
-                print(errMsg)
-                time.sleep(5)
-                pass
-
-
-        print(str(datetime.datetime.now()), 'PD Done,current total cost', time.time() - pd_start, 'secs\n')
+        # pd_start=time.time()
+        # while num == 2:
+        #     print("progresses status is PD, or one progress is running\n")
+        #     try:
+        #         #utils_.run_cmd2("squeue -u linsslab01")
+        #         #time.sleep(2)
+        #         tmp= run_cmd2("squeue -u linsslab01 |wc -l")
+        #         num = int(tmp)
+        #         time.sleep(60)
+        #     except Exception as e:
+        #         print(tmp)
+        #         #print("again run 'squeue -u linsslab01'\n")
+        #         #utils_.run_cmd2("squeue -u linsslab01")
+        #         #time.sleep(2)
+        #         ####
+        #         print("print 'squeue -u linsslab01' error:\n")
+        #         error_class = e.__class__.__name__  # 取得錯誤類型
+        #         detail = e.args[0]  # 取得詳細內容
+        #         cl, exc, tb = sys.exc_info()  # 取得Call Stack
+        #         lastCallStack = traceback.extract_tb(tb)[-1]  # 取得Call Stack的最後一筆資料
+        #         fileName = lastCallStack[0]  # 取得發生的檔案名稱
+        #         lineNum = lastCallStack[1]  # 取得發生的行號
+        #         funcName = lastCallStack[2]  # 取得發生的函數名稱
+        #         errMsg = "File \"{}\", line {}, in {}: [{}] {}".format(fileName, lineNum, funcName, error_class,
+        #                                                                detail)
+        #         print(errMsg)
+        #         time.sleep(5)
+        #         pass
+        #
+        #
+        # print(str(datetime.datetime.now()), 'PD Done,current total cost', time.time() - pd_start, 'secs\n')
 
         running_start=time.time()
         while num != 1:
@@ -449,12 +464,12 @@ def main():
 
         output_dir = os.path.join(outdir, "output")
 
-        joboutput_dir = os.path.join(outdir, "JOBoutput")
+        joboutput_dir = os.path.join(check_dir, "JOBoutput")
         print("outputdir: {}\n".format(output_dir))
         print("JOBoutputdir: {}\n".format(joboutput_dir))
         ##################
 
-        needList = os.path.join(outdir, "need_run_{}.txt".format(ll))
+        needList = os.path.join(check_dir, "need_run_{}.txt".format(ll))
         print("rm -rf {}\n".format(needList))
         utils_.run_cmd2("rm -rf {}".format(needList))
         #################
@@ -494,14 +509,17 @@ def main():
     print("analysislog: {}\n".format(check_log))
 
     #######
-    print("scp {} root@140.112.165.124:/data/SRA_data/{}/{}\n".format(final_log, str(ed_Y), str(ed_M)))
-    utils_.run_cmd("scp {} root@140.112.165.124:/data/SRA_data/{}/{}".format(final_log, str(ed_Y), str(ed_M)))
-    print("scp {} root@140.112.165.124:/data/SRA_data/{}/{}\n".format(check_log,str(ed_Y),str(ed_M)))
-    utils_.run_cmd("scp {} root@140.112.165.124:/data/SRA_data/{}/{}".format(check_log,str(ed_Y),str(ed_M)))
-    print("scp {} root@140.112.165.124:/data/SRA_data/{}\n".format(sraList_txt,str(ed_Y),str(ed_M)))
-    utils_.run_cmd("scp {} root@140.112.165.124:/data/SRA_data/{}/{}".format(sraList_txt,str(ed_Y),str(ed_M)))
-    print("scp {} root@140.112.165.124:/data/SRA_data/{}\n".format(QCcheck_log, str(ed_Y), str(ed_M)))
-    utils_.run_cmd("scp {} root@140.112.165.124:/data/SRA_data/{}/{}".format(QCcheck_log, str(ed_Y), str(ed_M)))
+    print("scp {} root@140.112.165.124:/data/SRA_data/\n".format(final_log,pdat_run[0]))
+
+
+    # print("scp {} root@140.112.165.124:/data/SRA_data/{}/{}\n".format(final_log, str(ed_Y), str(ed_M)))
+    # utils_.run_cmd("scp {} root@140.112.165.124:/data/SRA_data/{}/{}".format(final_log, str(ed_Y), str(ed_M)))
+    # print("scp {} root@140.112.165.124:/data/SRA_data/{}/{}\n".format(check_log,str(ed_Y),str(ed_M)))
+    # utils_.run_cmd("scp {} root@140.112.165.124:/data/SRA_data/{}/{}".format(check_log,str(ed_Y),str(ed_M)))
+    # print("scp {} root@140.112.165.124:/data/SRA_data/{}\n".format(sraList_txt,str(ed_Y),str(ed_M)))
+    # utils_.run_cmd("scp {} root@140.112.165.124:/data/SRA_data/{}/{}".format(sraList_txt,str(ed_Y),str(ed_M)))
+    # print("scp {} root@140.112.165.124:/data/SRA_data/{}\n".format(QCcheck_log, str(ed_Y), str(ed_M)))
+    # utils_.run_cmd("scp {} root@140.112.165.124:/data/SRA_data/{}/{}".format(QCcheck_log, str(ed_Y), str(ed_M)))
     print("Progerss end\n")
     print(str(datetime.datetime.now()), ' Done,current total cost', time.time() - start, 'secs\n')
 if __name__ == '__main__':

@@ -133,7 +133,9 @@ def Download(x,_outdir,sra_dir):
 
 def Assembled(x,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir,thread,gsize,start):
     final_dir = os.path.join(ass_dir, "{}_contig.fa".format(x))
-    check_log = os.path.join(_outdir, "Asembledcheck.log")
+    check_dir = os.path.join(_outdir, "check")
+    utils_.mkdir_join(check_dir)
+    check_log = os.path.join(check_dir, "Asembledcheck.log")
     if os.path.isfile(final_dir):
         print("was ran assembly ,contig.fa is exist\n------------------------------\n\n")
     else:
@@ -266,7 +268,9 @@ def QualityCheck(sra_id,_outdir,ori_outdir,genome_Path,thread,gsize,start):
         else:
             not_num += 1
     # num =0
-    QC_error=os.path.join(ori_outdir,"nofillQC.txt")
+    check_dir = os.path.join(ori_outdir, "check")
+    utils_.mkdir_join(check_dir)
+    QC_error=os.path.join(check_dir,"nofillQC.txt")
     print("QC_errfile:", QC_error)
     QC_file = Path(QC_error)
     QC_file.touch(exist_ok=True)
@@ -291,7 +295,7 @@ def QualityCheck(sra_id,_outdir,ori_outdir,genome_Path,thread,gsize,start):
     if num == 0:
         print("All ANI value doesn't exceed 95, next genome run\n")
         with open(check, "a+") as f:
-            f.write("{} is ANI<95.\n".format(gID))
+            f.write("{}:ANI<95.\n".format(gID))
         return 0
 
     ###################################
@@ -352,7 +356,7 @@ def QualityCheck(sra_id,_outdir,ori_outdir,genome_Path,thread,gsize,start):
 
     if bC < 95.0 and bD > 3.0:
         with open(check, "a+") as f:
-            f.write("{} is C<95 or D>3.\n".format(gID))
+            f.write("{}:C<95 or D>3.\n".format(gID))
         return 0
 
     # continue
@@ -640,7 +644,7 @@ def Analysis(sra_id,input,target_ref,outdir,thread,gsize,start):
     ########################
     ########################
 
-    # after run all state, save ID in "Anackeck.log" and remove ./analysis
+    # after run all state, save ID in "Anackeck.log"
     with open(check, "a+") as f:
         f.write("Run {} is ok.\n".format(inId))
     return 0
@@ -673,7 +677,10 @@ def getBenga2(sra_id,outdir):
         #print(str(datetime.datetime.now()), process.memory_info().rss)
         #utils_.run_cmd("free -h")
         ####
-        with open("./Benga_err.txt", "a+") as f:
+        check_dir = os.path.join(outdir, "check")
+        utils_.mkdir_join(check_dir)
+        err_txt=os.path.join(check_dir,"Benga_err.txt")
+        with open(err_txt, "a+") as f:
             f.write("{}:{}\n".format(sra_id,e))
         sys.exit(e)
     print('getBenga2 Done,{} total cost'.format(sra_id), time.time() - Benga_start, 'secs\n')
@@ -686,7 +693,10 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
         # if sra_layout==2 continue
         #Download(sra_id,_outdir,sra_dir)
         Assembled(sra_id,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir,thread,gsize,start)
-        with open("./checkAssembled.txt","a+") as f:
+        check_dir = os.path.join(outdir, "check")
+        utils_.mkdir_join(check_dir)
+        check_Assemble=os.path.join(check_dir,"checkAssembled.txt")
+        with open(check_Assemble,"a+") as f:
             f.write("Run {} is ok.\n".format(sra_id))
         #####
 
@@ -695,15 +705,19 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
         print("getBenga2\n")
         getBenga2(sra_id, outdir)
         print("getBenga2 Done\n")
-        with open("./checkBenga.txt","a+") as f:
+
+        check_Benga = os.path.join(check_dir, "checkBenga.txt")
+        with open(check_Benga,"a+") as f:
             f.write("Run {} is ok.\n".format(sra_id))
 
 
         targetPath=QualityCheck(sra_id,_outdir,outdir,genome,thread,gsize,start)
         time.sleep(1)
 
-        with open("./checkQC.txt","a+") as f:
+        check_QC = os.path.join(check_dir, "checkQC.txt")
+        with open(check_QC,"a+") as f:
             f.write("Run {} is ok.\n".format(sra_id))
+
         print("targetPAth = {}\n######\n".format(targetPath.encode("utf-8").decode()))
         target_ = targetPath.replace(current_path, ".")
         print("target_= {}\n".format(target_))
@@ -711,11 +725,14 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
 
 
         Analysis(sra_id,genome,target_,_outdir,thread,gsize,start)
-        with open("./checkAnalysis.txt","a+") as f:
+
+        check_Analysis = os.path.join(check_dir, "checkAnalysis.txt")
+        with open(check_Analysis,"a+") as f:
             f.write("Run {} is ok.\n".format(sra_id))
         #global finish_num_
         #finish_num_ += 1
-        check_log = os.path.join(_outdir, "Analysischeck.log")
+
+        check_log = os.path.join(check_dir, "Analysischeck.log")
         #with open(check_log, "a+") as f:
         #    f.write("Run {} is ok.\n".format(sra_id))
 
@@ -728,9 +745,8 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
         print(assemble_dir)
         print("remove fastq dir, sra dir, assembled_result dir\n")
 
-        print("Run {} is Done\n".format(sra_id))
         mycallback_write_Finish(sra_id)
-
+        print("Run {} is Done\n".format(sra_id))
         #######
         print(str(datetime.datetime.now()),' Done,current total cost', time.time() - start, 'secs\n')
     except Exception as e:
@@ -748,8 +764,9 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
         #print(str(datetime.datetime.now()), process.memory_info().rss)
         #utils_.run_cmd("free -h")
         ####
-        with open("./SRA_run_error.txt", "a+") as f:
-            f.write("{} :\n{}\n".format(sra_id, errMsg))
+        SRA_run_error= os.path.join(check_dir, "SRA_run_error.txt")
+        with open(SRA_run_error, "a+") as f:
+            f.write("{}:{}\n".format(sra_id, errMsg))
 
         sys.exit(e)
     #sys.exit("subpreocess End\n")
@@ -758,7 +775,9 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
 
 def mycallback_write_Finish(sra_id):
     print("mycallback_write\n")
-    check_log = os.path.join(outdir,"Analysischeck.log")
+    check_dir = os.path.join(outdir, "check")
+    utils_.mkdir_join(check_dir)
+    check_log = os.path.join(check_dir,"Analysischeck.log")
     print("check_log: {}\n".format(check_log))
     with open(check_log, "a+") as f:
         f.write("Run {} is ok.\n".format(sra_id))
@@ -781,8 +800,9 @@ if __name__ == '__main__':
     txt_index=argvs[4]
     #sra_id_test=argvs[5]
 
-
-    needList = os.path.join(outdir, "need_run_{}.txt".format(txt_index))
+    check_dir = os.path.join(outdir, "check")
+    utils_.mkdir_join(check_dir)
+    needList = os.path.join(check_dir, "need_run_{}.txt".format(txt_index))
 
     with open(needList,"r") as f:
         needlines=f.readlines()
@@ -790,13 +810,13 @@ if __name__ == '__main__':
     need_run = [rr.strip() for rr in need_run if rr.strip()!='']
     print(need_run)
     sra_id=need_run[sra_index].strip("\n")
+    check_log = os.path.join(check_dir, "Analysischeck.log")
+
     new_outdir = os.path.join(outdir, "output")
     utils_.mkdir_join(new_outdir)
     new_outdir = os.path.join(new_outdir, sra_id)
     utils_.mkdir_join(new_outdir)
     print("output: {}\n".format(new_outdir))
-
-    check_log = os.path.join(new_outdir, "Analysischeck.log")
     sra_dir = os.path.join(new_outdir, "sra")  # .sra file
     utils_.mkdir_join(sra_dir)
     ass_dir = os.path.join(new_outdir, "Assembled")
