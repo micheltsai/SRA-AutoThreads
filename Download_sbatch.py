@@ -475,7 +475,8 @@ def main():
         print("rm -rf {}\n".format(needList))
         utils_.run_cmd2("rm -rf {}".format(needList))
         #################
-        mytarfile = os.path.join(outdir, "{}_{}.tar.gz".format(str(ed_M), ll + len(need_list) + len(finish_run)))
+        file_time = datetime.now().strftime('%Y-%m-%d-%H:%M:%S')
+        mytarfile = os.path.join(outdir, "{}_{}_{}.tar.gz".format(str(ed_M), ll + len(need_list) + len(finish_run),file_time))
         print("mytarfile: {}\n".format(mytarfile))
         #tar.gz
         tar_start = time.time()
@@ -486,12 +487,13 @@ def main():
         time.sleep(1)
         ###################
 
-        # scp_start=time.time()
-        # print("scp -r {} root@140.112.165.124:/data/SRA_data/{}/{}/output/{}_{}.tar.gz\n".format(mytarfile,str(ed_Y),str(ed_M),str(ed_M),ll+len(need_list)+len(finish_run)))
-        # utils_.run_cmd("scp -r {} root@140.112.165.124:/data/SRA_data/{}/{}/output/{}_{}.tar.gz".format(mytarfile,str(ed_Y),str(ed_M),str(ed_M),ll+len(need_list)+len(finish_run)))
-        # print(str(datetime.datetime.now()), 'scp Done,current total cost', time.time() - scp_start, 'secs\n')
-        # time.sleep(1)
-        # ##################
+        scp_start=time.time()
+
+        print("scp -r {} root@140.112.165.124:/data/SRA_data/{}/{}/output/{}_{}_{}.tar.gz\n".format(mytarfile,Year_,Month_,Month_,ll+len(need_list)+len(finish_run),file_time))
+        utils_.run_cmd("scp -r {} root@140.112.165.124:/data/SRA_data/{}/{}/output/{}_{}_{}.tar.gz".format(mytarfile,Year_,Month_,Month_,ll+len(need_list)+len(finish_run),file_time))
+        print(str(datetime.datetime.now()), 'scp Done,current total cost', time.time() - scp_start, 'secs\n')
+        time.sleep(1)
+        ##################
 
         #output
         # remove_start=time.time()
@@ -515,13 +517,13 @@ def main():
 
 
     #print("scp {} root@140.112.165.124:/data/SRA_data/{}/{}\n".format(final_log, Year_, Month_))
-    #utils_.run_cmd("scp {} root@140.112.165.124:/data/SRA_data/{}/{}".format(final_log, str(ed_Y), str(ed_M)))
+    utils_.run_cmd("scp {} root@140.112.165.124:/data/SRA_data/{}/{}".format(final_log, Year_,Month_))
     print("scp {} root@140.112.165.124:/data/SRA_data/{}/{}\n".format(check_log,Year_,Month_))
-    #utils_.run_cmd("scp {} root@140.112.165.124:/data/SRA_data/{}/{}".format(check_log,str(ed_Y),str(ed_M)))
-    print("scp {} root@140.112.165.124:/data/SRA_data/{}\n".format(sraList_txt,Year_,Month_))
-    #utils_.run_cmd("scp {} root@140.112.165.124:/data/SRA_data/{}/{}".format(sraList_txt,str(ed_Y),str(ed_M)))
-    print("scp {} root@140.112.165.124:/data/SRA_data/{}\n".format(QCcheck_log,Year_,Month_))
-    #utils_.run_cmd("scp {} root@140.112.165.124:/data/SRA_data/{}/{}".format(QCcheck_log, str(ed_Y), str(ed_M)))
+    utils_.run_cmd("scp {} root@140.112.165.124:/data/SRA_data/{}/{}".format(check_log,Year_,Month_))
+    print("scp {} root@140.112.165.124:/data/SRA_data/{}/{}\n".format(sraList_txt,Year_,Month_))
+    utils_.run_cmd("scp {} root@140.112.165.124:/data/SRA_data/{}/{}".format(sraList_txt,Year_,Month_))
+    print("scp {} root@140.112.165.124:/data/SRA_data/{}/{}\n".format(QCcheck_log,Year_,Month_))
+    utils_.run_cmd("scp {} root@140.112.165.124:/data/SRA_data/{}/{}".format(QCcheck_log,Year_,Month_))
     print("Progerss end\n")
     print(str(datetime.datetime.now()), ' Done,current total cost', time.time() - start, 'secs\n')
 if __name__ == '__main__':
