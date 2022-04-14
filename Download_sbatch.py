@@ -315,11 +315,10 @@ def main():
     sra_run = list(map(lambda x: x.split(":")[1].strip("\n"), sralist))
     #######
     pdat_run=list(map(lambda x: x.split(":")[0], sralist))
-    Year=pdat_run[0].split("/")[0]
-    Month = pdat_run[0].split("/")[1]
-    
+    Year_=pdat_run[0].split("/")[0]
+    Month_ = pdat_run[0].split("/")[1]
+
     print(pdat_run[0])
-    sys.exit("stop")
     #print(sra_run)
 
     ##build analysis_final
@@ -515,14 +514,14 @@ def main():
     # print("scp {} root@140.112.165.124:/data/SRA_data/\n".format(final_log,pdat_run[0]))
 
 
-    # print("scp {} root@140.112.165.124:/data/SRA_data/{}/{}\n".format(final_log, str(ed_Y), str(ed_M)))
-    # utils_.run_cmd("scp {} root@140.112.165.124:/data/SRA_data/{}/{}".format(final_log, str(ed_Y), str(ed_M)))
-    # print("scp {} root@140.112.165.124:/data/SRA_data/{}/{}\n".format(check_log,str(ed_Y),str(ed_M)))
-    # utils_.run_cmd("scp {} root@140.112.165.124:/data/SRA_data/{}/{}".format(check_log,str(ed_Y),str(ed_M)))
-    # print("scp {} root@140.112.165.124:/data/SRA_data/{}\n".format(sraList_txt,str(ed_Y),str(ed_M)))
-    # utils_.run_cmd("scp {} root@140.112.165.124:/data/SRA_data/{}/{}".format(sraList_txt,str(ed_Y),str(ed_M)))
-    # print("scp {} root@140.112.165.124:/data/SRA_data/{}\n".format(QCcheck_log, str(ed_Y), str(ed_M)))
-    # utils_.run_cmd("scp {} root@140.112.165.124:/data/SRA_data/{}/{}".format(QCcheck_log, str(ed_Y), str(ed_M)))
+    print("scp {} root@140.112.165.124:/data/SRA_data/{}/{}\n".format(final_log, Year_, Month_))
+    #utils_.run_cmd("scp {} root@140.112.165.124:/data/SRA_data/{}/{}".format(final_log, str(ed_Y), str(ed_M)))
+    print("scp {} root@140.112.165.124:/data/SRA_data/{}/{}\n".format(check_log,Year_,Month_))
+    #utils_.run_cmd("scp {} root@140.112.165.124:/data/SRA_data/{}/{}".format(check_log,str(ed_Y),str(ed_M)))
+    print("scp {} root@140.112.165.124:/data/SRA_data/{}\n".format(sraList_txt,Year_,Month_))
+    #utils_.run_cmd("scp {} root@140.112.165.124:/data/SRA_data/{}/{}".format(sraList_txt,str(ed_Y),str(ed_M)))
+    print("scp {} root@140.112.165.124:/data/SRA_data/{}\n".format(QCcheck_log,Year_,Month_))
+    #utils_.run_cmd("scp {} root@140.112.165.124:/data/SRA_data/{}/{}".format(QCcheck_log, str(ed_Y), str(ed_M)))
     print("Progerss end\n")
     print(str(datetime.datetime.now()), ' Done,current total cost', time.time() - start, 'secs\n')
 if __name__ == '__main__':
