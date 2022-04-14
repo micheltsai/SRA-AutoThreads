@@ -179,7 +179,7 @@ def sbatch_job(outdir,pdat,need_list,ll,limit_number,sra_num_,finish_,start):
             f.write("#SBATCH --mail-user=sj985517@gmail.com\n")
             f.write("#SBATCH --mail-type=BEGIN,END\n")
             f.write("echo $SLURM_ARRAY_TASK_ID\n")
-            f.write("/home/linsslab01/miniconda3/bin/python3 one_Analysis_new.py {} {} {} {}\n".format(pdat,
+            f.write("/home/linsslab01/miniconda3/bin/python3 one_Analysis_2022.py {} {} {} {}\n".format(pdat,
                                                                                                 sra_num_,
                                                                                                 "$SLURM_ARRAY_TASK_ID",
                                                                                                        ll+len(need_list)))
