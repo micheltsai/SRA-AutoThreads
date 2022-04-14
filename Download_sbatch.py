@@ -314,9 +314,12 @@ def main():
     sralist = list(filter(lambda x: len(x.split(":")) >= 2, lines))
     sra_run = list(map(lambda x: x.split(":")[1].strip("\n"), sralist))
     #######
-    pdat_run=list(map(lambda x: x.split(" ")[0].split(":")[0], sralist))
+    pdat_run=list(map(lambda x: x.split(":")[0], sralist))
     Year=pdat_run[0].split("/")[0]
     Month = pdat_run[0].split("/")[1]
+    
+    print(pdat_run[0])
+    sys.exit("stop")
     #print(sra_run)
 
     ##build analysis_final
@@ -501,8 +504,8 @@ def main():
         # utils_.run_cmd("rm -rf {}".format(joboutput_dir))
         # print("rm -rf {}\n".format(mytarfile))
         # utils_.run_cmd("rm -rf {}".format(mytarfile))
-
-        print(str(datetime.datetime.now()), 'remove Done,current total cost', time.time() - remove_start, 'secs\n')
+        #
+        # print(str(datetime.datetime.now()), 'remove Done,current total cost', time.time() - remove_start, 'secs\n')
         ##################
         time.sleep(1)
 
