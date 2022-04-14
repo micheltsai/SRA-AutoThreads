@@ -135,6 +135,7 @@ def Assembled(x,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir,thread,gsize,star
     final_dir = os.path.join(ass_dir, "{}_contig.fa".format(x))
     check_dir = os.path.join(_outdir, "check")
     utils_.mkdir_join(check_dir)
+    print("check_dir:{}\n".format(check_dir))
     check_log = os.path.join(check_dir, "Asembledcheck.log")
     if os.path.isfile(final_dir):
         print("was ran assembly ,contig.fa is exist\n------------------------------\n\n")
@@ -270,6 +271,8 @@ def QualityCheck(sra_id,_outdir,ori_outdir,genome_Path,thread,gsize,start):
     # num =0
     check_dir = os.path.join(ori_outdir, "check")
     utils_.mkdir_join(check_dir)
+
+    print("check_dir:{}\n".format(check_dir))
     QC_error=os.path.join(check_dir,"nofillQC.txt")
     print("QC_errfile:", QC_error)
     QC_file = Path(QC_error)
@@ -679,6 +682,7 @@ def getBenga2(sra_id,outdir):
         ####
         check_dir = os.path.join(outdir, "check")
         utils_.mkdir_join(check_dir)
+        print("check_dir:{}\n".format(check_dir))
         err_txt=os.path.join(check_dir,"Benga_err.txt")
         with open(err_txt, "a+") as f:
             f.write("{}:{}\n".format(sra_id,e))
@@ -696,6 +700,9 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
         check_dir = os.path.join(outdir, "check")
         utils_.mkdir_join(check_dir)
         check_Assemble=os.path.join(check_dir,"checkAssembled.txt")
+        print("check_dir:{}\n".format(check_dir))
+
+
         with open(check_Assemble,"a+") as f:
             f.write("Run {} is ok.\n".format(sra_id))
         #####
@@ -732,7 +739,7 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
         #global finish_num_
         #finish_num_ += 1
 
-        check_log = os.path.join(check_dir, "Analysischeck.log")
+        #check_log = os.path.join(check_dir, "Analysischeck.log")
         #with open(check_log, "a+") as f:
         #    f.write("Run {} is ok.\n".format(sra_id))
 

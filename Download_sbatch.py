@@ -65,7 +65,9 @@ def Download(x,_outdir,sra_dir):
 
     check_dir = os.path.join(_outdir, "check")
     utils_.mkdir_join(check_dir)
+
     check_log = os.path.join(check_dir, "Analysischeck.log")
+    print("check_log: {}\n".format(check_log))
 
     final_dir = os.path.join(outdir__, "{}_contig.fa".format(x))
     utils_.mkdir_join(sra_dir)
@@ -475,7 +477,7 @@ def main():
         print("rm -rf {}\n".format(needList))
         utils_.run_cmd2("rm -rf {}".format(needList))
         #################
-        file_time = datetime.now().strftime('%Y-%m-%d-%H:%M:%S')
+        file_time = datetime.datetime.now().strftime('%Y-%m-%d-%H:%M:%S')
         mytarfile = os.path.join(outdir, "{}_{}_{}.tar.gz".format(str(ed_M), ll + len(need_list) + len(finish_run),file_time))
         print("mytarfile: {}\n".format(mytarfile))
         #tar.gz
