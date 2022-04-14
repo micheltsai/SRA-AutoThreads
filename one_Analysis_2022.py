@@ -652,7 +652,7 @@ def getBenga2(sra_id,outdir):
     output=os.path.join(output,"cgMLST")
     output = os.path.join(output, "{}.tsv".format(sra_id))
     cmd="/home/linsslab01/miniconda3/bin/python3 ./20210210cgMLST/Benga-2/Benga-2/profiling.py -i {} -o {} " \
-        "--scheme ./20210210cgMLST/Benga-2/Benga-2/scheme.faa --prodigaltf ./20210210cgMLST/Benga-2/Benga-2/prodigaltf.trn".format(input,output)
+        "--scheme ./20210210cgMLST/Benga-2/scheme.faa --prodigaltf ./20210210cgMLST/Benga-2/prodigaltf.trn".format(input,output)
     print(cmd)
     os.system(cmd)
     print('getBenga2 Done,{} total cost'.format(sra_id), time.time() - Benga_start, 'secs\n')
