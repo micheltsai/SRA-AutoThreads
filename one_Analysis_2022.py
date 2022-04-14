@@ -670,11 +670,17 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
         #####
 
         genome = os.path.join(ass_dir, "{}_contig.fa".format(sra_id))
+
         print("getBenga2\n")
         getBenga2(sra_id, outdir)
         print("getBenga2 Done\n")
+        with open("./checkBenga.txt","a+") as f:
+            f.write("Run {} is ok.\n".format(sra_id))
+
+
         targetPath=QualityCheck(sra_id,_outdir,outdir,genome,thread,gsize,start)
         time.sleep(1)
+
         with open("./checkQC.txt","a+") as f:
             f.write("Run {} is ok.\n".format(sra_id))
         print("targetPAth = {}\n######\n".format(targetPath.encode("utf-8").decode()))
