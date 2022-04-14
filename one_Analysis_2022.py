@@ -671,8 +671,8 @@ def getBenga2(sra_id,outdir):
         #print(str(datetime.datetime.now()), process.memory_info().rss)
         #utils_.run_cmd("free -h")
         ####
-        with open("./SRA_run_error.txt", "a+") as f:
-            f.write("{} :\n{}\n".format(sra_id, errMsg))
+        with open("./Benga_err.txt", "a+") as f:
+            f.write("{}:{}\n".format(sra_id,e))
         sys.exit(e)
     print('getBenga2 Done,{} total cost'.format(sra_id), time.time() - Benga_start, 'secs\n')
 
