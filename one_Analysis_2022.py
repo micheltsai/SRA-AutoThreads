@@ -649,7 +649,9 @@ def getBenga2(sra_id,outdir):
     Benga_start=time.time()
     input=os.path.join(outdir,"{}/Assembled/{}_contig.fa".format(sra_id,sra_id))
     output = os.path.join(outdir, sra_id)
+    utils_.mkdir_join(output)
     output=os.path.join(output,"cgMLST")
+    utils_.mkdir_join(output)
     output = os.path.join(output, "{}.tsv".format(sra_id))
     cmd="/home/linsslab01/miniconda3/bin/python3 ./20210210cgMLST/Benga-2/Benga-2/profiling.py -i {} -o {} " \
         "--scheme ./20210210cgMLST/Benga-2/scheme.faa --prodigaltf ./20210210cgMLST/Benga-2/prodigaltf.trn".format(input,output)
