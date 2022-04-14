@@ -322,18 +322,18 @@ def main():
     ##build analysis_final
     check_dir = os.path.join(outdir, "check")
     utils_.mkdir_join(check_dir)
-    final_log= os.path.join(check_dir, "analysis_final.csv")
-    if os.path.isfile(final_log):
-        print("{} is exist.\n".format(final_log))
-    else:
-        myfile_final = Path(final_log)
-        myfile_final.touch(exist_ok=True)
-        print("build {}.\n".format(final_log))
-        with open(final_log,"r+") as f:
-            df_clowns = ""+","+"Accession"+","+"MLST"+","+"AMR"+","+"Point"+","+"Serotype"+","+"IncType"
-            f.write(df_clowns+"\n")
-            print(f.readlines())
-        print("build {} Done.\n".format(final_log))
+    # final_log= os.path.join(check_dir, "analysis_final.csv")
+    # if os.path.isfile(final_log):
+    #     print("{} is exist.\n".format(final_log))
+    # else:
+    #     myfile_final = Path(final_log)
+    #     myfile_final.touch(exist_ok=True)
+    #     print("build {}.\n".format(final_log))
+    #     with open(final_log,"r+") as f:
+    #         df_clowns = ""+","+"Accession"+","+"MLST"+","+"AMR"+","+"Point"+","+"Serotype"+","+"IncType"
+    #         f.write(df_clowns+"\n")
+    #         print(f.readlines())
+    #     print("build {} Done.\n".format(final_log))
     ######
 
     check_log = os.path.join(check_dir, "Analysischeck.log")
@@ -484,23 +484,23 @@ def main():
         time.sleep(1)
         ###################
 
-        scp_start=time.time()
-        print("scp -r {} root@140.112.165.124:/data/SRA_data/{}/{}/output/{}_{}.tar.gz\n".format(mytarfile,str(ed_Y),str(ed_M),str(ed_M),ll+len(need_list)+len(finish_run)))
-        utils_.run_cmd("scp -r {} root@140.112.165.124:/data/SRA_data/{}/{}/output/{}_{}.tar.gz".format(mytarfile,str(ed_Y),str(ed_M),str(ed_M),ll+len(need_list)+len(finish_run)))
-        print(str(datetime.datetime.now()), 'scp Done,current total cost', time.time() - scp_start, 'secs\n')
-        time.sleep(1)
-        ##################
+        # scp_start=time.time()
+        # print("scp -r {} root@140.112.165.124:/data/SRA_data/{}/{}/output/{}_{}.tar.gz\n".format(mytarfile,str(ed_Y),str(ed_M),str(ed_M),ll+len(need_list)+len(finish_run)))
+        # utils_.run_cmd("scp -r {} root@140.112.165.124:/data/SRA_data/{}/{}/output/{}_{}.tar.gz".format(mytarfile,str(ed_Y),str(ed_M),str(ed_M),ll+len(need_list)+len(finish_run)))
+        # print(str(datetime.datetime.now()), 'scp Done,current total cost', time.time() - scp_start, 'secs\n')
+        # time.sleep(1)
+        # ##################
 
         #output
-        remove_start=time.time()
-        print("rm -rf {}\n".format(output_dir))
-        #utils_.run_cmd("rm -rf SRAtest/output")
-        utils_.run_cmd("rm -rf {}".format(output_dir))
-        #shutil.rmtree("./SRAtest/output")
-        print("rm -rf {}\n".format(joboutput_dir))
-        utils_.run_cmd("rm -rf {}".format(joboutput_dir))
-        print("rm -rf {}\n".format(mytarfile))
-        utils_.run_cmd("rm -rf {}".format(mytarfile))
+        # remove_start=time.time()
+        # print("rm -rf {}\n".format(output_dir))
+        # #utils_.run_cmd("rm -rf SRAtest/output")
+        # utils_.run_cmd("rm -rf {}".format(output_dir))
+        # #shutil.rmtree("./SRAtest/output")
+        # print("rm -rf {}\n".format(joboutput_dir))
+        # utils_.run_cmd("rm -rf {}".format(joboutput_dir))
+        # print("rm -rf {}\n".format(mytarfile))
+        # utils_.run_cmd("rm -rf {}".format(mytarfile))
 
         print(str(datetime.datetime.now()), 'remove Done,current total cost', time.time() - remove_start, 'secs\n')
         ##################
@@ -509,7 +509,7 @@ def main():
     print("analysislog: {}\n".format(check_log))
 
     #######
-    print("scp {} root@140.112.165.124:/data/SRA_data/\n".format(final_log,pdat_run[0]))
+    # print("scp {} root@140.112.165.124:/data/SRA_data/\n".format(final_log,pdat_run[0]))
 
 
     # print("scp {} root@140.112.165.124:/data/SRA_data/{}/{}\n".format(final_log, str(ed_Y), str(ed_M)))
