@@ -654,7 +654,26 @@ def getBenga2(sra_id,outdir):
     cmd="/home/linsslab01/miniconda3/bin/python3 ./20210210cgMLST/Benga-2/Benga-2/profiling.py -i {} -o {} " \
         "--scheme ./20210210cgMLST/Benga-2/scheme.faa --prodigaltf ./20210210cgMLST/Benga-2/prodigaltf.trn".format(input,output)
     print(cmd)
-    os.system(cmd)
+    try:
+        os.system(cmd)
+    except Exception as e:
+        error_class = e.__class__.__name__  # 取得錯誤類型
+        detail = e.args[0]  # 取得詳細內容
+        cl, exc, tb = sys.exc_info()  # 取得Call Stack
+        lastCallStack = traceback.extract_tb(tb)[-1]  # 取得Call Stack的最後一筆資料
+        fileName = lastCallStack[0]  # 取得發生的檔案名稱
+        lineNum = lastCallStack[1]  # 取得發生的行號
+        funcName = lastCallStack[2]  # 取得發生的函數名稱
+        errMsg = "File \"{}\", line {}, in {}: [{}] {}\n".format(fileName, lineNum, funcName, error_class, detail)
+        print(errMsg)
+        ###
+        #process = psutil.Process(os.getpid())
+        #print(str(datetime.datetime.now()), process.memory_info().rss)
+        #utils_.run_cmd("free -h")
+        ####
+        with open("./SRA_run_error.txt", "a+") as f:
+            f.write("{} :\n{}\n".format(sra_id, errMsg))
+        sys.exit(e)
     print('getBenga2 Done,{} total cost'.format(sra_id), time.time() - Benga_start, 'secs\n')
 
 
