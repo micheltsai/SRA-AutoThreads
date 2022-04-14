@@ -324,7 +324,7 @@ def main():
     ##build analysis_final
     check_dir = os.path.join(outdir, "check")
     utils_.mkdir_join(check_dir)
-    # final_log= os.path.join(check_dir, "analysis_final.csv")
+    final_log= os.path.join(check_dir, "analysis_final.csv")
     # if os.path.isfile(final_log):
     #     print("{} is exist.\n".format(final_log))
     # else:
@@ -514,7 +514,7 @@ def main():
     # print("scp {} root@140.112.165.124:/data/SRA_data/\n".format(final_log,pdat_run[0]))
 
 
-    print("scp {} root@140.112.165.124:/data/SRA_data/{}/{}\n".format(final_log, Year_, Month_))
+    #print("scp {} root@140.112.165.124:/data/SRA_data/{}/{}\n".format(final_log, Year_, Month_))
     #utils_.run_cmd("scp {} root@140.112.165.124:/data/SRA_data/{}/{}".format(final_log, str(ed_Y), str(ed_M)))
     print("scp {} root@140.112.165.124:/data/SRA_data/{}/{}\n".format(check_log,Year_,Month_))
     #utils_.run_cmd("scp {} root@140.112.165.124:/data/SRA_data/{}/{}".format(check_log,str(ed_Y),str(ed_M)))
