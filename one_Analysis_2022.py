@@ -698,6 +698,7 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
 
         print("Run {} is Done\n".format(sra_id))
         mycallback_write_Finish(sra_id)
+
         #######
         print(str(datetime.datetime.now()),' Done,current total cost', time.time() - start, 'secs\n')
     except Exception as e:
@@ -725,7 +726,7 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
 
 def mycallback_write_Finish(sra_id):
     print("mycallback_write\n")
-    check_log = os.path.join("./SRAtest", "Analysischeck.log")
+    check_log = os.path.join(outdir,"Analysischeck.log")
     with open(check_log, "a+") as f:
         f.write("Run {} is ok.\n".format(sra_id))
         check_lines = f.readlines()
@@ -781,7 +782,7 @@ if __name__ == '__main__':
     SRA_Analysis(sra_id, sra_dir, ass_dir, fastq_dir, assemble_dir, new_outdir, thread, gsize, start, sra_num_, outdir)
 
     #shutil.rmtree(sra_dir)
-   #utils_.mkdir_join(fastq_dir)
+    #utils_.mkdir_join(fastq_dir)
     #shutil.rmtree(fastq_dir)
     #shutil.rmtree(assemble_dir)
 
