@@ -651,6 +651,8 @@ def Analysis(sra_id,input,target_ref,outdir,thread,gsize,start):
 
 def getBenga2(sra_id,outdir):
     Benga_start=time.time()
+    outdir=os.path.join(outdir,"output")
+    utils_.mkdir_join(outdir)
     input=os.path.join(outdir,"{}/Assembled/{}_contig.fa".format(sra_id,sra_id))
     output = os.path.join(outdir, sra_id)
     utils_.mkdir_join(output)
