@@ -525,7 +525,7 @@ def main():
     print("scp {} root@140.112.165.124:{}\n".format(check_log,MVcheck_log))
     utils_.run_cmd("scp {} root@140.112.165.124:{}".format(check_log,MVcheck_log))
     print("scp {} root@140.112.165.124:{}\n".format(sraList_txt,MVsraList))
-    utils_.run_cmd("scp {} root@140.112.165.124:/data/SRA_data/{}/{}".format(sraList_txt,MVsraList))
+    utils_.run_cmd("scp {} root@140.112.165.124:{}".format(sraList_txt,MVsraList))
     print("scp {} root@140.112.165.124:{}\n".format(QCcheck_log,MVQCcheck))
     utils_.run_cmd("scp {} root@140.112.165.124:{}".format(QCcheck_log,MVQCcheck))
     print("Progerss end\n")
