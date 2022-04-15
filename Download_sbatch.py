@@ -478,7 +478,7 @@ def main():
         utils_.run_cmd2("rm -rf {}".format(needList))
         #################
         file_time = datetime.datetime.now().strftime('%Y-%m-%d-%H:%M:%S')
-        mytarfile = os.path.join(outdir, "{}_{}_{}.tar.gz".format(str(ed_M), ll + len(need_list) + len(finish_run),file_time))
+        mytarfile = os.path.join(outdir, "{}_{}_{}.tar.gz".format(Month_, ll + len(need_list) + len(finish_run),file_time))
         print("mytarfile: {}\n".format(mytarfile))
         #tar.gz
         tar_start = time.time()
