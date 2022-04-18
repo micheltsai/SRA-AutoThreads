@@ -60,6 +60,84 @@ def getProgramTime():
         print(errMsg)
     return 0
 
+def getInfo(sraid):
+    # term="SRR12123256"
+    Empty_file="empty.txt"
+    try:
+        handle = Entrez.esearch(term=sraid, db='sra', retmax=1000000)
+        d = Entrez.read(handle)
+        # print(d['IdList'])
+
+        ids = ','.join(d['IdList'])
+        handle = Entrez.esummary(db="sra", id=ids, retmax=1000000)
+        record = Entrez.read(handle)
+
+        # print(record)
+        # CreateDate=[d['CreateDate'] for d in record]
+        # print(CreateDate[0])
+
+        ExpXml = [d['ExpXml'] for d in record]
+        # print(ExpXml[0])
+        soup = BeautifulSoup(ExpXml[0], "html.parser")
+        # str=ET.fromstring(ExpXml[0])
+        biosample = soup.find("biosample").getText()
+
+        # print(biosample)
+
+        ############################
+
+        patterm = "{}[ACCN]".format(biosample)
+        with Entrez.esearch(db=database, term=patterm) as handle:
+            record = Entrez.read(handle)
+            uids = record['IdList']
+
+        uids
+        with Entrez.efetch(db=database, id=uids, rettype='text', retmode='text') as handle:
+            record = handle.read()
+    except Exception as e:
+        error_class = e.__class__.__name__  # 取得錯誤類型
+        detail = e.args[0]  # 取得詳細內容
+        cl, exc, tb = sys.exc_info()  # 取得Call Stack
+        lastCallStack = traceback.extract_tb(tb)[-1]  # 取得Call Stack的最後一筆資料
+        fileName = lastCallStack[0]  # 取得發生的檔案名稱
+        lineNum = lastCallStack[1]  # 取得發生的行號
+        funcName = lastCallStack[2]  # 取得發生的函數名稱
+        errMsg = "File \"{}\", line {}, in {}: [{}] {}".format(fileName, lineNum, funcName, error_class,
+                                                               detail)
+        print(errMsg)
+        with open(Empty_file,"a+")as f:
+            f.write("{}\n".format(sraid))
+        return 0
+    # print(record)
+
+    str = record.split("Accession:")
+    # print(str[0])
+    str = str[0].split("Attributes:")
+    # print(str[1])
+    str = str[1].split("\n")
+    # print(str)
+    need_list = ["strain", "isolate", "collection date", "geographic location", "serovar", "host"]
+    dict = {"sraID":sraid,"biosample":biosample,"strain":"", "isolate":"", "collection date":"", "geographic location":"", "serovar":"", "host":""}
+    for a in str:
+        a=a.strip("    /")
+        a=a.split("=")
+        print(a)
+        for sub in need_list:
+            if sub == a[0]:
+                # print("in \n")
+                value = a[1].strip('"')
+                # print(value)
+                dict[sub] = value
+
+    print(dict)
+    file="./NCBI_info.csv".format(sraid)
+    finaldf=pd.DataFrame([dict])
+    if os.path.isfile(file):
+        finaldf.to_csv(file, mode='a+', header=False)
+    else:
+        finaldf.to_csv(file, mode='a+')
+
+    return dict
 
 
 def Download(x,_outdir,sra_dir):
@@ -167,6 +245,8 @@ def sbatch_job(outdir,pdat,need_list,ll,limit_number,sra_num_,finish_,start):
             print(k)
             print(need_list.index(k))
             print("########## {}/{} ###########".format(finish_num+1+ll, sra_num_))
+            getInfo(k)
+
             # utils_.run_cmd("sbatch -A MST109178 -J Job_test -p ngs48G -c 14 --mem=46g -o ./out/{}_array_out.log -e ./out/{}_array_out.log "
             #               "--mail-user=sj985517@gmail.com --mail-type=BEGIN,END --wrap='/home/linsslab01/miniconda/bin/python3 one_Analysis.py'--array=1-4")
             with open(needList, "a+") as f:
