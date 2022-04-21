@@ -431,6 +431,8 @@ def main():
 ##############################
     bio_start=time.time()
     checkbioample = os.path.join(check_dir, "checkBiosample.txt")
+    myfileb = Path(checkbioample)
+    myfileb.touch(exist_ok=True)
     print("###############\ngetNCBI Biosample\n")
     with open(checkbioample, "r") as f:
         bline = f.readlines()
