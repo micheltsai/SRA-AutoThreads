@@ -60,9 +60,10 @@ def getProgramTime():
         print(errMsg)
     return 0
 
-def getInfo(sraid):
+def getInfo(sraid,check_dir):
     # term="SRR12123256"
-    Empty_file="empty.txt"
+    Empty_file=os.path.join(check_dir,"empty.txt")
+
     try:
         handle = Entrez.esearch(term=sraid, db='sra', retmax=1000000)
         d = Entrez.read(handle)
@@ -245,7 +246,6 @@ def sbatch_job(outdir,pdat,need_list,ll,limit_number,sra_num_,finish_,start):
             print(k)
             print(need_list.index(k))
             print("########## {}/{} ###########".format(finish_num+1+ll, sra_num_))
-            getInfo(k)
 
             # utils_.run_cmd("sbatch -A MST109178 -J Job_test -p ngs48G -c 14 --mem=46g -o ./out/{}_array_out.log -e ./out/{}_array_out.log "
             #               "--mail-user=sj985517@gmail.com --mail-type=BEGIN,END --wrap='/home/linsslab01/miniconda/bin/python3 one_Analysis.py'--array=1-4")
@@ -428,6 +428,22 @@ def main():
     #         print(f.readlines())
     #     print("build {} Done.\n".format(final_log))
     ######
+##############################
+    bio_start=time.time()
+    checkbioample = os.path.join(check_dir, "checkBiosample.txt")
+    print("###############\ngetNCBI Biosample\n")
+    with open(checkbioample, "r") as f:
+        bline = f.readlines()
+    bfinish = list(filter(lambda x: len(x.split(" ")) >= 4, bline))
+    bfinish_run = list(map(lambda x: x.split(" ")[1], bfinish))
+    bneed_run = list(filter(lambda x: x not in bfinish_run, sra_run))
+
+    for a in bneed_run:
+        dict=getInfo(a)
+        print("{}:\n{}\n##############\n".format(a,dict))
+    print(str(datetime.datetime.now()), 'getBiosample Done,current total cost', time.time() - bio_start, 'secs\n')
+    ####################
+    running_start = time.time()
 
     check_log = os.path.join(check_dir, "Analysischeck.log")
     myfile2 = Path(check_log)
@@ -460,7 +476,6 @@ def main():
 
 
 
-
     for ll in limit_list:
 
 
@@ -473,6 +488,7 @@ def main():
         # git date for store gz file name
         pdat = pdat_run[need_run.index(need_list[0])]
         print("pdat:{}".format(pdat))
+
 
 
         print("################\nsbatch_job\n")
@@ -516,7 +532,7 @@ def main():
         #
         # print(str(datetime.datetime.now()), 'PD Done,current total cost', time.time() - pd_start, 'secs\n')
 
-        running_start=time.time()
+
         while num != 1:
             print("progresses is running\n")
             try:
