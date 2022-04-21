@@ -441,7 +441,7 @@ def main():
     bneed_run = list(filter(lambda x: x not in bfinish_run, sra_run))
 
     for a in bneed_run:
-        dict=getInfo(a)
+        dict=getInfo(a,check_dir)
         print("{}:\n{}\n##############\n".format(a,dict))
     print(str(datetime.datetime.now()), 'getBiosample Done,current total cost', time.time() - bio_start, 'secs\n')
     ####################
