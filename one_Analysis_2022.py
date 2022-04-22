@@ -120,6 +120,7 @@ def Download(x,_outdir,sra_dir):
     elif os.path.isfile(sra_file):
         print("was ran download ,sra is exist\n------------------------------\n\n")
     else:
+        #utils_.mkdir_join(sra_dir)
         #utils_.prefetch_sra(x, sra_dir)
         #print("no Download {}\n.".format(x))
         #with open(Downloadcheck_log, "a+") as f:
@@ -135,6 +136,9 @@ def Assembled(x,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir,thread,gsize,star
     if os.path.isfile(final_dir):
         print("was ran assembly ,contig.fa is exist\n------------------------------\n\n")
     else:
+        utils_.mkdir_join(ass_dir)
+        utils_.mkdir_join(fastq_dir)
+        utils_.mkdir_join(assemble_dir)
         # one_run_prefetch = time.time()
         # utils_.prefetch_sra(x,sra_dir)
         one_run_ass = time.time()
@@ -222,8 +226,10 @@ def QualityCheck(sra_id,_outdir,ori_outdir,genome_Path,thread,gsize,start):
     fastani_ = "/home/linsslab01/FastANI/fastANI -t {} --rl {} -q {} -o {}".format(thread, refPath,genome_Path,outfile)
     print(fastani_ + "\n")
 
-    if os.path.isfile(outfile):
-        print(outfile, " is exist.\n")
+    anifile_new = os.path.join(outdir, outfile_)
+
+    if os.path.isfile(anifile_new):
+        print(anifile_new, " is exist.\n")
         print("fastANI was done.\n")
     else:
         utils_.run_cmd(fastani_)
@@ -231,7 +237,7 @@ def QualityCheck(sra_id,_outdir,ori_outdir,genome_Path,thread,gsize,start):
 
 
     ######move anifile to QCdir/
-    anifile_new = os.path.join(outdir, outfile_)
+
     mvani_cmd="cp {} {}".format(outfile,anifile_new)
     print(mvani_cmd)
     os.system(mvani_cmd)
@@ -317,7 +323,14 @@ def QualityCheck(sra_id,_outdir,ori_outdir,genome_Path,thread,gsize,start):
     cmd_bus = 'bash -c "source /home/linsslab01/miniconda3/etc/profile.d/conda.sh && conda activate busco && busco -c {} -i {} -o {} --out_path {} -l {} -m {} --download_path {} -f --offline"'.format(
         thread,targetPath, gID, outdir, db, mode, busco_db)
     print(cmd_bus, "\n")
-    utils_.run_cmd(cmd_bus)
+
+    buscofile_newpath = os.path.join(outdir, "busco_short_summary.txt")
+    if os.path.isfile(buscofile_newpath):
+        print(buscofile_newpath, " is exist.\n")
+        print("Busco was done.\n")
+    else:
+        utils_.run_cmd(cmd_bus)
+        print("Busco done.\n")
     ###
     #print("busco du-sh\n")
     #utils_.run_cmd("du ./SRAtest -sh")
@@ -329,7 +342,7 @@ def QualityCheck(sra_id,_outdir,ori_outdir,genome_Path,thread,gsize,start):
     #buscopath = glob.glob(buscopath + "/*.txt")
     buscopath = os.path.join(buscopath , "short_summary.txt")
 
-    buscofile_newpath=os.path.join(outdir,"busco_short_summary.txt")
+
     mvbuscocmd="cp {} {}".format(buscopath,buscofile_newpath)
     print(mvbuscocmd)
     os.system(mvbuscocmd)
@@ -685,10 +698,15 @@ def getBenga2(sra_id,outdir):
         sys.exit(e)
     print('getBenga2 Done,{} total cost'.format(sra_id), time.time() - Benga_start, 'secs\n')
 
-def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gsize,start,sra_num_,outdir):
+def SRA_Analysis(sra_id,_outdir,thread,gsize,start,sra_num_,outdir):
     SRA_start=time.time()
-    try:
+    sra_dir = os.path.join(new_outdir, "sra")  # .sra file
+    ass_dir = os.path.join(new_outdir, "Assembled")
+    fastq_dir = os.path.join(new_outdir, 'fastq')
+    assemble_dir = os.path.join(new_outdir, "assembly_result")
+    print("sra_dir:{}\nass_dir={}\nfastq_dir={}\nassemble_dir={}\n".format(sra_dir, ass_dir, fastq_dir, assemble_dir))
 
+    try:
         # if sra_layout==2 continue
         #Download(sra_id,_outdir,sra_dir)
         Assembled(sra_id,_outdir,sra_dir,ass_dir,assemble_dir,fastq_dir,thread,gsize,start)
@@ -697,11 +715,9 @@ def SRA_Analysis(sra_id,sra_dir,ass_dir,fastq_dir,assemble_dir,_outdir,thread,gs
         check_Assemble=os.path.join(check_dir,"checkAssembled.txt")
         print("check_dir:{}\n".format(check_dir))
 
-
         with open(check_Assemble,"a+") as f:
             f.write("Run {} is ok.\n".format(sra_id))
         #####
-
         genome = os.path.join(ass_dir, "{}_contig.fa".format(sra_id))
 
         print("getBenga2\n")
@@ -792,9 +808,7 @@ def mycallback_write_Finish(sra_id):
 if __name__ == '__main__':
     start = time.time()
     argvs=sys.argv
-
     print(argvs)
-
     pdat=argvs[1]
     #need_run=argvs[2]
     sra_num_ = argvs[2]
@@ -819,22 +833,13 @@ if __name__ == '__main__':
     new_outdir = os.path.join(new_outdir, sra_id)
     utils_.mkdir_join(new_outdir)
     print("output: {}\n".format(new_outdir))
-    sra_dir = os.path.join(new_outdir, "sra")  # .sra file
-    utils_.mkdir_join(sra_dir)
-    ass_dir = os.path.join(new_outdir, "Assembled")
-    utils_.mkdir_join(ass_dir)
-    fastq_dir = os.path.join(new_outdir, 'fastq')
-    utils_.mkdir_join(fastq_dir)
-    assemble_dir = os.path.join(new_outdir, "assembly_result")
-    utils_.mkdir_join(assemble_dir)
 
-    print("sra_dir:{}\nass_dir={}\nfastq_dir={}\nassemble_dir={}\n".format(sra_dir, ass_dir, fastq_dir, assemble_dir))
     #print(need_run)
     #print(need_run.type)
     print(sra_index)
     print(sra_id)
 
-    SRA_Analysis(sra_id, sra_dir, ass_dir, fastq_dir, assemble_dir, new_outdir, thread, gsize, start, sra_num_, outdir)
+    SRA_Analysis(sra_id,  new_outdir, thread, gsize, start, sra_num_, outdir)
 
     #shutil.rmtree(sra_dir)
     #utils_.mkdir_join(fastq_dir)

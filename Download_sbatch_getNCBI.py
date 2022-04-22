@@ -484,9 +484,11 @@ def main():
         need_list=need_run[ll:ll+limit_num]
         print("###############\n{} -> {}\n".format(ll+len(finish_run),len(need_list)+len(finish_run)))
         print("Download\n")
+        download_start=time.time()
         pool_append(need_list,outdir)
         print("Download End\n")
-
+        print(str(datetime.datetime.now()), 'Running,current total cost', time.time() - download_start, 'secs\n')
+        
         # git date for store gz file name
         pdat = pdat_run[need_run.index(need_list[0])]
         print("pdat:{}".format(pdat))
