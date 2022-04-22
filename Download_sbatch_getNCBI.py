@@ -604,19 +604,19 @@ def main():
         time.sleep(1)
         ##################
 
-        #output
-        # remove_start=time.time()
-        # print("rm -rf {}\n".format(output_dir))
-        # #utils_.run_cmd("rm -rf SRAtest/output")
-        # utils_.run_cmd("rm -rf {}".format(output_dir))
-        # #shutil.rmtree("./SRAtest/output")
-        # print("rm -rf {}\n".format(joboutput_dir))
-        # utils_.run_cmd("rm -rf {}".format(joboutput_dir))
-        # print("rm -rf {}\n".format(mytarfile))
-        # utils_.run_cmd("rm -rf {}".format(mytarfile))
-        #
-        # print(str(datetime.datetime.now()), 'remove Done,current total cost', time.time() - remove_start, 'secs\n')
-        ##################
+        #remove
+        remove_start=time.time()
+        print("rm -rf {}\n".format(output_dir))
+        #utils_.run_cmd("rm -rf SRAtest/output")
+        utils_.run_cmd("rm -rf {}".format(output_dir))
+        #shutil.rmtree("./SRAtest/output")
+        #print("rm -rf {}\n".format(joboutput_dir))
+        #utils_.run_cmd("rm -rf {}".format(joboutput_dir))
+        print("rm -rf {}\n".format(mytarfile))
+        utils_.run_cmd("rm -rf {}".format(mytarfile))
+
+        print(str(datetime.datetime.now()), 'remove Done,current total cost', time.time() - remove_start, 'secs\n')
+        #################
         time.sleep(1)
 
     print("analysislog: {}\n".format(check_log))
