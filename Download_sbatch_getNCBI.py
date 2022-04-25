@@ -464,7 +464,7 @@ def main():
     with open(QCcheck_log,"r")as f:
         QCline=f.readlines()
     QC_run=list(filter(lambda x: len(x.split(":")) >= 2, QCline))
-    QCfinish_run = list(map(lambda x: x.split(" ")[1], QC_run))
+    QCfinish_run = list(map(lambda x: x.split(":")[0], QC_run))
     need_run = list(filter(lambda x: x not in QCfinish_run, need_run))
 
     print("sra_list length: {}\n".format(len(sra_run)))
@@ -488,7 +488,7 @@ def main():
         pool_append(need_list,outdir)
         print("Download End\n")
         print(str(datetime.datetime.now()), 'Running,current total cost', time.time() - download_start, 'secs\n')
-        
+
         # git date for store gz file name
         pdat = pdat_run[need_run.index(need_list[0])]
         print("pdat:{}".format(pdat))
