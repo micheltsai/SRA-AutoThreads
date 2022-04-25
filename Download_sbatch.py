@@ -366,7 +366,7 @@ def main():
     with open(QCcheck_log,"r")as f:
         QCline=f.readlines()
     QC_run=list(filter(lambda x: len(x.split(":")) >= 2, QCline))
-    QCfinish_run = list(map(lambda x: x.split(" ")[1], QC_run))
+    QCfinish_run = list(map(lambda x: x.split(":")[0], QC_run))
     need_run = list(filter(lambda x: x not in QCfinish_run, need_run))
 
     print("sra_list length: {}\n".format(len(sra_run)))
