@@ -428,23 +428,23 @@ def main():
     #         print(f.readlines())
     #     print("build {} Done.\n".format(final_log))
     ######
-#############################
-    bio_start=time.time()
-    checkbioample = os.path.join(check_dir, "checkBiosample.txt")
-    myfileb = Path(checkbioample)
-    myfileb.touch(exist_ok=True)
-    print("###############\ngetNCBI Biosample\n")
-    with open(checkbioample, "r") as f:
-        bline = f.readlines()
-    bfinish = list(filter(lambda x: len(x.split(" ")) >= 4, bline))
-    bfinish_run = list(map(lambda x: x.split(" ")[1], bfinish))
-    bneed_run = list(filter(lambda x: x not in bfinish_run, sra_run))
-
-    for a in bneed_run:
-        dict=getInfo(a,check_dir)
-        print("{}:\n{}\n##############\n".format(a,dict))
-    print(str(datetime.datetime.now()), 'getBiosample Done,current total cost', time.time() - bio_start, 'secs\n')
-    ####################
+# #############################
+#     bio_start=time.time()
+#     checkbioample = os.path.join(check_dir, "checkBiosample.txt")
+#     myfileb = Path(checkbioample)
+#     myfileb.touch(exist_ok=True)
+#     print("###############\ngetNCBI Biosample\n")
+#     with open(checkbioample, "r") as f:
+#         bline = f.readlines()
+#     bfinish = list(filter(lambda x: len(x.split(" ")) >= 4, bline))
+#     bfinish_run = list(map(lambda x: x.split(" ")[1], bfinish))
+#     bneed_run = list(filter(lambda x: x not in bfinish_run, sra_run))
+#
+#     for a in bneed_run:
+#         dict=getInfo(a,check_dir)
+#         print("{}:\n{}\n##############\n".format(a,dict))
+#     print(str(datetime.datetime.now()), 'getBiosample Done,current total cost', time.time() - bio_start, 'secs\n')
+#     ####################
     running_start = time.time()
 
     check_log = os.path.join(check_dir, "Analysischeck.log")
