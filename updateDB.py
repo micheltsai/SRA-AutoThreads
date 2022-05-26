@@ -26,7 +26,7 @@ def main():
     #    print("ffff")
      #   conn.rollback()
      #   print(e)
-    #insertSRA = "INSERT INTO SRA(Genome) VALUES(%s);"
+    #insertSRA = "INSERT INTO web(Genome) VALUES(%s);"
     #insert = "INSERT INTO Final(Accession,MLST,AMR,Serotype,Inc_Type) VALUES(%s,%s,%s,%s,%s);"
     for i in range(0,len(df)):
         print(str(df.loc[i,"Accession"])+" "+str(df.loc[i,"MLST"])+" "+str(df.loc[i,"AMR"])+str(df.loc[i,"Point"])+" "+str(df.loc[i,"Serotype"])+" "+str(df.loc[i,"IncType"]))

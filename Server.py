@@ -152,7 +152,6 @@ if __name__ == "__main__":
     HOST, PORT = '140.112.165.122', 8088
     # Create the server, binding to localhost on port 9999
     Month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-
     for yy in range(sd_Y, ed_Y + 1):
         Month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
         ########

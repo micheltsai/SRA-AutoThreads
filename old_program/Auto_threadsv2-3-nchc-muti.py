@@ -270,7 +270,7 @@ def QualityCheck(sra_id,_outdir,genome_Path,thread,gsize,start):
     # -f overwrite
 
     # genome is "one excuting"
-    # busco -i /data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/RefSeq/GCF_000335875.2.fa -o cofig --out_path /data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/SRA-AutomatedAnalysis/QualityCheck -l enterobacterales_odb10 -m geno --download_path /data1/usrhome/LabSSLin/linss01/Desktop/SRA-AutoAnalysis/SRA-AutomatedAnalysis/QualityCheck/QualityCheck/busco_db -f
+    # busco -i /data1/usrhome/LabSSLin/linss01/Desktop/web-AutoAnalysis/RefSeq/GCF_000335875.2.fa -o cofig --out_path /data1/usrhome/LabSSLin/linss01/Desktop/web-AutoAnalysis/web-AutomatedAnalysis/QualityCheck -l enterobacterales_odb10 -m geno --download_path /data1/usrhome/LabSSLin/linss01/Desktop/web-AutoAnalysis/web-AutomatedAnalysis/QualityCheck/QualityCheck/busco_db -f
     #cmd_bus = 'bash -c "source /data/usrhome/LabSSLin/user30/anaconda3/etc/profile.d/conda.sh && conda activate busco && busco -c {} -i {} -o {} --out_path {} -l {} -m {} --download_path {} -f"'.format(
     cmd_bus = 'bash -c "source /home/linsslab01/miniconda3/etc/profile.d/conda.sh && conda activate busco && busco -c {} -i {} -o {} --out_path {} -l {} -m {} --download_path {} -f --offline"'.format(
         thread,targetPath, gID, outdir, db, mode, busco_db)
@@ -338,7 +338,7 @@ def Analysis(sra_id,input,target_ref,anoutdir,_outdir,thread,gsize,start):
 
     # workdir
     current_path = os.path.abspath(os.getcwd())
-    current_path2 = current_path.replace("/SRA-AutoThreads", "")
+    current_path2 = current_path.replace("/web-AutoThreads", "")
     print("current_path: ", current_path, "\n")
     relative_input_ = input.replace(current_path2, ".")
     relative_input = input.replace(current_path, ".")

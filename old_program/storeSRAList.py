@@ -182,7 +182,7 @@ def main(yy, mon, d,outdir):
 
         for xx in no_need_run:
             with open(QC_error, "a+") as f:
-                f.write("{}:{}: SRA is exist on sraList.\n".format(date, xx))
+                f.write("{}:{}: web is exist on sraList.\n".format(date, xx))
         ########
 
         print("finish: {}\nfinish_run: {}\nneed_run".format(finish, finish_run, need_run))
